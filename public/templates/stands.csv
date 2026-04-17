@@ -1,0 +1,4 @@
+code,airportIataCode,terminalCode,maxWingspanM,zone,towRequired,quantity,blockedBy1,blockedBy2,blockedBy3,blockedBy4,blockedBy5,blockedBy6,validFrom,validTo
+101,DEL,T3,65.0,NORTH,false,1,102,,,,,, ,
+102,DEL,T3,36.0,NORTH,true,1,101,,,,,,, 
+201,BOM,T2,79.75,EAST,false,1,,,,,,,2024-01-01,

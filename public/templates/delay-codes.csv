@@ -1,0 +1,4 @@
+siteCode,numericCode,iataCode,description,category,subCategory,iataGroup,isCarrier,validFrom,validTo
+DEL-93,93,93,Passenger Handling - Check-In,PASSENGER,CHECK_IN,A,false,,
+DEL-11,11,11,Aircraft Technical Defects,AIRCRAFT,TECHNICAL,M,true,,
+BOM-73,73,73,Weather Conditions,OPERATIONAL,WEATHER,W,false,2024-01-01,

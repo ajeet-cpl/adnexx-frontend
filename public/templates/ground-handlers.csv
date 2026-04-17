@@ -1,0 +1,3 @@
+name,shortCode,airportIataCode,email,phone,website,address,serviceTypes,licenseNo,certifications,validFrom,validTo
+Air India SATS Airport Services,AISATS,DEL,ops@aisats.in,+911234567890,https://www.aisats.in,"Terminal 3, IGI Airport, New Delhi","RAMP,CARGO,GROUND",GH-DEL-001,IATA-ISAGO,,
+Celebi Delhi Airport Services,CELEBI,DEL,info@celebi.com.tr,+911234567891,https://www.celebi.com.tr,"Terminal 1, IGI Airport, New Delhi","RAMP,GROUND",GH-DEL-002,,2024-01-01,

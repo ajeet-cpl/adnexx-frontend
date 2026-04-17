@@ -1,0 +1,4 @@
+code,airportIataCode,terminalCode,airlineIataCode,counters,zone,type,validFrom,validTo
+C1,DEL,T3,AI,5,A,FULL_SERVICE,,
+C2,DEL,T3,6E,3,B,LOW_COST,,
+C3,BOM,T2,EK,2,C,FULL_SERVICE,2024-01-01,

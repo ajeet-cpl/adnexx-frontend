@@ -1,0 +1,4 @@
+icaoCode,iataCode,description,bodyClass,wakeCategory,wingspanM,lengthM,mtowKg,mlwKg,engineCount,engineType,turbulenceCategory,standCompatibilityClass,validFrom,validTo
+B738,738,Boeing 737-800,NARROW,M,35.8,39.5,79016,66361,2,TURBOFAN,MEDIUM,C,,
+A320,320,Airbus A320,NARROW,M,35.8,37.57,78000,64500,2,TURBOFAN,MEDIUM,C,,
+A388,388,Airbus A380-800,WIDE,J,79.75,72.72,575000,394000,4,TURBOFAN,SUPER,F,,

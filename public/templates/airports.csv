@@ -1,0 +1,3 @@
+iataCode,icaoCode,name,cityName,country,type,airportCategory,latitude,longitude,elevationFt,timezone,tzOffset,dstRule,runwayCount,terminalCount,coordinationLevel,maxMovementsPerHour,icaoLocationIndicator,noiseRestrictionLevel,curfewStart,curfewEnd
+DEL,VIDP,Indira Gandhi International Airport,New Delhi,India,INTERNATIONAL,A,28.5665,77.1031,777,Asia/Kolkata,+05:30,NONE,3,3,LEVEL_3,60,VIDP,LOW,,
+BOM,VABB,Chhatrapati Shivaji Maharaj International Airport,Mumbai,India,INTERNATIONAL,A,19.0896,72.8656,37,Asia/Kolkata,+05:30,NONE,2,2,LEVEL_3,48,VABB,MEDIUM,23:00,06:00

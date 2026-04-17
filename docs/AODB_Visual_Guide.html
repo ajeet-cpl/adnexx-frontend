@@ -1,0 +1,2343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AODB Admin Portal — Visual Step-by-Step Guide</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Reset & Base ─────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #F8FAFC;
+      --surface:  #ffffff;
+      --border:   rgba(30,58,138,0.10);
+      --blue:     #1E3A8A;
+      --blue-lt:  #3B82F6;
+      --green:    #16a34a;
+      --red:      #DC2626;
+      --amber:    #F59E0B;
+      --cyan:     #0ea5e9;
+      --violet:   #7c3aed;
+      --slate:    #6B7280;
+      --text-1:   #111827;
+      --text-2:   #374151;
+      --text-3:   #6B7280;
+      --step-r:   10px;
+    }
+
+    body {
+      font-family: 'IBM Plex Sans', sans-serif;
+      background: #F1F5F9;
+      color: var(--text-1);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    /* ── Doc header ──────────────────────────────────────────────── */
+    .doc-header {
+      background: linear-gradient(135deg, #0F1E4A 0%, #1E3A8A 60%, #1a56cc 100%);
+      color: #fff;
+      padding: 56px 64px 48px;
+    }
+    .doc-header .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 32px; }
+    .doc-header .brand-icon {
+      width: 40px; height: 40px; border-radius: 9px;
+      background: rgba(255,255,255,0.15);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .doc-header h1 { font-family: 'Syne', sans-serif; font-size: 42px; font-weight: 800; line-height: 1.1; margin-bottom: 12px; }
+    .doc-header p { font-size: 15px; opacity: 0.75; max-width: 560px; line-height: 1.7; }
+    .doc-meta { display: flex; gap: 24px; margin-top: 28px; }
+    .doc-meta span { font-size: 12px; background: rgba(255,255,255,0.12); padding: 4px 12px; border-radius: 20px; font-family: 'IBM Plex Mono', monospace; }
+
+    /* ── Main layout ─────────────────────────────────────────────── */
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 32px 80px; }
+
+    /* ── TOC ─────────────────────────────────────────────────────── */
+    .toc {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 28px 32px; margin: 36px 0;
+    }
+    .toc h2 { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; color: var(--blue); margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.08em; }
+    .toc ol { padding-left: 20px; columns: 2; column-gap: 40px; }
+    .toc li { margin-bottom: 7px; }
+    .toc a { color: var(--blue-lt); text-decoration: none; font-size: 13px; }
+    .toc a:hover { text-decoration: underline; }
+
+    /* ── Section header ──────────────────────────────────────────── */
+    .section { margin-top: 60px; }
+    .section-label {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--blue); font-family: 'IBM Plex Mono', monospace;
+      margin-bottom: 8px;
+    }
+    .section-label .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--blue); }
+    .section h2 { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; color: var(--text-1); margin-bottom: 8px; }
+    .section p.intro { font-size: 14px; color: var(--text-2); max-width: 680px; line-height: 1.8; margin-bottom: 28px; }
+
+    /* ── Step card ───────────────────────────────────────────────── */
+    .step-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; overflow: hidden; margin-bottom: 28px;
+    }
+    .step-header {
+      display: flex; align-items: center; gap: 14px;
+      padding: 16px 22px; border-bottom: 1px solid var(--border);
+      background: #F8FAFC;
+    }
+    .step-num {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--blue); color: #fff;
+      font-size: 13px; font-weight: 700; font-family: 'Syne', sans-serif;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .step-title { font-weight: 700; font-size: 15px; color: var(--text-1); }
+    .step-desc { font-size: 12.5px; color: var(--text-3); margin-left: auto; }
+    .step-body { padding: 22px; }
+
+    /* ── Mockup window ───────────────────────────────────────────── */
+    .mockup-window {
+      border: 1.5px solid var(--border);
+      border-radius: 10px; overflow: hidden;
+      box-shadow: 0 4px 24px rgba(30,58,138,0.08);
+      margin-bottom: 16px;
+    }
+    .window-bar {
+      height: 36px; background: #E5E7EB;
+      display: flex; align-items: center; padding: 0 14px; gap: 7px;
+    }
+    .window-dot { width: 11px; height: 11px; border-radius: 50%; }
+    .window-url {
+      margin-left: 12px; flex: 1; background: #fff;
+      border-radius: 5px; height: 22px; padding: 0 10px;
+      display: flex; align-items: center;
+      font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text-3);
+      border: 1px solid #D1D5DB;
+    }
+
+    /* ── Portal chrome (sidebar + content) ───────────────────────── */
+    .portal-frame { display: flex; min-height: 400px; background: var(--bg); }
+
+    .p-sidebar {
+      width: 200px; flex-shrink: 0;
+      background: #fff;
+      border-right: 1px solid var(--border);
+      display: flex; flex-direction: column;
+    }
+    .p-sidebar-logo {
+      height: 52px; display: flex; align-items: center; gap: 9px;
+      padding: 0 14px; border-bottom: 1px solid var(--border);
+    }
+    .p-sidebar-logo-icon {
+      width: 28px; height: 28px; border-radius: 6px;
+      background: linear-gradient(135deg, var(--blue), var(--violet));
+      display: flex; align-items: center; justify-content: center;
+    }
+    .p-sidebar-logo-text .name { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; color: var(--text-1); }
+    .p-sidebar-logo-text .sub { font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em; }
+
+    .nav-section { padding: 8px 10px 2px; }
+    .nav-section-label { font-size: 9px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em; font-family: 'IBM Plex Mono', monospace; padding: 4px 4px; }
+    .nav-item {
+      display: flex; align-items: center; gap: 7px;
+      padding: 7px 8px; border-radius: 6px; cursor: pointer;
+      font-size: 12px; color: var(--text-2); margin-bottom: 1px;
+    }
+    .nav-item.active { background: rgba(30,58,138,0.08); color: var(--blue); font-weight: 600; }
+    .nav-item .ni { width: 14px; height: 14px; opacity: 0.7; }
+
+    .p-content { flex: 1; padding: 24px; overflow: hidden; }
+
+    /* ── Page header bar ─────────────────────────────────────────── */
+    .page-hdr { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 18px; }
+    .page-hdr-left { display: flex; align-items: center; gap: 11px; }
+    .page-icon { width: 38px; height: 38px; border-radius: 9px; background: var(--blue); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .page-title { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; color: var(--text-1); }
+    .page-subtitle { font-size: 11px; color: var(--text-3); margin-top: 1px; }
+    .page-hdr-right { display: flex; gap: 7px; align-items: center; }
+
+    /* ── Buttons ─────────────────────────────────────────────────── */
+    .btn { display: inline-flex; align-items: center; gap: 5px; padding: 7px 13px; border-radius: 7px; font-size: 12px; font-weight: 600; cursor: pointer; border: none; font-family: 'IBM Plex Sans', sans-serif; }
+    .btn-primary { background: var(--blue); color: #fff; }
+    .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--text-2); }
+    .btn-green { background: var(--green); color: #fff; }
+    .btn-red-ghost { background: transparent; border: 1px solid rgba(220,38,38,0.25); color: var(--red); }
+    .btn-sm { padding: 5px 10px; font-size: 11px; }
+
+    /* ── Stats row ───────────────────────────────────────────────── */
+    .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 14px; }
+    .stat-box { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 10px 13px; }
+    .stat-val { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; color: var(--text-1); }
+    .stat-lbl { font-size: 10px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.05em; font-family: 'IBM Plex Mono', monospace; }
+
+    /* ── Search toolbar ──────────────────────────────────────────── */
+    .toolbar { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+    .search-box { display: flex; align-items: center; gap: 6px; background: #fff; border: 1px solid var(--border); border-radius: 7px; padding: 6px 11px; flex: 1; max-width: 280px; }
+    .search-box input-mock { font-size: 12px; color: var(--text-3); font-family: 'IBM Plex Mono', monospace; }
+
+    /* ── Table ───────────────────────────────────────────────────── */
+    .data-table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid var(--border); border-radius: 9px; overflow: hidden; font-size: 12px; }
+    .data-table th { background: #F8FAFC; padding: 9px 12px; text-align: left; font-size: 10.5px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 1px solid var(--border); font-family: 'IBM Plex Mono', monospace; }
+    .data-table td { padding: 10px 12px; border-bottom: 1px solid rgba(30,58,138,0.05); color: var(--text-1); }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:hover td { background: rgba(30,58,138,0.025); }
+
+    /* ── Badges ──────────────────────────────────────────────────── */
+    .badge { display: inline-flex; align-items: center; padding: 2px 7px; border-radius: 4px; font-size: 10px; font-weight: 600; letter-spacing: 0.04em; font-family: 'IBM Plex Mono', monospace; }
+    .badge-green  { background: rgba(22,163,74,0.10);  color: var(--green); }
+    .badge-red    { background: rgba(220,38,38,0.10);  color: var(--red); }
+    .badge-blue   { background: rgba(30,58,138,0.10);  color: var(--blue); }
+    .badge-amber  { background: rgba(245,158,11,0.15); color: #92400e; }
+    .badge-violet { background: rgba(124,58,237,0.10); color: var(--violet); }
+    .badge-slate  { background: rgba(107,114,128,0.12); color: var(--slate); }
+    .badge-cyan   { background: rgba(14,165,233,0.10); color: #0369a1; }
+
+    /* ── Action buttons ──────────────────────────────────────────── */
+    .action-btn { width: 26px; height: 26px; border-radius: 5px; border: 1px solid var(--border); background: #fff; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-3); font-size: 12px; }
+    .action-btn:hover { background: #F8FAFC; }
+
+    /* ── Toggle ──────────────────────────────────────────────────── */
+    .toggle { display: inline-flex; align-items: center; gap: 2px; cursor: pointer; }
+    .toggle-on  { color: var(--green); font-size: 16px; }
+    .toggle-off { color: var(--text-3); font-size: 16px; }
+
+    /* ── Form modal ──────────────────────────────────────────────── */
+    .modal-overlay { background: rgba(10,20,60,0.35); padding: 24px; display: flex; align-items: center; justify-content: center; }
+    .modal { background: #fff; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.18); width: 100%; max-width: 540px; overflow: hidden; }
+    .modal-header { padding: 18px 22px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+    .modal-header h3 { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; color: var(--text-1); }
+    .modal-header .modal-close { margin-left: auto; width: 24px; height: 24px; border-radius: 5px; border: 1px solid var(--border); background: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; color: var(--text-3); }
+    .modal-body { padding: 20px 22px; }
+    .modal-footer { padding: 14px 22px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 8px; }
+
+    .form-section-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-3); font-family: 'IBM Plex Mono', monospace; padding: 0 0 10px; border-bottom: 1px solid var(--border); margin-bottom: 14px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+    .form-row-1 { display: grid; grid-template-columns: 1fr; gap: 14px; margin-bottom: 14px; }
+    .form-group label { display: block; font-size: 11px; font-weight: 600; color: var(--text-2); margin-bottom: 5px; font-family: 'IBM Plex Mono', monospace; }
+    .form-group label .req { color: var(--red); margin-left: 2px; }
+    .form-input { width: 100%; border: 1px solid rgba(30,58,138,0.18); border-radius: 7px; padding: 8px 11px; font-size: 13px; color: var(--text-1); background: #fff; font-family: 'IBM Plex Sans', sans-serif; outline: none; }
+    .form-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(30,58,138,0.1); }
+    .form-input.filled { border-color: rgba(30,58,138,0.35); }
+    .form-hint { font-size: 10px; color: var(--text-3); margin-top: 3px; }
+
+    /* ── Dashboard cards ─────────────────────────────────────────── */
+    .dash-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .master-card {
+      background: #fff; border: 1px solid var(--border); border-radius: 10px;
+      padding: 14px; cursor: pointer; transition: box-shadow 0.15s;
+    }
+    .master-card:hover { box-shadow: 0 4px 16px rgba(30,58,138,0.10); }
+    .mc-icon { width: 32px; height: 32px; border-radius: 7px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
+    .mc-count { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 700; line-height: 1; margin-bottom: 3px; }
+    .mc-label { font-size: 12px; font-weight: 600; color: var(--text-1); margin-bottom: 2px; }
+    .mc-desc { font-size: 10px; color: var(--text-3); }
+
+    /* ── Login mockup ────────────────────────────────────────────── */
+    .login-frame { display: flex; min-height: 360px; }
+    .login-left { flex: 1; background: var(--bg); padding: 36px; border-right: 1px solid var(--border); }
+    .login-right { width: 280px; background: #fff; padding: 36px; display: flex; flex-direction: column; justify-content: center; }
+
+    /* ── Callout badges (numbered annotations) ───────────────────── */
+    .annotated { position: relative; }
+    .callout {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 22px; height: 22px; border-radius: 50%;
+      background: #FF4500; color: #fff;
+      font-size: 11px; font-weight: 800; position: absolute; z-index: 10;
+      box-shadow: 0 2px 8px rgba(255,69,0,0.45);
+      font-family: 'Syne', sans-serif;
+    }
+
+    /* ── Instruction list ────────────────────────────────────────── */
+    .inst-list { list-style: none; margin-top: 14px; }
+    .inst-list li {
+      display: flex; gap: 11px; align-items: flex-start;
+      padding: 9px 14px; margin-bottom: 5px;
+      background: #F8FAFC; border-radius: 7px; border-left: 3px solid var(--blue-lt);
+      font-size: 13px; line-height: 1.6;
+    }
+    .inst-num { width: 20px; height: 20px; border-radius: 50%; background: var(--blue); color: #fff; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+    .tip-box { background: rgba(30,58,138,0.04); border: 1px solid rgba(30,58,138,0.14); border-radius: 8px; padding: 12px 16px; margin-top: 14px; font-size: 12.5px; color: var(--text-2); line-height: 1.7; }
+    .tip-box strong { color: var(--blue); }
+    .warn-box { background: rgba(245,158,11,0.06); border: 1px solid rgba(245,158,11,0.25); border-radius: 8px; padding: 12px 16px; margin-top: 14px; font-size: 12.5px; color: #78350f; line-height: 1.7; }
+    .warn-box strong { color: #92400e; }
+    .success-box { background: rgba(22,163,74,0.05); border: 1px solid rgba(22,163,74,0.2); border-radius: 8px; padding: 12px 16px; margin-top: 14px; font-size: 12.5px; color: #14532d; line-height: 1.7; }
+
+    /* ── Toast notification ──────────────────────────────────────── */
+    .toast {
+      display: inline-flex; align-items: flex-start; gap: 10px;
+      background: #fff; border: 1px solid var(--border);
+      border-radius: 10px; padding: 12px 16px;
+      box-shadow: 0 8px 28px rgba(0,0,0,0.12);
+      max-width: 300px; margin-top: 8px;
+    }
+    .toast-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 4px; flex-shrink: 0; }
+    .toast-title { font-size: 12px; font-weight: 700; color: var(--text-1); }
+    .toast-msg { font-size: 11px; color: var(--text-3); }
+
+    /* ── Upload progress ─────────────────────────────────────────── */
+    .progress-bar { height: 4px; background: #E5E7EB; border-radius: 2px; margin-top: 8px; overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 2px; background: var(--blue); }
+
+    /* ── Pagination ──────────────────────────────────────────────── */
+    .pagination { display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin-top: 12px; }
+    .page-btn { width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--border); background: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 13px; color: var(--text-2); }
+    .page-btn.disabled { opacity: 0.4; cursor: not-allowed; }
+    .page-info { font-size: 12px; color: var(--text-3); font-family: 'IBM Plex Mono', monospace; }
+
+    /* ── Divider ─────────────────────────────────────────────────── */
+    hr { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
+
+    /* ── SVG icons (inline) ──────────────────────────────────────── */
+    .icon { display: inline-block; vertical-align: middle; }
+
+    /* ── Role chip ───────────────────────────────────────────────── */
+    .role-admin  { background: rgba(245,158,11,0.15); color: #92400e; }
+    .role-op     { background: rgba(30,58,138,0.10);  color: var(--blue); }
+    .role-viewer { background: rgba(107,114,128,0.12); color: var(--slate); }
+
+    /* ── Info banner ─────────────────────────────────────────────── */
+    .info-banner { background: rgba(59,130,246,0.06); border: 1px solid rgba(59,130,246,0.18); border-radius: 9px; padding: 12px 16px; display: flex; gap: 10px; align-items: flex-start; margin-bottom: 18px; font-size: 12px; color: var(--text-2); line-height: 1.6; }
+    .info-banner .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--blue-lt); margin-top: 4px; flex-shrink: 0; }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     DOCUMENT HEADER
+══════════════════════════════════════════════════════════════════ -->
+<div class="doc-header">
+  <div class="brand">
+    <div class="brand-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+    </div>
+    <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;opacity:.8;">ADNexx Platform — AODB</span>
+  </div>
+  <h1>Visual Step-by-Step Guide</h1>
+  <p>A complete visual walkthrough of the AODB Admin Portal with annotated screenshots for every workflow — designed for non-technical users.</p>
+  <div class="doc-meta">
+    <span>Version 1.0</span>
+    <span>April 2026</span>
+    <span>Audience: All Portal Users</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ── TABLE OF CONTENTS ────────────────────────────────────────── -->
+  <div class="toc">
+    <h2>Table of Contents</h2>
+    <ol>
+      <li><a href="#s1">Logging In</a></li>
+      <li><a href="#s2">Dashboard Overview</a></li>
+      <li><a href="#s3">Navigating the Portal</a></li>
+      <li><a href="#s4">Searching for Records</a></li>
+      <li><a href="#s5">Adding a New Record</a></li>
+      <li><a href="#s6">Editing a Record</a></li>
+      <li><a href="#s7">Activating / Deactivating a Record</a></li>
+      <li><a href="#s8">Downloading a CSV Template</a></li>
+      <li><a href="#s9">Bulk Upload via CSV</a></li>
+      <li><a href="#s10">Managing Users (Admin)</a></li>
+      <li><a href="#s11">Resetting a Password (Admin)</a></li>
+      <li><a href="#s12">Logging Out</a></li>
+      <li style="margin-top:10px;font-weight:700;color:var(--blue);font-family:'Syne',sans-serif;font-size:12px;list-style:none;letter-spacing:.06em;text-transform:uppercase;">Module Reference</li>
+      <li><a href="#m-airlines">Module 01 — Airlines</a></li>
+      <li><a href="#m-airports">Module 02 — Airports</a></li>
+      <li><a href="#m-aircraft">Module 03 — Aircraft Types</a></li>
+      <li><a href="#m-countries">Module 04 — Countries</a></li>
+      <li><a href="#m-terminals">Module 05 — Terminals</a></li>
+      <li><a href="#m-gates">Module 06 — Gates</a></li>
+      <li><a href="#m-stands">Module 07 — Stands</a></li>
+      <li><a href="#m-runways">Module 08 — Runways</a></li>
+      <li><a href="#m-belts">Module 09 — Baggage Belts</a></li>
+      <li><a href="#m-desks">Module 10 — Check-in Desks</a></li>
+      <li><a href="#m-gh">Module 11 — Ground Handlers</a></li>
+      <li><a href="#m-delay">Module 12 — Delay Codes</a></li>
+      <li><a href="#m-tenants">Module 13 — Tenants</a></li>
+      <li><a href="#m-users">Module 14 — Users</a></li>
+      <li><a href="#m-ref">Quick Reference — All Modules</a></li>
+    </ol>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════════════
+       SECTION 1 — LOGIN
+  ══════════════════════════════════════════════════════════════ -->
+  <div class="section" id="s1">
+    <div class="section-label"><span class="dot"></span> Section 01</div>
+    <h2>Logging In</h2>
+    <p class="intro">The login page is the first screen you see when you visit the portal URL. You need a valid username (or email) and password to access the system.</p>
+
+    <!-- Step 1 -->
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">1</div>
+        <div class="step-title">Open the portal URL in your browser</div>
+        <div class="step-desc">You will see the split login screen</div>
+      </div>
+      <div class="step-body">
+        <div class="mockup-window">
+          <div class="window-bar">
+            <div class="window-dot" style="background:#FF5F57"></div>
+            <div class="window-dot" style="background:#FEBC2E"></div>
+            <div class="window-dot" style="background:#28C840"></div>
+            <div class="window-url">https://adnexx.yourdomain.com/login</div>
+          </div>
+          <div class="login-frame">
+            <!-- Left branding -->
+            <div class="login-left">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:28px;">
+                <div style="width:36px;height:36px;border-radius:8px;background:var(--blue);display:flex;align-items:center;justify-content:center;">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+                </div>
+                <div>
+                  <div style="font-size:9px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.1em;font-family:'IBM Plex Mono',monospace;">ADNexx Platform</div>
+                  <div style="font-size:12px;font-weight:600;color:var(--text-1);">Airport Operations Database</div>
+                </div>
+              </div>
+              <div style="font-family:'Syne',sans-serif;font-size:30px;font-weight:800;line-height:1.1;color:var(--text-1);margin-bottom:6px;">Airport<br/><span style="color:var(--blue)">Operations</span><br/>Control Platform</div>
+              <p style="font-size:12px;color:var(--text-3);margin-top:14px;max-width:260px;line-height:1.7;">Real-time management of gates, stands, terminals, and runways.</p>
+              <div style="margin-top:20px;display:flex;flex-direction:column;gap:9px;">
+                <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);"><span style="width:6px;height:6px;border-radius:50%;background:var(--blue);display:inline-block;flex-shrink:0"></span><strong>Smart Resource Allocation</strong></div>
+                <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);"><span style="width:6px;height:6px;border-radius:50%;background:var(--blue);display:inline-block;flex-shrink:0"></span><strong>Conflict Detection Engine</strong></div>
+                <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);"><span style="width:6px;height:6px;border-radius:50%;background:var(--blue);display:inline-block;flex-shrink:0"></span><strong>Operational Timeline View</strong></div>
+              </div>
+            </div>
+            <!-- Right login form -->
+            <div class="login-right" style="position:relative;">
+              <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:var(--text-1);margin-bottom:22px;">Sign in</div>
+              <div class="form-group" style="margin-bottom:14px;">
+                <label>Username / Email</label>
+                <input class="form-input filled" readonly value="admin@airport.com" style="width:100%" />
+              </div>
+              <div class="form-group" style="margin-bottom:20px;position:relative;">
+                <label>Password</label>
+                <div style="position:relative;">
+                  <input class="form-input" type="password" readonly value="password" style="width:100%;padding-right:36px;" />
+                  <span style="position:absolute;right:10px;top:50%;transform:translateY(-50%);color:var(--text-3);font-size:14px;cursor:pointer;">👁</span>
+                </div>
+              </div>
+              <button class="btn btn-primary" style="width:100%;justify-content:center;padding:10px;font-size:13px;">Sign In</button>
+              <!-- Callout 1 -->
+              <div class="callout" style="top:38px;right:-11px;">1</div>
+              <!-- Callout 2 -->
+              <div class="callout" style="top:90px;right:-11px;">2</div>
+              <!-- Callout 3 -->
+              <div class="callout" style="top:150px;right:-11px;">3</div>
+            </div>
+          </div>
+        </div>
+        <ul class="inst-list">
+          <li><div class="inst-num">1</div><div>Enter your <strong>username or email address</strong> in the first field (e.g., admin@airport.com).</div></li>
+          <li><div class="inst-num">2</div><div>Enter your <strong>password</strong> in the second field. Click the 👁 eye icon to show/hide the password text.</div></li>
+          <li><div class="inst-num">3</div><div>Click the <strong>"Sign In"</strong> button. You will be redirected to the Dashboard on success.</div></li>
+        </ul>
+        <div class="warn-box"><strong>⚠ If login fails:</strong> Check that CAPS LOCK is off. Passwords are case-sensitive. Contact your system administrator if your account is locked.</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════════════
+       SECTION 2 — DASHBOARD
+  ══════════════════════════════════════════════════════════════ -->
+  <div class="section" id="s2">
+    <div class="section-label"><span class="dot"></span> Section 02</div>
+    <h2>Dashboard Overview</h2>
+    <p class="intro">After login you land on the Dashboard — the home screen showing all available data modules and their current record counts.</p>
+
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">1</div>
+        <div class="step-title">The Dashboard after login</div>
+        <div class="step-desc">All modules are visible as clickable cards</div>
+      </div>
+      <div class="step-body">
+        <div class="mockup-window">
+          <div class="window-bar">
+            <div class="window-dot" style="background:#FF5F57"></div>
+            <div class="window-dot" style="background:#FEBC2E"></div>
+            <div class="window-dot" style="background:#28C840"></div>
+            <div class="window-url">https://adnexx.yourdomain.com/admin</div>
+          </div>
+          <div class="portal-frame">
+            <div class="p-sidebar" style="width:160px;">
+              <div class="p-sidebar-logo">
+                <div class="p-sidebar-logo-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="12" rx="10" ry="10"/><path d="M12 2v20M2 12h20"/></svg></div>
+                <div class="p-sidebar-logo-text"><div class="name">ADNexx</div><div class="sub">Master Data</div></div>
+              </div>
+              <div style="padding:8px 8px;flex:1;">
+                <div class="nav-section-label">Overview</div>
+                <div class="nav-item active">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                  Dashboard
+                </div>
+                <div class="nav-section-label" style="margin-top:8px;">Reference Data</div>
+                <div class="nav-item">✈ Airlines</div>
+                <div class="nav-item">🌐 Airports</div>
+                <div class="nav-section-label" style="margin-top:8px;">Infrastructure</div>
+                <div class="nav-item">🏢 Terminals</div>
+                <div class="nav-item">🚪 Gates</div>
+                <div class="nav-section-label" style="margin-top:8px;">System</div>
+                <div class="nav-item">👤 Users</div>
+              </div>
+            </div>
+            <div class="p-content" style="padding:18px;">
+              <div style="font-family:'Syne',sans-serif;font-size:17px;font-weight:700;color:var(--text-1);margin-bottom:4px;">Master Data Administration</div>
+              <div style="font-size:11px;color:var(--text-3);margin-bottom:14px;">Manage all reference and configuration data for the AODB platform</div>
+              <div class="info-banner" style="position:relative;">
+                <div class="dot"></div>
+                <div><strong style="color:var(--blue-lt);">Master Data — Stage 1</strong><br/>All entities below feed into the AODB operational database. Changes propagate to FIDS, RMS, and Slot applications in real-time.</div>
+                <div class="callout" style="top:-10px;right:-10px;position:absolute;">1</div>
+              </div>
+              <div class="dash-grid" style="grid-template-columns:repeat(4,1fr);">
+                <div class="master-card" style="position:relative;">
+                  <div class="mc-icon" style="background:rgba(30,58,138,0.1);">✈</div>
+                  <div class="mc-count" style="color:var(--blue);">142</div>
+                  <div class="mc-label">Airlines</div>
+                  <div class="mc-desc">IATA/ICAO, types, alliances</div>
+                  <div class="callout" style="top:-10px;right:-10px;position:absolute;">2</div>
+                </div>
+                <div class="master-card">
+                  <div class="mc-icon" style="background:rgba(14,165,233,0.1);">🌐</div>
+                  <div class="mc-count" style="color:var(--cyan);">87</div>
+                  <div class="mc-label">Airports</div>
+                  <div class="mc-desc">Codes, timezone, coordinates</div>
+                </div>
+                <div class="master-card">
+                  <div class="mc-icon" style="background:rgba(124,58,237,0.1);">⚙</div>
+                  <div class="mc-count" style="color:var(--violet);">234</div>
+                  <div class="mc-label">Aircraft Types</div>
+                  <div class="mc-desc">Dimensions, wake category</div>
+                </div>
+                <div class="master-card">
+                  <div class="mc-icon" style="background:rgba(22,163,74,0.1);">🏢</div>
+                  <div class="mc-count" style="color:var(--green);">18</div>
+                  <div class="mc-label">Terminals</div>
+                  <div class="mc-desc">Terminal buildings, capacity</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <ul class="inst-list">
+          <li><div class="inst-num">1</div><div>The <strong>blue information banner</strong> at the top is a reminder that all changes here are live and affect other airport systems.</div></li>
+          <li><div class="inst-num">2</div><div>Each <strong>coloured card</strong> shows a module name and the current number of records. Click any card to open that module.</div></li>
+          <li><div class="inst-num">3</div><div>You can also navigate using the <strong>left sidebar</strong> — the menu is organised into sections: Overview, Reference Data, Infrastructure, Operations, System.</div></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════════════
+       SECTION 3 — NAVIGATION
+  ══════════════════════════════════════════════════════════════ -->
+  <div class="section" id="s3">
+    <div class="section-label"><span class="dot"></span> Section 03</div>
+    <h2>Navigating the Portal</h2>
+    <p class="intro">The sidebar on the left is your main navigation tool. It groups all modules by category and shows your current page highlighted in blue.</p>
+
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">1</div>
+        <div class="step-title">The left sidebar — expanded and collapsed states</div>
+      </div>
+      <div class="step-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <!-- Expanded sidebar -->
+          <div>
+            <div style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;font-family:'IBM Plex Mono',monospace;">Expanded (default)</div>
+            <div style="background:#fff;border:1px solid var(--border);border-radius:9px;overflow:hidden;width:180px;">
+              <div class="p-sidebar-logo">
+                <div class="p-sidebar-logo-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="12" rx="10" ry="10"/><path d="M12 2v20M2 12h20"/></svg></div>
+                <div class="p-sidebar-logo-text"><div class="name">ADNexx</div><div class="sub">Master Data</div></div>
+                <span style="margin-left:auto;color:var(--text-3);font-size:13px;cursor:pointer;">‹</span>
+              </div>
+              <div style="padding:8px;">
+                <div class="nav-section-label">Overview</div>
+                <div class="nav-item active">⊞ Dashboard</div>
+                <div class="nav-section-label" style="margin-top:6px;">Reference Data</div>
+                <div class="nav-item">✈ Airlines</div>
+                <div class="nav-item">🌐 Airports</div>
+                <div class="nav-item">⚙ Aircraft Types</div>
+                <div class="nav-item">🏳 Countries</div>
+                <div class="nav-section-label" style="margin-top:6px;">Infrastructure</div>
+                <div class="nav-item">🏢 Terminals</div>
+                <div class="nav-item">🚪 Gates</div>
+                <div class="nav-item">🅿 Stands</div>
+                <div class="nav-section-label" style="margin-top:6px;">Operations</div>
+                <div class="nav-item">🚛 Ground Handlers</div>
+                <div class="nav-item">⚠ Delay Codes</div>
+                <div class="nav-section-label" style="margin-top:6px;">System</div>
+                <div class="nav-item">👤 Users</div>
+                <div class="nav-item">🔐 Tenants</div>
+              </div>
+              <div style="padding:8px;border-top:1px solid var(--border);">
+                <div style="padding:4px 8px;font-size:11px;font-weight:600;color:var(--text-2);">Jane Admin</div>
+                <div style="padding:0 8px 6px;font-size:9px;color:var(--text-3);font-family:'IBM Plex Mono',monospace;text-transform:uppercase;">ADMIN</div>
+                <div class="nav-item" style="color:var(--red);">🚪 Logout</div>
+              </div>
+            </div>
+          </div>
+          <!-- Collapsed sidebar -->
+          <div>
+            <div style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;font-family:'IBM Plex Mono',monospace;">Collapsed (click ‹ to collapse)</div>
+            <div style="background:#fff;border:1px solid var(--border);border-radius:9px;overflow:hidden;width:52px;">
+              <div style="height:52px;display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--border);">
+                <div class="p-sidebar-logo-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="12" rx="10" ry="10"/><path d="M12 2v20M2 12h20"/></svg></div>
+              </div>
+              <div style="padding:6px 4px;display:flex;flex-direction:column;align-items:center;gap:4px;">
+                <div style="width:36px;height:28px;border-radius:6px;background:rgba(30,58,138,0.08);display:flex;align-items:center;justify-content:center;font-size:13px;">⊞</div>
+                <div style="width:36px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;">✈</div>
+                <div style="width:36px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;">🌐</div>
+                <div style="width:36px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;">🏢</div>
+                <div style="width:36px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;">👤</div>
+              </div>
+            </div>
+            <div class="tip-box" style="margin-top:12px;max-width:260px;"><strong>Tip:</strong> Hover over a collapsed icon to see a tooltip with the module name. Click the icon to navigate.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════════════
+       SECTION 4 — SEARCHING
+  ══════════════════════════════════════════════════════════════ -->
+  <div class="section" id="s4">
+    <div class="section-label"><span class="dot"></span> Section 04</div>
+    <h2>Searching for Records</h2>
+    <p class="intro">Every module has a live search box that filters the table as you type. No need to press Enter.</p>
+
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">1</div>
+        <div class="step-title">Using the search box to filter records</div>
+        <div class="step-desc">Example: Airlines module</div>
+      </div>
+      <div class="step-body">
+        <div class="mockup-window">
+          <div class="window-bar">
+            <div class="window-dot" style="background:#FF5F57"></div>
+            <div class="window-dot" style="background:#FEBC2E"></div>
+            <div class="window-dot" style="background:#28C840"></div>
+            <div class="window-url">https://adnexx.yourdomain.com/admin/airlines</div>
+          </div>
+          <div class="portal-frame">
+            <div class="p-sidebar" style="width:56px;padding:6px 4px;">
+              <div style="height:52px;display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--border);margin:-6px -4px 6px;padding:6px 4px;">
+                <div class="p-sidebar-logo-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="12" rx="10" ry="10"/><path d="M12 2v20M2 12h20"/></svg></div>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding-top:4px;">
+                <div style="width:36px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;">⊞</div>
+                <div style="width:36px;height:28px;border-radius:6px;background:rgba(30,58,138,0.08);display:flex;align-items:center;justify-content:center;font-size:13px;">✈</div>
+                <div style="width:36px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;">🌐</div>
+              </div>
+            </div>
+            <div class="p-content">
+              <div class="page-hdr">
+                <div class="page-hdr-left">
+                  <div class="page-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
+                  <div><div class="page-title">Airlines</div><div class="page-subtitle">Manage airline reference data — IATA/ICAO codes, types, alliances</div></div>
+                </div>
+                <div class="page-hdr-right">
+                  <button class="btn btn-ghost btn-sm">⬇ Template</button>
+                  <button class="btn btn-ghost btn-sm">⬆ Bulk Upload</button>
+                  <button class="btn btn-primary btn-sm">＋ Add Airline</button>
+                </div>
+              </div>
+              <div class="stats-row">
+                <div class="stat-box"><div class="stat-val">142</div><div class="stat-lbl">Total</div></div>
+                <div class="stat-box"><div class="stat-val" style="color:var(--blue);">5</div><div class="stat-lbl">Types</div></div>
+                <div class="stat-box"><div class="stat-val" style="color:var(--violet);">3</div><div class="stat-lbl">Alliances</div></div>
+                <div class="stat-box"><div class="stat-val" style="color:var(--amber);">4</div><div class="stat-lbl">Categories</div></div>
+              </div>
+              <div class="toolbar" style="position:relative;">
+                <div class="search-box" style="border-color:var(--blue);box-shadow:0 0 0 3px rgba(30,58,138,0.1);">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  <span style="font-size:12px;color:var(--text-1);">Air India</span>
+                  <span style="font-size:10px;color:var(--text-3);margin-left:auto;">× clear</span>
+                </div>
+                <button class="btn btn-ghost btn-sm">↻ Refresh</button>
+                <div class="callout" style="top:-10px;left:60px;position:absolute;">1</div>
+              </div>
+              <table class="data-table">
+                <thead><tr><th>IATA/ICAO</th><th>Airline Name</th><th>Type</th><th>Alliance</th><th>Country</th><th style="text-align:right">Actions</th></tr></thead>
+                <tbody>
+                  <tr style="background:rgba(30,58,138,0.03);">
+                    <td><span style="font-family:'IBM Plex Mono',monospace;font-weight:700;color:var(--blue);">AI</span><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text-3);margin-left:6px;">AIC</span></td>
+                    <td><strong>Air India</strong></td>
+                    <td><span class="badge badge-blue">FULL SERVICE</span></td>
+                    <td>Star Alliance</td>
+                    <td>India</td>
+                    <td style="text-align:right;"><span class="action-btn">✏</span></td>
+                  </tr>
+                  <tr>
+                    <td><span style="font-family:'IBM Plex Mono',monospace;font-weight:700;color:var(--blue);">AI2</span><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text-3);margin-left:6px;">AX2</span></td>
+                    <td><strong>Air India Express</strong></td>
+                    <td><span class="badge badge-amber">LOW COST</span></td>
+                    <td>—</td>
+                    <td>India</td>
+                    <td style="text-align:right;"><span class="action-btn">✏</span></td>
+                  </tr>
+                </tbody>
+              </table>
+              <div style="font-size:11px;color:var(--text-3);margin-top:8px;font-family:'IBM Plex Mono',monospace;">2 results matching "Air India"</div>
+            </div>
+          </div>
+        </div>
+        <ul class="inst-list">
+          <li><div class="inst-num">1</div><div>Click the <strong>Search box</strong> and start typing any keyword (airline name, IATA code, country). The table filters <em>instantly</em>.</div></li>
+          <li><div class="inst-num">2</div><div>To <strong>clear the search</strong>, click the "× clear" link inside the search box, or simply delete the typed text.</div></li>
+          <li><div class="inst-num">3</div><div>The small text below the table shows <strong>how many results</strong> match your search term.</div></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════════════
+       SECTION 5 — ADDING A NEW RECORD
+  ══════════════════════════════════════════════════════════════ -->
+  <div class="section" id="s5">
+    <div class="section-label"><span class="dot"></span> Section 05</div>
+    <h2>Adding a New Record</h2>
+    <p class="intro">Click the "Add" button to open the form panel. Fill in the required fields (marked with a red *) and click Save.</p>
+
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">1</div>
+        <div class="step-title">Click "Add Airline" to open the form</div>
+      </div>
+      <div class="step-body">
+        <div class="mockup-window">
+          <div class="window-bar">
+            <div class="window-dot" style="background:#FF5F57"></div>
+            <div class="window-dot" style="background:#FEBC2E"></div>
+            <div class="window-dot" style="background:#28C840"></div>
+            <div class="window-url">https://adnexx.yourdomain.com/admin/airlines</div>
+          </div>
+          <div style="background:var(--bg);padding:18px;position:relative;">
+            <div style="display:flex;justify-content:flex-end;gap:8px;margin-bottom:16px;position:relative;">
+              <button class="btn btn-ghost btn-sm">⬇ Template</button>
+              <button class="btn btn-ghost btn-sm">⬆ Bulk Upload</button>
+              <button class="btn btn-primary btn-sm" style="box-shadow:0 0 0 3px rgba(30,58,138,0.25);">＋ Add Airline</button>
+              <div class="callout" style="top:-10px;right:-8px;position:absolute;">1</div>
+            </div>
+            <div class="modal-overlay" style="background:rgba(10,20,60,0.25);border-radius:8px;">
+              <div class="modal">
+                <div class="modal-header">
+                  <div style="width:8px;height:8px;border-radius:50%;background:var(--blue);"></div>
+                  <h3>New Airline</h3>
+                  <div style="font-size:11px;color:var(--text-3);margin-left:6px;">Create a new airline record</div>
+                  <div class="modal-close">×</div>
+                </div>
+                <div class="modal-body">
+                  <div class="form-section-title">Identity</div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label>IATA Code <div class="form-hint" style="display:inline">2-letter code e.g. AI</div></label>
+                      <input class="form-input filled" value="EK" readonly />
+                    </div>
+                    <div class="form-group">
+                      <label>ICAO Code <div class="form-hint" style="display:inline">3-letter code e.g. UAE</div></label>
+                      <input class="form-input filled" value="UAE" readonly />
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label>Airline Name <span class="req">*</span></label>
+                      <input class="form-input filled" value="Emirates" readonly />
+                      <div class="form-hint">Required — full official name</div>
+                    </div>
+                    <div class="form-group">
+                      <label>Country</label>
+                      <input class="form-input filled" value="United Arab Emirates" readonly />
+                    </div>
+                  </div>
+                  <div class="form-section-title" style="margin-top:14px;">Classification</div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label>Airline Type</label>
+                      <select class="form-input" style="appearance:auto;"><option>FULL_SERVICE</option></select>
+                    </div>
+                    <div class="form-group">
+                      <label>Alliance</label>
+                      <select class="form-input" style="appearance:auto;"><option>—</option><option selected>—</option></select>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button class="btn btn-ghost btn-sm">Cancel</button>
+                  <button class="btn btn-primary btn-sm" style="position:relative;">
+                    Save Airline
+                    <div class="callout" style="top:-10px;right:-10px;position:absolute;">2</div>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <ul class="inst-list">
+          <li><div class="inst-num">1</div><div>Click the blue <strong>"Add [Module]"</strong> button in the top-right of the module page to open the form panel.</div></li>
+          <li><div class="inst-num">2</div><div>Fill in all required fields (marked <span style="color:var(--red);font-weight:700;">*</span>). Optional fields can be left blank.</div></li>
+          <li><div class="inst-num">3</div><div>Click the <strong>"Save"</strong> button at the bottom-right of the form. The panel closes and the table updates automatically.</div></li>
+        </ul>
+        <div class="success-box">✅ After a successful save, a <strong>green notification</strong> appears at the top of the screen with a confirmation message (e.g., "Airline Created — Emirates has been added").</div>
+        <div class="tip-box" style="margin-top:10px;"><strong>Tip:</strong> Fields with small hint text below them (e.g., "2-letter code e.g. AI") guide you on the correct format to enter.</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════════════
+       SECTION 6 — EDITING A RECORD
+  ══════════════════════════════════════════════════════════════ -->
+  <div class="section" id="s6">
+    <div class="section-label"><span class="dot"></span> Section 06</div>
+    <h2>Editing a Record</h2>
+    <p class="intro">Click the pencil icon on any row to open its edit form, pre-filled with the existing data.</p>
+
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">1</div>
+        <div class="step-title">Click the ✏ pencil icon to edit a row</div>
+      </div>
+      <div class="step-body">
+        <div class="mockup-window">
+          <div class="window-bar">
+            <div class="window-dot" style="background:#FF5F57"></div>
+            <div class="window-dot" style="background:#FEBC2E"></div>
+            <div class="window-dot" style="background:#28C840"></div>
+            <div class="window-url">https://adnexx.yourdomain.com/admin/airlines</div>
+          </div>
+          <div style="background:var(--bg);padding:18px;">
+            <table class="data-table">
+              <thead><tr><th>IATA/ICAO</th><th>Airline Name</th><th>Type</th><th>Country</th><th>Status</th><th style="text-align:right">Actions</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><span style="font-family:'IBM Plex Mono',monospace;font-weight:700;color:var(--blue);">AI</span></td>
+                  <td><strong>Air India</strong></td>
+                  <td><span class="badge badge-blue">FULL SERVICE</span></td>
+                  <td>India</td>
+                  <td><span class="badge badge-green">Active</span></td>
+                  <td style="text-align:right;">
+                    <div style="display:flex;gap:4px;justify-content:flex-end;align-items:center;position:relative;">
+                      <span class="toggle"><span class="toggle-on">⏩</span></span>
+                      <span class="action-btn" style="background:rgba(30,58,138,0.08);border-color:rgba(30,58,138,0.2);color:var(--blue);">✏</span>
+                      <div class="callout" style="top:-12px;right:-10px;position:absolute;">1</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span style="font-family:'IBM Plex Mono',monospace;font-weight:700;color:var(--blue);">EK</span></td>
+                  <td><strong>Emirates</strong></td>
+                  <td><span class="badge badge-blue">FULL SERVICE</span></td>
+                  <td>UAE</td>
+                  <td><span class="badge badge-green">Active</span></td>
+                  <td style="text-align:right;">
+                    <div style="display:flex;gap:4px;justify-content:flex-end;align-items:center;">
+                      <span class="toggle"><span class="toggle-on">⏩</span></span>
+                      <span class="action-btn">✏</span>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <ul class="inst-list">
+          <li><div class="inst-num">1</div><div>Find the row you want to edit. Click the <strong>✏ pencil icon</strong> in the Actions column on the right.</div></li>
+          <li><div class="inst-num">2</div><div>The form panel opens, pre-filled with all the existing values for that record.</div></li>
+          <li><div class="inst-num">3</div><div>Change only the fields you need to update, then click <strong>Save</strong>.</div></li>
+        </ul>
+        <div class="tip-box"><strong>Note:</strong> The record's internal ID cannot be changed. Only the data fields shown in the form can be edited.</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════════════
+       SECTION 7 — ACTIVATE / DEACTIVATE
+  ══════════════════════════════════════════════════════════════ -->
+  <div class="section" id="s7">
+    <div class="section-label"><span class="dot"></span> Section 07</div>
+    <h2>Activating / Deactivating a Record</h2>
+    <p class="intro">Records can be toggled Active or Inactive without being deleted. This is useful for temporary closures (e.g., a gate under maintenance).</p>
+
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">1</div>
+        <div class="step-title">Using the toggle switch in the Actions column</div>
+      </div>
+      <div class="step-body">
+        <div class="mockup-window">
+          <div class="window-bar">
+            <div class="window-dot" style="background:#FF5F57"></div>
+            <div class="window-dot" style="background:#FEBC2E"></div>
+            <div class="window-dot" style="background:#28C840"></div>
+            <div class="window-url">https://adnexx.yourdomain.com/admin/gates</div>
+          </div>
+          <div style="background:var(--bg);padding:18px;">
+            <table class="data-table">
+              <thead><tr><th>Gate</th><th>Terminal</th><th>Type</th><th>Boarding Bridge</th><th>Status</th><th style="text-align:right">Actions</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><span class="badge badge-blue">A1</span></td>
+                  <td>T3</td>
+                  <td>International</td>
+                  <td><span class="badge badge-green">Yes</span></td>
+                  <td><span class="badge badge-green">Active</span></td>
+                  <td style="text-align:right;">
+                    <div style="display:flex;gap:4px;justify-content:flex-end;align-items:center;position:relative;">
+                      <span title="Deactivate" style="color:var(--green);font-size:17px;cursor:pointer;">⏩</span>
+                      <span class="action-btn">✏</span>
+                      <div class="callout" style="top:-12px;right:-10px;position:absolute;">1</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr style="opacity:0.65;">
+                  <td><span class="badge badge-slate">B5</span></td>
+                  <td>T2</td>
+                  <td>Domestic</td>
+                  <td><span class="badge badge-slate">No</span></td>
+                  <td><span class="badge badge-slate">Inactive</span></td>
+                  <td style="text-align:right;">
+                    <div style="display:flex;gap:4px;justify-content:flex-end;align-items:center;position:relative;">
+                      <span title="Activate" style="color:var(--text-3);font-size:17px;cursor:pointer;">⏪</span>
+                      <span class="action-btn">✏</span>
+                      <div class="callout" style="top:-12px;right:-10px;position:absolute;">2</div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div style="display:flex;gap:16px;margin-top:14px;align-items:flex-start;">
+              <div class="toast"><div class="toast-dot" style="background:var(--green);"></div><div><div class="toast-title">Status Updated</div><div class="toast-msg">Gate B5 is now active</div></div></div>
+            </div>
+          </div>
+        </div>
+        <ul class="inst-list">
+          <li><div class="inst-num">1</div><div>A <strong>green ⏩ toggle</strong> means the record is currently <strong>Active</strong>. Click it to deactivate the record. The badge changes to grey "Inactive".</div></li>
+          <li><div class="inst-num">2</div><div>A <strong>grey ⏪ toggle</strong> means the record is currently <strong>Inactive</strong>. Click it to reactivate the record.</div></li>
+          <li><div class="inst-num">3</div><div>A <strong>confirmation notification</strong> appears at the bottom of the screen confirming the status change.</div></li>
+        </ul>
+        <div class="warn-box"><strong>⚠ Important:</strong> Deactivated records are hidden from operational systems (FIDS, RMS). Only deactivate a record when it is genuinely not in service.</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════════════
+       SECTION 8 — DOWNLOAD CSV TEMPLATE
+  ══════════════════════════════════════════════════════════════ -->
+  <div class="section" id="s8">
+    <div class="section-label"><span class="dot"></span> Section 08</div>
+    <h2>Downloading a CSV Template</h2>
+    <p class="intro">Before bulk uploading, always download the official template for that module to ensure your file has the correct column headers and format.</p>
+
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">1</div>
+        <div class="step-title">Click the "Template" button to download the CSV file</div>
+      </div>
+      <div class="step-body">
+        <div class="mockup-window">
+          <div class="window-bar">
+            <div class="window-dot" style="background:#FF5F57"></div>
+            <div class="window-dot" style="background:#FEBC2E"></div>
+            <div class="window-dot" style="background:#28C840"></div>
+            <div class="window-url">https://adnexx.yourdomain.com/admin/airports</div>
+          </div>
+          <div style="background:var(--bg);padding:18px;">
+            <div style="display:flex;justify-content:flex-end;gap:8px;margin-bottom:16px;align-items:center;position:relative;">
+              <button class="btn btn-ghost btn-sm" style="border-color:rgba(30,58,138,0.3);color:var(--blue);box-shadow:0 0 0 3px rgba(30,58,138,0.1);">
+                ⬇ &nbsp;Template
+              </button>
+              <button class="btn btn-ghost btn-sm">⬆ Bulk Upload</button>
+              <button class="btn btn-primary btn-sm">＋ Add Airport</button>
+              <div class="callout" style="top:-10px;left:0px;position:absolute;">1</div>
+            </div>
+            <!-- Download dialog mockup -->
+            <div style="background:#fff;border:1px solid var(--border);border-radius:9px;padding:16px;max-width:380px;box-shadow:0 8px 28px rgba(0,0,0,0.1);margin:0 auto;">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+                <span style="font-size:28px;">📄</span>
+                <div>
+                  <div style="font-size:13px;font-weight:700;color:var(--text-1);">airports.csv</div>
+                  <div style="font-size:11px;color:var(--text-3);">CSV template · 2 example rows</div>
+                </div>
+              </div>
+              <div style="background:#F8FAFC;border:1px solid var(--border);border-radius:6px;padding:10px 12px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--text-2);overflow-x:auto;white-space:nowrap;">
+                iataCode,icaoCode,name,cityName,country,type,...<br/>
+                DEL,VIDP,Indira Gandhi Intl,New Delhi,India,INTERNATIONAL,...<br/>
+                BOM,VABB,CSMI Airport,Mumbai,India,INTERNATIONAL,...
+              </div>
+              <div style="margin-top:12px;display:flex;gap:8px;">
+                <button class="btn btn-primary btn-sm" style="flex:1;justify-content:center;">⬇ Download File</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <ul class="inst-list">
+          <li><div class="inst-num">1</div><div>Click the <strong>"⬇ Template"</strong> button in the top-right of any module page. Your browser automatically downloads a <code>.csv</code> file.</div></li>
+          <li><div class="inst-num">2</div><div>Open the file in <strong>Microsoft Excel</strong> or <strong>Google Sheets</strong>. The first row contains column headers — <em>do not delete or rename them</em>.</div></li>
+          <li><div class="inst-num">3</div><div>The next rows are <strong>example data</strong> showing the correct format. Replace them with your real data.</div></li>
+          <li><div class="inst-num">4</div><div>Save the file in <strong>CSV format</strong> (.csv) before uploading. Do not save as .xlsx.</div></li>
+        </ul>
+        <div class="warn-box"><strong>⚠ Critical rule:</strong> Never change the column header row (row 1). If headers are missing or renamed, the bulk upload will fail.</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════════════
+       SECTION 9 — BULK UPLOAD
+  ══════════════════════════════════════════════════════════════ -->
+  <div class="section" id="s9">
+    <div class="section-label"><span class="dot"></span> Section 09</div>
+    <h2>Bulk Upload via CSV</h2>
+    <p class="intro">Upload many records at once by selecting your prepared CSV file. Available to ADMIN users only.</p>
+
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">1</div>
+        <div class="step-title">Click "Bulk Upload" and select your CSV file</div>
+      </div>
+      <div class="step-body">
+        <div class="mockup-window">
+          <div class="window-bar">
+            <div class="window-dot" style="background:#FF5F57"></div>
+            <div class="window-dot" style="background:#FEBC2E"></div>
+            <div class="window-dot" style="background:#28C840"></div>
+            <div class="window-url">https://adnexx.yourdomain.com/admin/airlines</div>
+          </div>
+          <div style="background:var(--bg);padding:18px;">
+            <!-- Before upload -->
+            <div style="margin-bottom:20px;">
+              <div style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;font-family:'IBM Plex Mono',monospace;">Step A — Click Bulk Upload button</div>
+              <div style="display:flex;justify-content:flex-end;gap:8px;align-items:center;position:relative;">
+                <button class="btn btn-ghost btn-sm">⬇ Template</button>
+                <button class="btn btn-ghost btn-sm" style="border-color:rgba(30,58,138,0.3);color:var(--blue);box-shadow:0 0 0 3px rgba(30,58,138,0.1);">⬆ Bulk Upload</button>
+                <button class="btn btn-primary btn-sm">＋ Add Airline</button>
+                <div class="callout" style="top:-10px;right:88px;position:absolute;">1</div>
+              </div>
+            </div>
+            <!-- During upload -->
+            <div style="margin-bottom:20px;">
+              <div style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;font-family:'IBM Plex Mono',monospace;">Step B — File is uploading</div>
+              <div style="display:flex;justify-content:flex-end;gap:8px;align-items:center;">
+                <button class="btn btn-ghost btn-sm">⬇ Template</button>
+                <button class="btn btn-ghost btn-sm" style="opacity:.6;cursor:not-allowed;">↻ Uploading…</button>
+                <button class="btn btn-primary btn-sm">＋ Add Airline</button>
+              </div>
+              <div style="max-width:220px;margin-left:auto;margin-top:6px;">
+                <div style="font-size:10px;color:var(--text-3);margin-bottom:3px;font-family:'IBM Plex Mono',monospace;">Uploading airlines.csv…</div>
+                <div class="progress-bar"><div class="progress-fill" style="width:65%;"></div></div>
+              </div>
+            </div>
+            <!-- After upload success -->
+            <div>
+              <div style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;font-family:'IBM Plex Mono',monospace;">Step C — Upload complete</div>
+              <div class="toast" style="display:flex;">
+                <div class="toast-dot" style="background:var(--green);"></div>
+                <div>
+                  <div class="toast-title">Bulk Upload Complete</div>
+                  <div class="toast-msg">Airlines CSV uploaded successfully — 24 records imported</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <ul class="inst-list">
+          <li><div class="inst-num">1</div><div>Click the <strong>"⬆ Bulk Upload"</strong> button. A file picker dialog opens.</div></li>
+          <li><div class="inst-num">2</div><div>Select your prepared <strong>.csv file</strong> from your computer and click Open.</div></li>
+          <li><div class="inst-num">3</div><div>The button changes to <strong>"↻ Uploading…"</strong> while processing. Do not close the browser tab.</div></li>
+          <li><div class="inst-num">4</div><div>A <strong>green success notification</strong> confirms the upload and shows how many records were imported. The table refreshes automatically.</div></li>
+        </ul>
+        <div class="warn-box" style="margin-bottom:10px;"><strong>⚠ Upload failed?</strong> Check: (1) Headers were not changed in the CSV. (2) All required fields are filled. (3) Dates are in YYYY-MM-DD format (e.g., 2024-01-15). (4) No duplicate records exist.</div>
+        <div class="tip-box"><strong>Tip:</strong> Always test with a small batch (5–10 rows) before uploading hundreds of records.</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════════════
+       SECTION 10 — MANAGE USERS (ADMIN)
+  ══════════════════════════════════════════════════════════════ -->
+  <div class="section" id="s10">
+    <div class="section-label"><span class="dot"></span> Section 10</div>
+    <h2>Managing Users <span style="font-size:13px;font-family:'IBM Plex Mono',monospace;background:rgba(245,158,11,0.15);color:#92400e;padding:3px 8px;border-radius:5px;margin-left:6px;">Admin Only</span></h2>
+    <p class="intro">The Users module (visible only to ADMINs) lets you create, edit, enable/disable user accounts and assign roles.</p>
+
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">1</div>
+        <div class="step-title">The Users module — overview</div>
+      </div>
+      <div class="step-body">
+        <div class="mockup-window">
+          <div class="window-bar">
+            <div class="window-dot" style="background:#FF5F57"></div>
+            <div class="window-dot" style="background:#FEBC2E"></div>
+            <div class="window-dot" style="background:#28C840"></div>
+            <div class="window-url">https://adnexx.yourdomain.com/admin/users</div>
+          </div>
+          <div style="background:var(--bg);padding:18px;">
+            <div class="page-hdr">
+              <div class="page-hdr-left">
+                <div class="page-icon" style="background:var(--green);">👤</div>
+                <div><div class="page-title">Users</div><div class="page-subtitle">Platform user accounts — roles, access control and authentication</div></div>
+              </div>
+              <div class="page-hdr-right">
+                <button class="btn btn-ghost btn-sm">⬇ Template</button>
+                <button class="btn btn-ghost btn-sm">⬆ Bulk Upload</button>
+                <button class="btn btn-primary btn-sm">＋ Add User</button>
+              </div>
+            </div>
+            <div class="stats-row">
+              <div class="stat-box"><div class="stat-val">12</div><div class="stat-lbl">Total Users</div></div>
+              <div class="stat-box"><div class="stat-val" style="color:var(--green);">10</div><div class="stat-lbl">Active</div></div>
+              <div class="stat-box"><div class="stat-val" style="color:var(--amber);">2</div><div class="stat-lbl">Admins</div></div>
+              <div class="stat-box"><div class="stat-val" style="color:var(--blue);">7</div><div class="stat-lbl">Operators</div></div>
+            </div>
+            <table class="data-table">
+              <thead><tr><th>User</th><th>Email</th><th>Role</th><th>Last Login</th><th>Status</th><th style="text-align:right">Actions</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><div style="font-weight:600;font-size:13px;">Jane Admin</div><div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text-3);">jane_admin</div></td>
+                  <td style="font-size:11px;color:var(--text-2);">jane@airport.com</td>
+                  <td><span class="badge badge-amber role-admin">ADMIN</span></td>
+                  <td style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-3);">17/04/2026</td>
+                  <td><span class="badge badge-green">Active</span></td>
+                  <td style="text-align:right;">
+                    <div style="display:flex;gap:4px;justify-content:flex-end;align-items:center;position:relative;">
+                      <span class="action-btn" title="Reset Password" style="color:var(--amber);">🔑</span>
+                      <span class="toggle-on">⏩</span>
+                      <span class="action-btn">✏</span>
+                      <div class="callout" style="top:-12px;right:-10px;position:absolute;">1</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><div style="font-weight:600;font-size:13px;">Bob Operator</div><div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text-3);">bob_ops</div></td>
+                  <td style="font-size:11px;color:var(--text-2);">bob@airport.com</td>
+                  <td><span class="badge badge-blue role-op">OPERATOR</span></td>
+                  <td style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-3);">15/04/2026</td>
+                  <td><span class="badge badge-green">Active</span></td>
+                  <td style="text-align:right;">
+                    <div style="display:flex;gap:4px;justify-content:flex-end;align-items:center;">
+                      <span class="action-btn" style="color:var(--amber);">🔑</span>
+                      <span class="toggle-on">⏩</span>
+                      <span class="action-btn">✏</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr style="opacity:.6;">
+                  <td><div style="font-weight:600;font-size:13px;">Carol Viewer</div><div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text-3);">carol_v</div></td>
+                  <td style="font-size:11px;color:var(--text-2);">carol@airport.com</td>
+                  <td><span class="badge badge-slate">VIEWER</span></td>
+                  <td style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-3);">Never</td>
+                  <td><span class="badge badge-slate">Inactive</span></td>
+                  <td style="text-align:right;">
+                    <div style="display:flex;gap:4px;justify-content:flex-end;align-items:center;">
+                      <span class="action-btn" style="color:var(--amber);">🔑</span>
+                      <span class="toggle-off">⏪</span>
+                      <span class="action-btn">✏</span>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <ul class="inst-list">
+          <li><div class="inst-num">1</div><div>The <strong>🔑 key icon</strong> opens the Password Reset panel for that user — see Section 11.</div></li>
+          <li><div class="inst-num">2</div><div>The <strong>⏩/⏪ toggle</strong> enables or disables a user's account. Disabled users cannot log in.</div></li>
+          <li><div class="inst-num">3</div><div>The <strong>✏ pencil</strong> opens the Edit User form to change name, email, phone, or role.</div></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Adding a user -->
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">2</div>
+        <div class="step-title">Adding a new user — the form</div>
+      </div>
+      <div class="step-body">
+        <div class="mockup-window">
+          <div class="window-bar">
+            <div class="window-dot" style="background:#FF5F57"></div>
+            <div class="window-dot" style="background:#FEBC2E"></div>
+            <div class="window-dot" style="background:#28C840"></div>
+            <div class="window-url">https://adnexx.yourdomain.com/admin/users</div>
+          </div>
+          <div style="background:var(--bg);padding:18px;">
+            <div class="modal-overlay" style="background:rgba(10,20,60,0.22);border-radius:8px;">
+              <div class="modal">
+                <div class="modal-header">
+                  <div style="width:8px;height:8px;border-radius:50%;background:var(--green);"></div>
+                  <h3>New User</h3>
+                  <div class="modal-close">×</div>
+                </div>
+                <div class="modal-body">
+                  <div class="form-section-title">Account Info</div>
+                  <div class="form-row">
+                    <div class="form-group"><label>First Name <span class="req">*</span></label><input class="form-input filled" value="John" readonly /></div>
+                    <div class="form-group"><label>Last Name <span class="req">*</span></label><input class="form-input filled" value="Smith" readonly /></div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group"><label>Username <span class="req">*</span></label><input class="form-input filled" value="john_smith" readonly /><div class="form-hint">No spaces allowed</div></div>
+                    <div class="form-group"><label>Email <span class="req">*</span></label><input class="form-input filled" type="email" value="john@airport.com" readonly /></div>
+                  </div>
+                  <div class="form-row-1">
+                    <div class="form-group"><label>Phone Number</label><input class="form-input" value="+9876543210" readonly /></div>
+                  </div>
+                  <div class="form-section-title" style="margin-top:12px;">Access Control</div>
+                  <div class="form-group" style="margin-bottom:12px;">
+                    <label>Roles <span class="req">*</span></label>
+                    <div style="display:flex;gap:20px;margin-top:6px;">
+                      <label style="display:flex;align-items:center;gap:6px;font-size:12px;font-family:'IBM Plex Sans',sans-serif;font-weight:400;cursor:pointer;"><input type="checkbox" /> ADMIN</label>
+                      <label style="display:flex;align-items:center;gap:6px;font-size:12px;font-family:'IBM Plex Sans',sans-serif;font-weight:400;cursor:pointer;"><input type="checkbox" checked /> OPERATOR</label>
+                      <label style="display:flex;align-items:center;gap:6px;font-size:12px;font-family:'IBM Plex Sans',sans-serif;font-weight:400;cursor:pointer;"><input type="checkbox" /> VIEWER</label>
+                    </div>
+                    <div class="form-hint" style="margin-top:6px;">Select one or more roles. OPERATOR is the default for new users.</div>
+                  </div>
+                  <div class="form-section-title" style="margin-top:12px;">Password</div>
+                  <div class="form-row">
+                    <div class="form-group"><label>Password <span class="req">*</span></label><input class="form-input" type="password" placeholder="Min. 8 characters" /></div>
+                    <div class="form-group"><label>Confirm Password <span class="req">*</span></label><input class="form-input" type="password" placeholder="Re-enter password" /></div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button class="btn btn-ghost btn-sm">Cancel</button>
+                  <button class="btn btn-primary btn-sm">Save User</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <ul class="inst-list">
+          <li><div class="inst-num">1</div><div>Fill in <strong>First Name, Last Name, Username, and Email</strong> — all required.</div></li>
+          <li><div class="inst-num">2</div><div>Select the appropriate <strong>Role</strong>: ADMIN (full access), OPERATOR (can edit data), or VIEWER (read-only).</div></li>
+          <li><div class="inst-num">3</div><div>Set a <strong>Password</strong> and confirm it. Both fields must match. Password is required for new users.</div></li>
+          <li><div class="inst-num">4</div><div>Click <strong>Save User</strong>. Inform the new user of their username and password separately.</div></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════════════
+       SECTION 11 — RESET PASSWORD
+  ══════════════════════════════════════════════════════════════ -->
+  <div class="section" id="s11">
+    <div class="section-label"><span class="dot"></span> Section 11</div>
+    <h2>Resetting a Password <span style="font-size:13px;font-family:'IBM Plex Mono',monospace;background:rgba(245,158,11,0.15);color:#92400e;padding:3px 8px;border-radius:5px;margin-left:6px;">Admin Only</span></h2>
+    <p class="intro">If a user forgets their password, an administrator can reset it directly from the Users module.</p>
+
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">1</div>
+        <div class="step-title">Click the 🔑 key icon → enter and confirm new password</div>
+      </div>
+      <div class="step-body">
+        <div class="mockup-window">
+          <div class="window-bar">
+            <div class="window-dot" style="background:#FF5F57"></div>
+            <div class="window-dot" style="background:#FEBC2E"></div>
+            <div class="window-dot" style="background:#28C840"></div>
+            <div class="window-url">https://adnexx.yourdomain.com/admin/users</div>
+          </div>
+          <div style="background:var(--bg);padding:18px;">
+            <div class="modal-overlay" style="background:rgba(10,20,60,0.22);border-radius:8px;">
+              <div class="modal" style="max-width:380px;">
+                <div class="modal-header">
+                  <div style="width:8px;height:8px;border-radius:50%;background:var(--amber);"></div>
+                  <h3>Reset Password</h3>
+                  <div style="font-size:11px;color:var(--text-3);margin-left:6px;">Reset password for bob_ops</div>
+                  <div class="modal-close">×</div>
+                </div>
+                <div class="modal-body">
+                  <div class="form-section-title">New Password</div>
+                  <div class="form-row-1" style="margin-bottom:14px;">
+                    <div class="form-group"><label>New Password <span class="req">*</span></label><input class="form-input" type="password" placeholder="Min. 8 characters" /></div>
+                  </div>
+                  <div class="form-row-1">
+                    <div class="form-group"><label>Confirm Password <span class="req">*</span></label><input class="form-input" type="password" placeholder="Re-enter password" /></div>
+                  </div>
+                  <div style="color:var(--red);font-size:11px;margin-top:6px;display:none;">Passwords do not match</div>
+                </div>
+                <div class="modal-footer">
+                  <button class="btn btn-ghost btn-sm">Cancel</button>
+                  <button class="btn btn-primary btn-sm">Reset Password</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <ul class="inst-list">
+          <li><div class="inst-num">1</div><div>In the Users table, click the <strong>🔑 key icon</strong> on the row of the user whose password needs to be reset.</div></li>
+          <li><div class="inst-num">2</div><div>Enter the <strong>New Password</strong> (minimum 8 characters) and re-enter it in the Confirm field.</div></li>
+          <li><div class="inst-num">3</div><div>Click <strong>"Reset Password"</strong>. If the passwords match, the reset is applied immediately.</div></li>
+        </ul>
+        <div class="warn-box"><strong>⚠ Note:</strong> The portal does NOT send email notifications. You must communicate the new password to the user directly and securely.</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════════════
+       SECTION 12 — LOGOUT
+  ══════════════════════════════════════════════════════════════ -->
+  <div class="section" id="s12">
+    <div class="section-label"><span class="dot"></span> Section 12</div>
+    <h2>Logging Out</h2>
+    <p class="intro">Always log out when you have finished using the portal, especially on shared or public computers.</p>
+
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">1</div>
+        <div class="step-title">Click "Logout" at the bottom of the sidebar</div>
+      </div>
+      <div class="step-body">
+        <div style="display:grid;grid-template-columns:200px 1fr;gap:20px;align-items:start;">
+          <div style="background:#fff;border:1px solid var(--border);border-radius:9px;overflow:hidden;">
+            <div class="p-sidebar-logo">
+              <div class="p-sidebar-logo-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="12" rx="10" ry="10"/><path d="M12 2v20M2 12h20"/></svg></div>
+              <div class="p-sidebar-logo-text"><div class="name">ADNexx</div><div class="sub">Master Data</div></div>
+              <span style="margin-left:auto;color:var(--text-3);font-size:13px;">‹</span>
+            </div>
+            <div style="padding:8px;">
+              <div class="nav-section-label">Overview</div>
+              <div class="nav-item">⊞ Dashboard</div>
+              <div class="nav-section-label" style="margin-top:6px;">Reference Data</div>
+              <div class="nav-item">✈ Airlines</div>
+              <div class="nav-item">🌐 Airports</div>
+            </div>
+            <div style="padding:8px;border-top:1px solid var(--border);position:relative;">
+              <div style="padding:4px 8px;font-size:11px;font-weight:600;color:var(--text-2);">Jane Admin</div>
+              <div style="padding:0 8px 6px;font-size:9px;color:var(--text-3);font-family:'IBM Plex Mono',monospace;text-transform:uppercase;">ADMIN</div>
+              <div class="nav-item" style="color:var(--red);background:rgba(220,38,38,0.05);">🚪 Logout</div>
+              <div class="callout" style="top:45px;right:-10px;position:absolute;">1</div>
+            </div>
+          </div>
+          <div>
+            <ul class="inst-list">
+              <li><div class="inst-num">1</div><div>Scroll to the <strong>bottom of the left sidebar</strong> to find the Logout button (🚪 door icon).</div></li>
+              <li><div class="inst-num">2</div><div>Click <strong>"Logout"</strong>. You are immediately redirected to the Login page and your session is cleared.</div></li>
+            </ul>
+            <div class="tip-box" style="margin-top:14px;"><strong>Session behaviour:</strong> The portal uses browser session storage. Your login is automatically cleared when you close the browser tab or window — even without clicking Logout.<br/><br/>On <strong>shared computers</strong>, always click Logout before leaving, as other users may be able to see your session otherwise.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <hr/>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       MODULE REFERENCE — ALL 14 MODULES
+  ══════════════════════════════════════════════════════════════ -->
+  <div style="margin-top:0;">
+    <div class="section-label"><span class="dot"></span> Module Reference</div>
+    <h2 style="font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--text-1);margin-bottom:8px;">All Module Reference Guides</h2>
+    <p style="font-size:14px;color:var(--text-2);max-width:680px;line-height:1.8;margin-bottom:28px;">
+      Below is a complete per-module reference covering table columns, statistics shown, all form fields, and key notes for every data module in the portal.
+    </p>
+  </div>
+
+
+  <!-- ─────────────────────────────────────────────────────────────
+       MODULE 1 — AIRLINES
+  ───────────────────────────────────────────────────────────── -->
+  <div class="section" id="m-airlines">
+    <div class="section-label"><span class="dot"></span> Module 01 · Reference Data</div>
+    <h2>Airlines</h2>
+    <p class="intro">Manage all airline reference data including IATA/ICAO codes, airline types, alliances, and clearing house membership. Used by flight schedules, resource allocation, and billing.</p>
+
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">→</div>
+        <div class="step-title">Table columns &amp; stats</div>
+        <div class="step-desc">Path: Admin › Airlines</div>
+      </div>
+      <div class="step-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:18px;">
+          <div>
+            <div class="form-section-title">Statistics Bar</div>
+            <ul class="inst-list" style="margin-top:0;">
+              <li><div class="inst-num" style="background:var(--text-3);">•</div><div><strong>Total</strong> — total airline records in the system</div></li>
+              <li><div class="inst-num" style="background:var(--text-3);">•</div><div><strong>Types</strong> — distinct airline type values (e.g. FULL_SERVICE, LOW_COST)</div></li>
+              <li><div class="inst-num" style="background:var(--text-3);">•</div><div><strong>Alliances</strong> — distinct alliances present (Star Alliance, Oneworld, SkyTeam)</div></li>
+              <li><div class="inst-num" style="background:var(--text-3);">•</div><div><strong>Categories</strong> — distinct category values (FSC, LCC, CHARTER, CARGO…)</div></li>
+            </ul>
+          </div>
+          <div>
+            <div class="form-section-title">Table Columns</div>
+            <table class="data-table" style="font-size:11.5px;">
+              <thead><tr><th>Column</th><th>What it Shows</th></tr></thead>
+              <tbody>
+                <tr><td><code>IATA / ICAO</code></td><td>2-letter IATA + 3-letter ICAO codes</td></tr>
+                <tr><td><code>Airline Name</code></td><td>Full official airline name</td></tr>
+                <tr><td><code>Type</code></td><td>Badge: FULL_SERVICE, LOW_COST, CARGO…</td></tr>
+                <tr><td><code>Category</code></td><td>Badge: FSC, LCC, CHARTER, CARGO…</td></tr>
+                <tr><td><code>Alliance</code></td><td>Star Alliance / Oneworld / SkyTeam</td></tr>
+                <tr><td><code>Country</code></td><td>Country of registration</td></tr>
+                <tr><td><code>Clearing</code></td><td>Clearing house member: Yes / No badge</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="form-section-title">Add / Edit Form Fields</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div>
+            <div style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;font-family:'IBM Plex Mono',monospace;">Identity section</div>
+            <table class="data-table" style="font-size:11.5px;">
+              <thead><tr><th>Field</th><th>Required</th><th>Notes</th></tr></thead>
+              <tbody>
+                <tr><td>IATA Code</td><td>—</td><td>2-letter code e.g. AI</td></tr>
+                <tr><td>ICAO Code</td><td>—</td><td>3-letter code e.g. AIC</td></tr>
+                <tr><td>Airline Name</td><td><span style="color:var(--red);">✱</span></td><td>Full official name</td></tr>
+                <tr><td>Callsign</td><td>—</td><td>Radio callsign</td></tr>
+                <tr><td>Country</td><td>—</td><td>Free text country name</td></tr>
+                <tr><td>Home Hub Airport</td><td>—</td><td>Primary hub (dropdown)</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div>
+            <div style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;font-family:'IBM Plex Mono',monospace;">Classification section</div>
+            <table class="data-table" style="font-size:11.5px;">
+              <thead><tr><th>Field</th><th>Required</th><th>Options</th></tr></thead>
+              <tbody>
+                <tr><td>Airline Type</td><td>—</td><td>FULL_SERVICE, LOW_COST, LCC, CHARTER, CARGO, REGIONAL, PRIVATE</td></tr>
+                <tr><td>Airline Category</td><td>—</td><td>FSC, LCC, CHARTER, CARGO, REGIONAL, PRIVATE</td></tr>
+                <tr><td>Alliance</td><td>—</td><td>Star Alliance, Oneworld, SkyTeam</td></tr>
+                <tr><td>Terminal Preference</td><td>—</td><td>Preferred terminal code</td></tr>
+                <tr><td>Slot Priority</td><td>—</td><td>Number (1 = highest priority)</td></tr>
+                <tr><td>Clearing House Member</td><td>—</td><td>Checkbox Yes/No</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="tip-box" style="margin-top:12px;"><strong>Search tip:</strong> You can search by airline name, IATA code, or ICAO code.</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ─────────────────────────────────────────────────────────────
+       MODULE 2 — AIRPORTS
+  ───────────────────────────────────────────────────────────── -->
+  <div class="section" id="m-airports">
+    <div class="section-label"><span class="dot"></span> Module 02 · Reference Data</div>
+    <h2>Airports</h2>
+    <p class="intro">Manages airport reference records — IATA/ICAO codes, location coordinates, timezone, slot coordination status, and noise restrictions. Required before adding Terminals, Gates, Stands, or Runways.</p>
+
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">→</div>
+        <div class="step-title">Table columns, stats &amp; form fields</div>
+        <div class="step-desc">Path: Admin › Airports</div>
+      </div>
+      <div class="step-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:18px;">
+          <div>
+            <div class="form-section-title">Statistics Bar</div>
+            <ul class="inst-list" style="margin-top:0;">
+              <li><div class="inst-num" style="background:var(--text-3);">•</div><div><strong>Total</strong> — total airport records</div></li>
+              <li><div class="inst-num" style="background:var(--green);">•</div><div><strong>Active</strong> — airports with status ACTIVE</div></li>
+              <li><div class="inst-num" style="background:var(--blue);">•</div><div><strong>International</strong> — airports with category INTERNATIONAL</div></li>
+              <li><div class="inst-num" style="background:var(--cyan);">•</div><div><strong>Slot Coordinated</strong> — airports with slot coordination enabled</div></li>
+            </ul>
+          </div>
+          <div>
+            <div class="form-section-title">Table Columns</div>
+            <table class="data-table" style="font-size:11.5px;">
+              <thead><tr><th>Column</th><th>What it Shows</th></tr></thead>
+              <tbody>
+                <tr><td>Codes</td><td>IATA (3-letter) + ICAO (4-letter)</td></tr>
+                <tr><td>Airport Name</td><td>Official full name</td></tr>
+                <tr><td>City</td><td>City served</td></tr>
+                <tr><td>Type</td><td>LARGE_HUB, MEDIUM_HUB, SMALL_HUB…</td></tr>
+                <tr><td>Category</td><td>INTERNATIONAL / DOMESTIC / REGIONAL</td></tr>
+                <tr><td>Status</td><td>ACTIVE / RESTRICTED / CLOSED</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="form-section-title">Form Fields (grouped)</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+          <div>
+            <div style="font-size:11px;color:var(--text-3);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;font-family:'IBM Plex Mono',monospace;">Identity</div>
+            <table class="data-table" style="font-size:11px;"><thead><tr><th>Field</th><th>Req</th></tr></thead><tbody>
+              <tr><td>Airport Name</td><td><span style="color:var(--red);">✱</span></td></tr>
+              <tr><td>IATA Code</td><td>—</td></tr>
+              <tr><td>ICAO Code</td><td>—</td></tr>
+              <tr><td>City Name</td><td>—</td></tr>
+              <tr><td>Country</td><td>—</td></tr>
+              <tr><td>ICAO Location Indicator</td><td>—</td></tr>
+            </tbody></table>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--text-3);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;font-family:'IBM Plex Mono',monospace;">Geography &amp; Time</div>
+            <table class="data-table" style="font-size:11px;"><thead><tr><th>Field</th><th>Req</th></tr></thead><tbody>
+              <tr><td>Latitude</td><td>—</td></tr>
+              <tr><td>Longitude</td><td>—</td></tr>
+              <tr><td>Elevation (ft)</td><td>—</td></tr>
+              <tr><td>Timezone (IANA)</td><td>—</td></tr>
+              <tr><td>UTC Offset</td><td>—</td></tr>
+              <tr><td>DST Rule</td><td>—</td></tr>
+            </tbody></table>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--text-3);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;font-family:'IBM Plex Mono',monospace;">Operations</div>
+            <table class="data-table" style="font-size:11px;"><thead><tr><th>Field</th><th>Req</th></tr></thead><tbody>
+              <tr><td>Type</td><td>—</td></tr>
+              <tr><td>Category</td><td>—</td></tr>
+              <tr><td>Operational Status</td><td>—</td></tr>
+              <tr><td>Runway Count</td><td>—</td></tr>
+              <tr><td>Terminal Count</td><td>—</td></tr>
+              <tr><td>Max Movements/hr</td><td>—</td></tr>
+              <tr><td>Slot Coordinated</td><td>—</td></tr>
+              <tr><td>Coordination Level</td><td>—</td></tr>
+              <tr><td>Noise Restriction Level</td><td>—</td></tr>
+              <tr><td>Curfew Start / End</td><td>—</td></tr>
+              <tr><td>A-CDM Enabled</td><td>—</td></tr>
+              <tr><td>AOCC Enabled</td><td>—</td></tr>
+            </tbody></table>
+          </div>
+        </div>
+        <div class="warn-box" style="margin-top:12px;"><strong>Dependency note:</strong> Airports must be created <em>before</em> Terminals, Gates, Stands, Runways, Belts, Checkin Desks, or Ground Handlers that belong to them.</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ─────────────────────────────────────────────────────────────
+       MODULE 3 — AIRCRAFT TYPES
+  ───────────────────────────────────────────────────────────── -->
+  <div class="section" id="m-aircraft">
+    <div class="section-label"><span class="dot"></span> Module 03 · Reference Data</div>
+    <h2>Aircraft Types</h2>
+    <p class="intro">IATA/ICAO aircraft type codes with physical dimensions (wingspan, length, MTOW), wake turbulence category, engine type, and stand compatibility class. Used by the slot and resource engines.</p>
+
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">→</div>
+        <div class="step-title">Table columns, stats &amp; form fields</div>
+        <div class="step-desc">Path: Admin › Aircraft Types</div>
+      </div>
+      <div class="step-body">
+        <div class="mockup-window" style="margin-bottom:16px;">
+          <div class="window-bar">
+            <div class="window-dot" style="background:#FF5F57"></div>
+            <div class="window-dot" style="background:#FEBC2E"></div>
+            <div class="window-dot" style="background:#28C840"></div>
+            <div class="window-url">https://adnexx.yourdomain.com/admin/aircraft-types</div>
+          </div>
+          <div style="padding:16px;background:var(--bg);">
+            <div class="stats-row">
+              <div class="stat-box"><div class="stat-val">234</div><div class="stat-lbl">Total Types</div></div>
+              <div class="stat-box"><div class="stat-val" style="color:var(--blue);">98</div><div class="stat-lbl">Narrow Body</div></div>
+              <div class="stat-box"><div class="stat-val" style="color:var(--violet);">54</div><div class="stat-lbl">Wide Body</div></div>
+              <div class="stat-box"></div>
+            </div>
+            <table class="data-table">
+              <thead><tr><th>IATA/ICAO</th><th>Description</th><th>Body</th><th>Wake</th><th>Engine</th><th>Wingspan</th><th>MTOW</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><strong>738</strong> <span style="color:var(--text-3);font-size:11px;font-family:'IBM Plex Mono',monospace;">B738</span></td>
+                  <td>Boeing 737-800</td>
+                  <td><span class="badge badge-violet">NARROW</span></td>
+                  <td><span class="badge badge-amber">M</span></td>
+                  <td>TURBOFAN</td>
+                  <td>35.8m</td>
+                  <td>79,016 kg</td>
+                </tr>
+                <tr>
+                  <td><strong>77W</strong> <span style="color:var(--text-3);font-size:11px;font-family:'IBM Plex Mono',monospace;">B77W</span></td>
+                  <td>Boeing 777-300ER</td>
+                  <td><span class="badge badge-blue">WIDE</span></td>
+                  <td><span class="badge badge-red" style="background:rgba(220,38,38,.1);color:var(--red);">H</span></td>
+                  <td>TURBOFAN</td>
+                  <td>64.8m</td>
+                  <td>352,441 kg</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div>
+            <div class="form-section-title">Form Fields — Identity</div>
+            <table class="data-table" style="font-size:11.5px;"><thead><tr><th>Field</th><th>Required</th><th>Notes</th></tr></thead><tbody>
+              <tr><td>IATA Code</td><td>—</td><td>3-char code e.g. 738</td></tr>
+              <tr><td>ICAO Code</td><td>—</td><td>4-char code e.g. B738</td></tr>
+              <tr><td>Description</td><td>—</td><td>Full aircraft type name</td></tr>
+              <tr><td>Valid From / To</td><td>—</td><td>Date range for validity</td></tr>
+            </tbody></table>
+          </div>
+          <div>
+            <div class="form-section-title">Form Fields — Physical Specs</div>
+            <table class="data-table" style="font-size:11.5px;"><thead><tr><th>Field</th><th>Required</th><th>Options / Unit</th></tr></thead><tbody>
+              <tr><td>Body Class</td><td>—</td><td>NARROW, WIDE, REGIONAL, TURBOPROP, HELICOPTER, CARGO</td></tr>
+              <tr><td>Wake Category</td><td>—</td><td>L (Light), M (Medium), H (Heavy), J (Super Heavy)</td></tr>
+              <tr><td>Turbulence Category</td><td>—</td><td>LIGHT, MEDIUM, HEAVY, SUPER</td></tr>
+              <tr><td>Engine Type</td><td>—</td><td>TURBOFAN, TURBOPROP, TURBOJET, PISTON, ELECTRIC</td></tr>
+              <tr><td>Engine Count</td><td>—</td><td>Number</td></tr>
+              <tr><td>Wingspan (m)</td><td>—</td><td>Metres</td></tr>
+              <tr><td>Length (m)</td><td>—</td><td>Metres</td></tr>
+              <tr><td>MTOW (kg)</td><td>—</td><td>Max take-off weight, kg</td></tr>
+              <tr><td>MLW (kg)</td><td>—</td><td>Max landing weight, kg</td></tr>
+              <tr><td>Stand Compatibility Class</td><td>—</td><td>A, B, C, D, E, F</td></tr>
+            </tbody></table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ─────────────────────────────────────────────────────────────
+       MODULE 4 — COUNTRIES
+  ───────────────────────────────────────────────────────────── -->
+  <div class="section" id="m-countries">
+    <div class="section-label"><span class="dot"></span> Module 04 · Reference Data</div>
+    <h2>Countries</h2>
+    <p class="intro">ISO 3166-1 country codes, geography, currency, timezone defaults, and aviation authority data. Used for airline registration, airport location, and regulatory compliance.</p>
+
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">→</div>
+        <div class="step-title">Table columns, stats &amp; form fields</div>
+        <div class="step-desc">Path: Admin › Countries</div>
+      </div>
+      <div class="step-body">
+        <div class="mockup-window" style="margin-bottom:16px;">
+          <div class="window-bar">
+            <div class="window-dot" style="background:#FF5F57"></div>
+            <div class="window-dot" style="background:#FEBC2E"></div>
+            <div class="window-dot" style="background:#28C840"></div>
+            <div class="window-url">https://adnexx.yourdomain.com/admin/countries</div>
+          </div>
+          <div style="padding:16px;background:var(--bg);">
+            <table class="data-table">
+              <thead><tr><th>ISO2</th><th>ISO3</th><th>Country Name</th><th>Capital</th><th>Continent</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td><strong style="font-family:'IBM Plex Mono',monospace;">IN</strong></td><td><span style="font-family:'IBM Plex Mono',monospace;color:var(--text-3);">IND</span></td><td>India</td><td>New Delhi</td><td><span class="badge badge-slate">AS</span></td><td><span class="badge badge-green">Active</span></td></tr>
+                <tr><td><strong style="font-family:'IBM Plex Mono',monospace;">AE</strong></td><td><span style="font-family:'IBM Plex Mono',monospace;color:var(--text-3);">ARE</span></td><td>United Arab Emirates</td><td>Abu Dhabi</td><td><span class="badge badge-slate">AS</span></td><td><span class="badge badge-green">Active</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div>
+            <div class="form-section-title">Form Fields — Identity &amp; Geography</div>
+            <table class="data-table" style="font-size:11.5px;"><thead><tr><th>Field</th><th>Req</th><th>Notes</th></tr></thead><tbody>
+              <tr><td>ISO2 Code</td><td><span style="color:var(--red);">✱</span></td><td>2-letter code e.g. IN</td></tr>
+              <tr><td>ISO3 Code</td><td><span style="color:var(--red);">✱</span></td><td>3-letter code e.g. IND</td></tr>
+              <tr><td>Country Name</td><td><span style="color:var(--red);">✱</span></td><td>Common name</td></tr>
+              <tr><td>Official Name</td><td>—</td><td>Full official name</td></tr>
+              <tr><td>Numeric Code</td><td>—</td><td>ISO 3166-1 numeric</td></tr>
+              <tr><td>Capital</td><td>—</td><td>Capital city</td></tr>
+              <tr><td>Continent Code</td><td>—</td><td>AF, AN, AS, EU, NA, OC, SA</td></tr>
+              <tr><td>Subregion</td><td>—</td><td>e.g. Southern Asia</td></tr>
+              <tr><td>Latitude / Longitude</td><td>—</td><td>Geographic centre</td></tr>
+              <tr><td>Default Timezone</td><td>—</td><td>IANA tz string</td></tr>
+            </tbody></table>
+          </div>
+          <div>
+            <div class="form-section-title">Form Fields — Finance &amp; Aviation</div>
+            <table class="data-table" style="font-size:11.5px;"><thead><tr><th>Field</th><th>Notes</th></tr></thead><tbody>
+              <tr><td>Phone Code</td><td>e.g. +91</td></tr>
+              <tr><td>Currency Code</td><td>e.g. INR</td></tr>
+              <tr><td>Currency Name</td><td>e.g. Indian Rupee</td></tr>
+              <tr><td>ICAO Region Code</td><td>Aviation region</td></tr>
+              <tr><td>FIR Code</td><td>Flight Information Region</td></tr>
+              <tr><td>Aviation Authority</td><td>e.g. DGCA</td></tr>
+              <tr><td>Aviation Group</td><td>Grouping for ops</td></tr>
+              <tr><td>Slot Regulation</td><td>Checkbox — has slot regulation</td></tr>
+              <tr><td>Schengen Member</td><td>Checkbox</td></tr>
+              <tr><td>EU Member</td><td>Checkbox</td></tr>
+              <tr><td>Operational Status</td><td>ACTIVE / INACTIVE / SUSPENDED</td></tr>
+            </tbody></table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ─────────────────────────────────────────────────────────────
+       MODULE 5 — TERMINALS
+  ───────────────────────────────────────────────────────────── -->
+  <div class="section" id="m-terminals">
+    <div class="section-label"><span class="dot"></span> Module 05 · Infrastructure</div>
+    <h2>Terminals</h2>
+    <p class="intro">Terminal buildings within an airport. Each terminal must be linked to an airport. Gates, Stands, Belts, and Checkin Desks are then linked to terminals.</p>
+
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">→</div>
+        <div class="step-title">Table columns, stats &amp; form fields</div>
+        <div class="step-desc">Path: Admin › Terminals</div>
+      </div>
+      <div class="step-body">
+        <div class="mockup-window" style="margin-bottom:16px;">
+          <div class="window-bar">
+            <div class="window-dot" style="background:#FF5F57"></div>
+            <div class="window-dot" style="background:#FEBC2E"></div>
+            <div class="window-dot" style="background:#28C840"></div>
+            <div class="window-url">https://adnexx.yourdomain.com/admin/terminals</div>
+          </div>
+          <div style="padding:16px;background:var(--bg);">
+            <div class="stats-row">
+              <div class="stat-box"><div class="stat-val">18</div><div class="stat-lbl">Total</div></div>
+              <div class="stat-box"><div class="stat-val" style="color:var(--green);">16</div><div class="stat-lbl">Active</div></div>
+              <div class="stat-box"><div class="stat-val" style="color:var(--blue);">4</div><div class="stat-lbl">Airports</div></div>
+              <div class="stat-box"></div>
+            </div>
+            <table class="data-table">
+              <thead><tr><th>Code</th><th>Terminal Name</th><th>Airport</th><th>IATA</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td><span class="badge badge-blue">T3</span></td><td>Terminal 3</td><td>Indira Gandhi International</td><td>DEL</td><td><span class="badge badge-green">Active</span></td></tr>
+                <tr><td><span class="badge badge-blue">T1</span></td><td>Terminal 1</td><td>Indira Gandhi International</td><td>DEL</td><td><span class="badge badge-green">Active</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="form-section-title">Form Fields</div>
+        <table class="data-table" style="font-size:11.5px;max-width:560px;"><thead><tr><th>Field</th><th>Required</th><th>Notes</th></tr></thead><tbody>
+          <tr><td>Airport</td><td><span style="color:var(--red);">✱</span></td><td>Select from existing airports dropdown</td></tr>
+          <tr><td>Terminal Code</td><td><span style="color:var(--red);">✱</span></td><td>Short code e.g. T1, T3, INT</td></tr>
+          <tr><td>Terminal Name</td><td>—</td><td>Full descriptive name</td></tr>
+          <tr><td>Terminal Type</td><td>—</td><td>DOMESTIC / INTERNATIONAL / MIXED</td></tr>
+          <tr><td>Valid From</td><td>—</td><td>Effective start date (YYYY-MM-DD)</td></tr>
+          <tr><td>Valid To</td><td>—</td><td>Effective end date (YYYY-MM-DD)</td></tr>
+        </tbody></table>
+        <div class="warn-box" style="margin-top:12px;"><strong>Dependency:</strong> Airport must exist first. Terminal code must be unique within an airport.</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ─────────────────────────────────────────────────────────────
+       MODULE 6 — GATES
+  ───────────────────────────────────────────────────────────── -->
+  <div class="section" id="m-gates">
+    <div class="section-label"><span class="dot"></span> Module 06 · Infrastructure</div>
+    <h2>Gates</h2>
+    <p class="intro">Departure and arrival gates within a terminal. Each gate is linked to an airport and terminal. The toggle activates or deactivates a gate (e.g. for maintenance).</p>
+
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">→</div>
+        <div class="step-title">Table columns, stats &amp; form fields</div>
+        <div class="step-desc">Path: Admin › Gates</div>
+      </div>
+      <div class="step-body">
+        <div class="mockup-window" style="margin-bottom:16px;">
+          <div class="window-bar">
+            <div class="window-dot" style="background:#FF5F57"></div>
+            <div class="window-dot" style="background:#FEBC2E"></div>
+            <div class="window-dot" style="background:#28C840"></div>
+            <div class="window-url">https://adnexx.yourdomain.com/admin/gates</div>
+          </div>
+          <div style="padding:16px;background:var(--bg);">
+            <div class="stats-row">
+              <div class="stat-box"><div class="stat-val">124</div><div class="stat-lbl">Total Gates</div></div>
+              <div class="stat-box"><div class="stat-val" style="color:var(--green);">118</div><div class="stat-lbl">Active</div></div>
+              <div class="stat-box"><div class="stat-val" style="color:var(--cyan);">42</div><div class="stat-lbl">Common Use</div></div>
+              <div class="stat-box"><div class="stat-val" style="color:var(--blue);">86</div><div class="stat-lbl">Contact</div></div>
+            </div>
+            <table class="data-table">
+              <thead><tr><th>Gate</th><th>Terminal</th><th>Type</th><th>Common Use</th><th>Qty</th><th>Bridge</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><span class="badge badge-blue">A1</span></td>
+                  <td><span class="badge badge-slate">T3</span></td>
+                  <td><span class="badge badge-violet">CONTACT</span></td>
+                  <td><span class="badge badge-cyan">Yes</span></td>
+                  <td>1</td>
+                  <td><span class="badge badge-green">Yes</span></td>
+                  <td><span class="badge badge-green">Active</span></td>
+                  <td><span class="toggle-on" style="margin-right:4px;">⏩</span><span class="action-btn">✏</span></td>
+                </tr>
+                <tr>
+                  <td><span class="badge badge-blue">B12</span></td>
+                  <td><span class="badge badge-slate">T2</span></td>
+                  <td><span class="badge badge-violet">REMOTE</span></td>
+                  <td>—</td>
+                  <td>1</td>
+                  <td>—</td>
+                  <td><span class="badge badge-green">Active</span></td>
+                  <td><span class="toggle-on" style="margin-right:4px;">⏩</span><span class="action-btn">✏</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div>
+            <div class="form-section-title">Form Fields — Location</div>
+            <table class="data-table" style="font-size:11.5px;"><thead><tr><th>Field</th><th>Req</th><th>Notes</th></tr></thead><tbody>
+              <tr><td>Airport</td><td><span style="color:var(--red);">✱</span></td><td>Select airport first</td></tr>
+              <tr><td>Terminal</td><td><span style="color:var(--red);">✱</span></td><td>Filtered by selected airport</td></tr>
+              <tr><td>Gate Code</td><td><span style="color:var(--red);">✱</span></td><td>e.g. A1, B12, Gate 5</td></tr>
+              <tr><td>Quantity</td><td>—</td><td>Number of sub-positions</td></tr>
+              <tr><td>Adjacent Gate 1</td><td>—</td><td>Neighbouring gate code</td></tr>
+              <tr><td>Adjacent Gate 2</td><td>—</td><td>Neighbouring gate code</td></tr>
+              <tr><td>Valid From / To</td><td>—</td><td>Operational date range</td></tr>
+            </tbody></table>
+          </div>
+          <div>
+            <div class="form-section-title">Form Fields — Attributes</div>
+            <table class="data-table" style="font-size:11.5px;"><thead><tr><th>Field</th><th>Req</th><th>Options</th></tr></thead><tbody>
+              <tr><td>Gate Type</td><td>—</td><td>CONTACT, REMOTE, BUS</td></tr>
+              <tr><td>Boarding Bridge</td><td>—</td><td>Checkbox — jet bridge present</td></tr>
+              <tr><td>Common Use</td><td>—</td><td>Checkbox — shared by multiple airlines</td></tr>
+              <tr><td>Active</td><td>—</td><td>Toggle status (also controllable from table)</td></tr>
+            </tbody></table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ─────────────────────────────────────────────────────────────
+       MODULE 7 — STANDS
+  ───────────────────────────────────────────────────────────── -->
+  <div class="section" id="m-stands">
+    <div class="section-label"><span class="dot"></span> Module 07 · Infrastructure</div>
+    <h2>Stands (Parking Positions)</h2>
+    <p class="intro">Aircraft parking stands (apron positions) with aircraft compatibility classes (A–F), tow requirements, and maximum wingspan. Used by the Resource Management System for aircraft parking allocation.</p>
+
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">→</div>
+        <div class="step-title">Table columns, stats &amp; form fields</div>
+        <div class="step-desc">Path: Admin › Stands</div>
+      </div>
+      <div class="step-body">
+        <div class="mockup-window" style="margin-bottom:16px;">
+          <div class="window-bar">
+            <div class="window-dot" style="background:#FF5F57"></div>
+            <div class="window-dot" style="background:#FEBC2E"></div>
+            <div class="window-dot" style="background:#28C840"></div>
+            <div class="window-url">https://adnexx.yourdomain.com/admin/stands</div>
+          </div>
+          <div style="padding:16px;background:var(--bg);">
+            <table class="data-table">
+              <thead><tr><th>Stand</th><th>Terminal</th><th>Max WS</th><th>Classes</th><th>Features</th><th>Qty</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td><span class="badge badge-blue">101</span></td><td><span class="badge badge-slate">T3</span></td><td>65m</td><td><div style="display:flex;gap:2px;"><span class="badge badge-violet">C</span><span class="badge badge-violet">D</span><span class="badge badge-violet">E</span></div></td><td>—</td><td>1</td><td><span class="badge badge-green">Active</span></td></tr>
+                <tr><td><span class="badge badge-blue">52B</span></td><td><span class="badge badge-slate">T2</span></td><td>36m</td><td><div style="display:flex;gap:2px;"><span class="badge badge-violet">A</span><span class="badge badge-violet">B</span><span class="badge badge-violet">C</span></div></td><td><span class="badge badge-amber">TOW</span></td><td>2</td><td><span class="badge badge-green">Active</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div>
+            <div class="form-section-title">Form Fields — Location</div>
+            <table class="data-table" style="font-size:11.5px;"><thead><tr><th>Field</th><th>Req</th><th>Notes</th></tr></thead><tbody>
+              <tr><td>Airport</td><td><span style="color:var(--red);">✱</span></td><td>Select airport first</td></tr>
+              <tr><td>Terminal</td><td>—</td><td>Optional — link to a terminal</td></tr>
+              <tr><td>Stand Code</td><td><span style="color:var(--red);">✱</span></td><td>e.g. 101, 52B, C3</td></tr>
+              <tr><td>Zone</td><td>—</td><td>Apron zone label</td></tr>
+              <tr><td>Quantity</td><td>—</td><td>Number of parking positions</td></tr>
+              <tr><td>Max Wingspan (m)</td><td>—</td><td>Maximum aircraft wingspan in metres</td></tr>
+            </tbody></table>
+          </div>
+          <div>
+            <div class="form-section-title">Form Fields — Compatibility</div>
+            <table class="data-table" style="font-size:11.5px;"><thead><tr><th>Field</th><th>Notes</th></tr></thead><tbody>
+              <tr><td>Class A Compatible</td><td>Checkbox (small regional)</td></tr>
+              <tr><td>Class B Compatible</td><td>Checkbox</td></tr>
+              <tr><td>Class C Compatible</td><td>Checkbox (narrow body)</td></tr>
+              <tr><td>Class D Compatible</td><td>Checkbox</td></tr>
+              <tr><td>Class E Compatible</td><td>Checkbox (wide body)</td></tr>
+              <tr><td>Class F Compatible</td><td>Checkbox (super jumbo e.g. A380)</td></tr>
+              <tr><td>TOW Required</td><td>Checkbox — aircraft must be towed out</td></tr>
+              <tr><td>Blocked By 1–6</td><td>Other stand codes that block this stand when occupied</td></tr>
+            </tbody></table>
+          </div>
+        </div>
+        <div class="tip-box" style="margin-top:12px;"><strong>Classes explained:</strong> Class A = smallest aircraft; Class F = largest (A380, B747). Select all classes the stand can physically accommodate.</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ─────────────────────────────────────────────────────────────
+       MODULE 8 — RUNWAYS
+  ───────────────────────────────────────────────────────────── -->
+  <div class="section" id="m-runways">
+    <div class="section-label"><span class="dot"></span> Module 08 · Infrastructure</div>
+    <h2>Runways</h2>
+    <p class="intro">Runway designators with physical dimensions (length, width), surface type, and lighting configuration. Runways belong to an airport. Used by capacity and noise-routing calculations.</p>
+
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">→</div>
+        <div class="step-title">Table columns, stats &amp; form fields</div>
+        <div class="step-desc">Path: Admin › Runways</div>
+      </div>
+      <div class="step-body">
+        <div class="mockup-window" style="margin-bottom:16px;">
+          <div class="window-bar">
+            <div class="window-dot" style="background:#FF5F57"></div>
+            <div class="window-dot" style="background:#FEBC2E"></div>
+            <div class="window-dot" style="background:#28C840"></div>
+            <div class="window-url">https://adnexx.yourdomain.com/admin/runways</div>
+          </div>
+          <div style="padding:16px;background:var(--bg);">
+            <div class="stats-row">
+              <div class="stat-box"><div class="stat-val">8</div><div class="stat-lbl">Total</div></div>
+              <div class="stat-box"><div class="stat-val" style="color:var(--green);">8</div><div class="stat-lbl">Active</div></div>
+              <div class="stat-box"></div><div class="stat-box"></div>
+            </div>
+            <table class="data-table">
+              <thead><tr><th>Designator</th><th>Length</th><th>Width</th><th>Surface</th><th>Lighting</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td><strong style="font-family:'IBM Plex Mono',monospace;">28L/10R</strong></td><td>4430m</td><td>60m</td><td><span class="badge badge-slate">ASP</span></td><td><span class="badge badge-cyan">HIRL</span></td><td><span class="badge badge-green">Active</span></td></tr>
+                <tr><td><strong style="font-family:'IBM Plex Mono',monospace;">29/11</strong></td><td>2800m</td><td>45m</td><td><span class="badge badge-slate">CON</span></td><td><span class="badge badge-cyan">MIRL</span></td><td><span class="badge badge-green">Active</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="form-section-title">Form Fields</div>
+        <table class="data-table" style="font-size:11.5px;max-width:600px;"><thead><tr><th>Field</th><th>Required</th><th>Notes / Options</th></tr></thead><tbody>
+          <tr><td>Airport</td><td><span style="color:var(--red);">✱</span></td><td>Select from airports dropdown</td></tr>
+          <tr><td>Runway Designator</td><td><span style="color:var(--red);">✱</span></td><td>ICAO code e.g. 28L/10R, 09/27</td></tr>
+          <tr><td>Length (m)</td><td>—</td><td>Runway length in metres</td></tr>
+          <tr><td>Width (m)</td><td>—</td><td>Runway width in metres</td></tr>
+          <tr><td>Surface Type</td><td>—</td><td>ASP (Asphalt), CON (Concrete), GRS (Grass), GVL (Gravel), DRT (Dirt)</td></tr>
+          <tr><td>Lighting</td><td>—</td><td>HIRL (High Intensity), MIRL (Medium), LIRL (Low), NONE</td></tr>
+          <tr><td>Valid From / To</td><td>—</td><td>Operational date range</td></tr>
+          <tr><td>Active</td><td>—</td><td>Toggle — deactivate for maintenance</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ─────────────────────────────────────────────────────────────
+       MODULE 9 — BAGGAGE BELTS
+  ───────────────────────────────────────────────────────────── -->
+  <div class="section" id="m-belts">
+    <div class="section-label"><span class="dot"></span> Module 09 · Infrastructure</div>
+    <h2>Baggage Belts</h2>
+    <p class="intro">Baggage reclaim belts and sortation conveyors within a terminal. Classified by area type (Arrivals, Departures, Transfer, Oversized) and whether they handle international baggage.</p>
+
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">→</div>
+        <div class="step-title">Table columns, stats &amp; form fields</div>
+        <div class="step-desc">Path: Admin › Belts</div>
+      </div>
+      <div class="step-body">
+        <div class="mockup-window" style="margin-bottom:16px;">
+          <div class="window-bar">
+            <div class="window-dot" style="background:#FF5F57"></div>
+            <div class="window-dot" style="background:#FEBC2E"></div>
+            <div class="window-dot" style="background:#28C840"></div>
+            <div class="window-url">https://adnexx.yourdomain.com/admin/belts</div>
+          </div>
+          <div style="padding:16px;background:var(--bg);">
+            <div class="stats-row">
+              <div class="stat-box"><div class="stat-val">36</div><div class="stat-lbl">Total Belts</div></div>
+              <div class="stat-box"><div class="stat-val" style="color:var(--green);">32</div><div class="stat-lbl">Active</div></div>
+              <div class="stat-box"><div class="stat-val" style="color:var(--green);">18</div><div class="stat-lbl">Arrivals</div></div>
+              <div class="stat-box"><div class="stat-val" style="color:var(--blue);">22</div><div class="stat-lbl">International</div></div>
+            </div>
+            <table class="data-table">
+              <thead><tr><th>Belt</th><th>Terminal</th><th>Area</th><th>Intl</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td><span class="badge badge-blue">BLT-01</span></td><td><span class="badge badge-slate">T3</span></td><td><span class="badge badge-green">ARR</span></td><td><span class="badge badge-cyan">Yes</span></td><td><span class="badge badge-green">Active</span></td></tr>
+                <tr><td><span class="badge badge-blue">OS-1</span></td><td><span class="badge badge-slate">T1</span></td><td><span class="badge badge-amber">OVERSIZED</span></td><td>—</td><td><span class="badge badge-green">Active</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="form-section-title">Form Fields</div>
+        <table class="data-table" style="font-size:11.5px;max-width:600px;"><thead><tr><th>Field</th><th>Required</th><th>Notes / Options</th></tr></thead><tbody>
+          <tr><td>Airport</td><td><span style="color:var(--red);">✱</span></td><td>Select airport first</td></tr>
+          <tr><td>Terminal</td><td><span style="color:var(--red);">✱</span></td><td>Filtered by selected airport</td></tr>
+          <tr><td>Belt Code</td><td><span style="color:var(--red);">✱</span></td><td>e.g. BLT-01, Belt 3, OS-1</td></tr>
+          <tr><td>Area Type</td><td>—</td><td>ARR (Arrivals), DEP (Departures), TRANSFER, OVERSIZED</td></tr>
+          <tr><td>International</td><td>—</td><td>Checkbox — handles international baggage</td></tr>
+          <tr><td>Valid From / To</td><td>—</td><td>Operational date range</td></tr>
+          <tr><td>Active</td><td>—</td><td>Toggle on/off</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ─────────────────────────────────────────────────────────────
+       MODULE 10 — CHECKIN DESKS
+  ───────────────────────────────────────────────────────────── -->
+  <div class="section" id="m-desks">
+    <div class="section-label"><span class="dot"></span> Module 10 · Infrastructure</div>
+    <h2>Check-in Desks</h2>
+    <p class="intro">Check-in counters within a terminal, optionally dedicated to a specific airline. Each desk has a zone (International/Domestic/Transfer) and type (Full-Service, Self-Service, Premium, Oversized).</p>
+
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">→</div>
+        <div class="step-title">Table columns, stats &amp; form fields</div>
+        <div class="step-desc">Path: Admin › Check-in Desks</div>
+      </div>
+      <div class="step-body">
+        <div class="mockup-window" style="margin-bottom:16px;">
+          <div class="window-bar">
+            <div class="window-dot" style="background:#FF5F57"></div>
+            <div class="window-dot" style="background:#FEBC2E"></div>
+            <div class="window-dot" style="background:#28C840"></div>
+            <div class="window-url">https://adnexx.yourdomain.com/admin/checkin-desks</div>
+          </div>
+          <div style="padding:16px;background:var(--bg);">
+            <div class="stats-row">
+              <div class="stat-box"><div class="stat-val">80</div><div class="stat-lbl">Total Desks</div></div>
+              <div class="stat-box"><div class="stat-val" style="color:var(--green);">74</div><div class="stat-lbl">Active</div></div>
+              <div class="stat-box"><div class="stat-val" style="color:var(--blue);">48</div><div class="stat-lbl">International</div></div>
+              <div class="stat-box"></div>
+            </div>
+            <table class="data-table">
+              <thead><tr><th>Desk</th><th>Terminal</th><th>Airline</th><th>Counters</th><th>Zone</th><th>Type</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td><span class="badge badge-blue">A1–A10</span></td><td><span class="badge badge-slate">T3</span></td><td>[AI] Air India</td><td>10</td><td><span class="badge badge-cyan">International</span></td><td><span class="badge badge-violet">Full-Service</span></td><td><span class="badge badge-green">Active</span></td></tr>
+                <tr><td><span class="badge badge-blue">SK-1</span></td><td><span class="badge badge-slate">T1</span></td><td>—</td><td>4</td><td><span class="badge badge-cyan">Domestic</span></td><td><span class="badge badge-violet">Self-Service</span></td><td><span class="badge badge-green">Active</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="form-section-title">Form Fields</div>
+        <table class="data-table" style="font-size:11.5px;max-width:660px;"><thead><tr><th>Field</th><th>Required</th><th>Notes / Options</th></tr></thead><tbody>
+          <tr><td>Airport</td><td><span style="color:var(--red);">✱</span></td><td>Select airport first</td></tr>
+          <tr><td>Terminal</td><td><span style="color:var(--red);">✱</span></td><td>Filtered by selected airport</td></tr>
+          <tr><td>Desk Code</td><td><span style="color:var(--red);">✱</span></td><td>e.g. A1–A10, SK-1, Counter 5</td></tr>
+          <tr><td>Airline</td><td>—</td><td>Optional — assign to a specific airline</td></tr>
+          <tr><td>Number of Counters</td><td>—</td><td>How many physical counter positions this code represents</td></tr>
+          <tr><td>Zone</td><td>—</td><td>International, Domestic, Transfer</td></tr>
+          <tr><td>Desk Type</td><td>—</td><td>Full-Service, Self-Service, Premium, Oversized</td></tr>
+          <tr><td>Valid From / To</td><td>—</td><td>Operational date range</td></tr>
+          <tr><td>Active</td><td>—</td><td>Toggle on/off</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ─────────────────────────────────────────────────────────────
+       MODULE 11 — GROUND HANDLERS
+  ───────────────────────────────────────────────────────────── -->
+  <div class="section" id="m-gh">
+    <div class="section-label"><span class="dot"></span> Module 11 · Operations</div>
+    <h2>Ground Handlers</h2>
+    <p class="intro">Ground handling companies operating at an airport. Records include contact details, service types offered (ramp, baggage, fuel, cargo…), and license/certification information.</p>
+
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">→</div>
+        <div class="step-title">Table columns, stats &amp; form fields</div>
+        <div class="step-desc">Path: Admin › Ground Handlers</div>
+      </div>
+      <div class="step-body">
+        <div class="mockup-window" style="margin-bottom:16px;">
+          <div class="window-bar">
+            <div class="window-dot" style="background:#FF5F57"></div>
+            <div class="window-dot" style="background:#FEBC2E"></div>
+            <div class="window-dot" style="background:#28C840"></div>
+            <div class="window-url">https://adnexx.yourdomain.com/admin/ground-handlers</div>
+          </div>
+          <div style="padding:16px;background:var(--bg);">
+            <table class="data-table">
+              <thead><tr><th>Code</th><th>Handler Name</th><th>Airport</th><th>Contact</th><th>Services</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><strong style="font-family:'IBM Plex Mono',monospace;">AISATS</strong></td>
+                  <td>Air India SATS</td>
+                  <td><span class="badge badge-slate">DEL</span></td>
+                  <td style="font-size:11px;color:var(--text-2);">ops@aisats.com</td>
+                  <td><span class="badge badge-cyan" style="margin-right:2px;">ramp</span><span class="badge badge-cyan" style="margin-right:2px;">baggage</span><span class="badge badge-slate">+3</span></td>
+                  <td><span class="badge badge-green">Active</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div>
+            <div class="form-section-title">Form Fields — Identity &amp; Location</div>
+            <table class="data-table" style="font-size:11.5px;"><thead><tr><th>Field</th><th>Req</th><th>Notes</th></tr></thead><tbody>
+              <tr><td>Handler Name</td><td><span style="color:var(--red);">✱</span></td><td>Full company name</td></tr>
+              <tr><td>Short Code</td><td>—</td><td>Abbreviated identifier (e.g. AISATS)</td></tr>
+              <tr><td>Airport</td><td>—</td><td>Select from airports dropdown</td></tr>
+            </tbody></table>
+          </div>
+          <div>
+            <div class="form-section-title">Form Fields — Contact &amp; Services</div>
+            <table class="data-table" style="font-size:11.5px;"><thead><tr><th>Field</th><th>Notes</th></tr></thead><tbody>
+              <tr><td>Email</td><td>Contact email address</td></tr>
+              <tr><td>Phone</td><td>Contact phone number</td></tr>
+              <tr><td>Website</td><td>Company URL</td></tr>
+              <tr><td>Address</td><td>Physical address</td></tr>
+              <tr><td>Service Types</td><td>Multi-select checkboxes: ramp, baggage, fuel, cargo, passenger, catering, cleaning, de-icing</td></tr>
+              <tr><td>License No.</td><td>Handler's operating licence</td></tr>
+              <tr><td>Certifications</td><td>Comma-separated certifications</td></tr>
+            </tbody></table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ─────────────────────────────────────────────────────────────
+       MODULE 12 — DELAY CODES
+  ───────────────────────────────────────────────────────────── -->
+  <div class="section" id="m-delay">
+    <div class="section-label"><span class="dot"></span> Module 12 · Operations</div>
+    <h2>Delay Codes</h2>
+    <p class="intro">IATA and site-specific delay reason codes used to classify flight delays. Each code has a numeric code, optional IATA code, category (Airline, Airport, ATC, Weather…), and IATA group letter.</p>
+
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">→</div>
+        <div class="step-title">Table columns, stats &amp; form fields</div>
+        <div class="step-desc">Path: Admin › Delay Codes</div>
+      </div>
+      <div class="step-body">
+        <div class="mockup-window" style="margin-bottom:16px;">
+          <div class="window-bar">
+            <div class="window-dot" style="background:#FF5F57"></div>
+            <div class="window-dot" style="background:#FEBC2E"></div>
+            <div class="window-dot" style="background:#28C840"></div>
+            <div class="window-url">https://adnexx.yourdomain.com/admin/delay-codes</div>
+          </div>
+          <div style="padding:16px;background:var(--bg);">
+            <div class="stats-row">
+              <div class="stat-box"><div class="stat-val">142</div><div class="stat-lbl">Total Codes</div></div>
+              <div class="stat-box"><div class="stat-val" style="color:var(--amber);">58</div><div class="stat-lbl">Carrier</div></div>
+              <div class="stat-box"><div class="stat-val" style="color:var(--blue);">84</div><div class="stat-lbl">Non-Carrier</div></div>
+              <div class="stat-box"><div class="stat-val">7</div><div class="stat-lbl">Categories</div></div>
+            </div>
+            <table class="data-table">
+              <thead><tr><th>Code</th><th>IATA</th><th>Site</th><th>Description</th><th>Category</th><th>Group</th><th>Carrier?</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><strong style="font-family:'IBM Plex Mono',monospace;color:var(--amber);">93</strong></td>
+                  <td><span class="badge badge-blue">RL</span></td>
+                  <td>—</td>
+                  <td>Late check-in acceptance</td>
+                  <td><span class="badge badge-violet">Airline</span></td>
+                  <td><span class="badge badge-cyan">C</span></td>
+                  <td><span class="badge badge-amber">Carrier</span></td>
+                </tr>
+                <tr>
+                  <td><strong style="font-family:'IBM Plex Mono',monospace;color:var(--amber);">81</strong></td>
+                  <td>—</td>
+                  <td><span class="badge badge-slate">DEL</span></td>
+                  <td>ATC flow management</td>
+                  <td><span class="badge badge-violet">ATC</span></td>
+                  <td><span class="badge badge-cyan">T</span></td>
+                  <td><span class="badge badge-slate">Non</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="form-section-title">Form Fields</div>
+        <table class="data-table" style="font-size:11.5px;max-width:700px;"><thead><tr><th>Field</th><th>Required</th><th>Notes / Options</th></tr></thead><tbody>
+          <tr><td>Numeric Code</td><td><span style="color:var(--red);">✱</span></td><td>IATA numeric delay reason code e.g. 93</td></tr>
+          <tr><td>IATA Code</td><td>—</td><td>2-letter IATA code e.g. RL</td></tr>
+          <tr><td>Site Code</td><td>—</td><td>Airport-specific local code</td></tr>
+          <tr><td>Description</td><td><span style="color:var(--red);">✱</span></td><td>Human-readable reason text</td></tr>
+          <tr><td>Is Carrier</td><td>—</td><td>Checkbox — airline-controllable delay</td></tr>
+          <tr><td>Category</td><td>—</td><td>Airline, Airport, ATC, Weather, Security, Government, Miscellaneous</td></tr>
+          <tr><td>Sub-Category</td><td>—</td><td>Equipment, Crew, Passenger, Baggage, Cargo, Catering, Fueling, Operations, Ramp, Technical</td></tr>
+          <tr><td>IATA Group</td><td>—</td><td>Single letter A–Z grouping per IATA standard</td></tr>
+          <tr><td>Valid From / To</td><td>—</td><td>Code validity period</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ─────────────────────────────────────────────────────────────
+       MODULE 13 — TENANTS
+  ───────────────────────────────────────────────────────────── -->
+  <div class="section" id="m-tenants">
+    <div class="section-label"><span class="dot"></span> Module 13 · System</div>
+    <h2>Tenants</h2>
+    <p class="intro">Multi-tenant configuration records. Each tenant represents an organization (e.g. an airline, airport authority, or handler) that has its own isolated data space within the AODB system. Requires ADMIN role.</p>
+
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">→</div>
+        <div class="step-title">Table columns, stats &amp; form fields</div>
+        <div class="step-desc">Path: Admin › Tenants</div>
+      </div>
+      <div class="step-body">
+        <div class="mockup-window" style="margin-bottom:16px;">
+          <div class="window-bar">
+            <div class="window-dot" style="background:#FF5F57"></div>
+            <div class="window-dot" style="background:#FEBC2E"></div>
+            <div class="window-dot" style="background:#28C840"></div>
+            <div class="window-url">https://adnexx.yourdomain.com/admin/tenants</div>
+          </div>
+          <div style="padding:16px;background:var(--bg);">
+            <table class="data-table">
+              <thead><tr><th>Code</th><th>Tenant Name</th><th>Country</th><th>Email</th><th>Created</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td><strong style="font-family:'IBM Plex Mono',monospace;color:var(--blue);">INDRA-AODB</strong></td><td>Indira Gandhi Airport</td><td>India</td><td>admin@igi.com</td><td style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-3);">01/01/2024</td><td><span class="badge badge-green">Active</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="form-section-title">Form Fields</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <table class="data-table" style="font-size:11.5px;"><thead><tr><th>Field</th><th>Req</th><th>Notes</th></tr></thead><tbody>
+            <tr><td>Tenant Code</td><td><span style="color:var(--red);">✱</span></td><td>Unique short identifier e.g. INDRA-AODB</td></tr>
+            <tr><td>Tenant Name</td><td><span style="color:var(--red);">✱</span></td><td>Full organization name</td></tr>
+            <tr><td>Country</td><td>—</td><td>Country of operation</td></tr>
+            <tr><td>Email</td><td>—</td><td>Primary contact email</td></tr>
+            <tr><td>Phone</td><td>—</td><td>Contact phone</td></tr>
+            <tr><td>Website</td><td>—</td><td>Organization URL</td></tr>
+          </tbody></table>
+          <table class="data-table" style="font-size:11.5px;"><thead><tr><th>Field</th><th>Notes</th></tr></thead><tbody>
+            <tr><td>Region</td><td>Geographic or business region</td></tr>
+            <tr><td>Tier</td><td>Service tier classification</td></tr>
+            <tr><td>Valid From</td><td>Contract/activation start date</td></tr>
+            <tr><td>Valid To</td><td>Contract/deactivation date</td></tr>
+            <tr><td>Active</td><td>Toggle to enable/disable tenant</td></tr>
+          </tbody></table>
+        </div>
+        <div class="warn-box" style="margin-top:12px;"><strong>⚠ Admin only:</strong> Only users with the ADMIN role can view or manage Tenants. Deactivating a tenant will affect all users belonging to that tenant.</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ─────────────────────────────────────────────────────────────
+       MODULE 14 — USERS
+  ───────────────────────────────────────────────────────────── -->
+  <div class="section" id="m-users">
+    <div class="section-label"><span class="dot"></span> Module 14 · System</div>
+    <h2>Users</h2>
+    <p class="intro">Portal user accounts with role-based access control. Users can have one or more roles. See Sections 10 and 11 for step-by-step screenshots of the Users workflows. This section provides the complete field reference.</p>
+
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">→</div>
+        <div class="step-title">Complete field reference</div>
+        <div class="step-desc">Path: Admin › Users · ADMIN role required</div>
+      </div>
+      <div class="step-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:16px;">
+          <div>
+            <div class="form-section-title">Table Columns</div>
+            <table class="data-table" style="font-size:11.5px;"><thead><tr><th>Column</th><th>What it Shows</th></tr></thead><tbody>
+              <tr><td>User</td><td>Full name + username (mono, grey)</td></tr>
+              <tr><td>Email</td><td>Email address</td></tr>
+              <tr><td>Role</td><td>Badge: ADMIN (amber), OPERATOR (blue), VIEWER (grey)</td></tr>
+              <tr><td>Last Login</td><td>Date of most recent login (or "Never")</td></tr>
+              <tr><td>Status</td><td>Active / Inactive badge</td></tr>
+              <tr><td>Actions</td><td>🔑 Reset Password · ⏩/⏪ Toggle · ✏ Edit</td></tr>
+            </tbody></table>
+          </div>
+          <div>
+            <div class="form-section-title">Role Permissions</div>
+            <table class="data-table" style="font-size:11.5px;"><thead><tr><th>Role</th><th>Can View</th><th>Can Edit</th><th>Manage Users</th></tr></thead><tbody>
+              <tr><td><span class="badge badge-amber role-admin">ADMIN</span></td><td>✅ All</td><td>✅ All</td><td>✅ Yes</td></tr>
+              <tr><td><span class="badge badge-blue role-op">OPERATOR</span></td><td>✅ All</td><td>✅ Data modules</td><td>❌ No</td></tr>
+              <tr><td><span class="badge badge-slate">VIEWER</span></td><td>✅ All</td><td>❌ None</td><td>❌ No</td></tr>
+            </tbody></table>
+            <div class="tip-box" style="margin-top:10px;"><strong>Multi-role:</strong> A user can have ADMIN + OPERATOR simultaneously. The most permissive role applies.</div>
+          </div>
+        </div>
+        <div class="form-section-title">Add / Edit User Form Fields</div>
+        <table class="data-table" style="font-size:11.5px;"><thead><tr><th>Field</th><th>Required</th><th>Notes</th></tr></thead><tbody>
+          <tr><td>First Name</td><td><span style="color:var(--red);">✱</span></td><td></td></tr>
+          <tr><td>Last Name</td><td><span style="color:var(--red);">✱</span></td><td></td></tr>
+          <tr><td>Username</td><td><span style="color:var(--red);">✱</span></td><td>No spaces. Must be unique in the system.</td></tr>
+          <tr><td>Email</td><td><span style="color:var(--red);">✱</span></td><td>Valid email format required</td></tr>
+          <tr><td>Phone Number</td><td>—</td><td>Optional contact number</td></tr>
+          <tr><td>Role(s)</td><td><span style="color:var(--red);">✱</span></td><td>Check ADMIN, OPERATOR, and/or VIEWER</td></tr>
+          <tr><td>Password</td><td><span style="color:var(--red);">✱</span> (new users only)</td><td>Minimum 8 characters. Not shown on edit form.</td></tr>
+          <tr><td>Confirm Password</td><td><span style="color:var(--red);">✱</span> (new users only)</td><td>Must match password field</td></tr>
+        </tbody></table>
+        <div class="warn-box" style="margin-top:12px;"><strong>Password policy:</strong> Passwords must be at least 8 characters. The system does not enforce complexity rules by default — but it is recommended to use a mix of upper, lower, numbers, and symbols.</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ─────────────────────────────────────────────────────────────
+       QUICK REFERENCE — ALL MODULES TABLE
+  ───────────────────────────────────────────────────────────── -->
+  <div class="section" id="m-ref">
+    <div class="section-label"><span class="dot"></span> Quick Reference</div>
+    <h2>All Modules at a Glance</h2>
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">→</div>
+        <div class="step-title">Module summary — sidebar path, searchable fields, key relationships</div>
+      </div>
+      <div class="step-body">
+        <table class="data-table" style="font-size:11.5px;">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Module</th>
+              <th>Nav Section</th>
+              <th>Search By</th>
+              <th>Depends On</th>
+              <th>Can Toggle Active?</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td><strong>Airlines</strong></td><td>Reference Data</td><td>Name, IATA, ICAO</td><td>—</td><td>—</td></tr>
+            <tr><td>2</td><td><strong>Airports</strong></td><td>Reference Data</td><td>Name, IATA, ICAO, City</td><td>—</td><td>—</td></tr>
+            <tr><td>3</td><td><strong>Aircraft Types</strong></td><td>Reference Data</td><td>Description, IATA, ICAO</td><td>—</td><td>—</td></tr>
+            <tr><td>4</td><td><strong>Countries</strong></td><td>Reference Data</td><td>Name, ISO2, ISO3, Capital</td><td>—</td><td>—</td></tr>
+            <tr><td>5</td><td><strong>Terminals</strong></td><td>Infrastructure</td><td>Code, Name, Airport</td><td>Airport</td><td>✅</td></tr>
+            <tr><td>6</td><td><strong>Gates</strong></td><td>Infrastructure</td><td>Gate code, Terminal</td><td>Airport, Terminal</td><td>✅</td></tr>
+            <tr><td>7</td><td><strong>Stands</strong></td><td>Infrastructure</td><td>Stand code, Terminal</td><td>Airport, Terminal</td><td>✅</td></tr>
+            <tr><td>8</td><td><strong>Runways</strong></td><td>Infrastructure</td><td>Runway designator</td><td>Airport</td><td>✅</td></tr>
+            <tr><td>9</td><td><strong>Baggage Belts</strong></td><td>Infrastructure</td><td>Belt code, Terminal</td><td>Airport, Terminal</td><td>✅</td></tr>
+            <tr><td>10</td><td><strong>Check-in Desks</strong></td><td>Infrastructure</td><td>Desk code, Terminal, Airline</td><td>Airport, Terminal, (Airline)</td><td>✅</td></tr>
+            <tr><td>11</td><td><strong>Ground Handlers</strong></td><td>Operations</td><td>Name, Code, Airport IATA</td><td>(Airport)</td><td>✅</td></tr>
+            <tr><td>12</td><td><strong>Delay Codes</strong></td><td>Operations</td><td>Num code, IATA, Description, Category</td><td>—</td><td>—</td></tr>
+            <tr><td>13</td><td><strong>Tenants</strong></td><td>System</td><td>Name, Code, Country</td><td>—</td><td>✅</td></tr>
+            <tr><td>14</td><td><strong>Users</strong></td><td>System</td><td>Name, Username, Email</td><td>—</td><td>✅</td></tr>
+          </tbody>
+        </table>
+        <div class="tip-box" style="margin-top:14px;">
+          <strong>Setup order:</strong> For a clean installation, add modules in this order:
+          <span style="font-family:'IBM Plex Mono',monospace;"> Countries → Airports → Airlines → Aircraft Types → Tenants → Terminals → Gates → Stands → Runways → Belts → Check-in Desks → Ground Handlers → Delay Codes → Users</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr/>
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-3);">
+      AODB Admin Portal — Visual Guide &nbsp;·&nbsp; Version 1.0 &nbsp;·&nbsp; April 2026
+    </div>
+    <div style="font-size:11px;color:var(--text-3);margin-top:4px;">Maintained by the AODB System Administration Team</div>
+  </div>
+
+</div><!-- /container -->
+</body>
+</html>

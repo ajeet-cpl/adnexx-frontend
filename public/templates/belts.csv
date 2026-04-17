@@ -1,0 +1,4 @@
+code,airportIataCode,terminalCode,area,intl,validFrom,validTo
+B1,DEL,T3,DOMESTIC,false,,
+B2,DEL,T3,INTERNATIONAL,true,,
+B3,BOM,T2,INTERNATIONAL,true,2024-01-01,

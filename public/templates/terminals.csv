@@ -1,0 +1,4 @@
+code,name,airportIataCode,type,validFrom,validTo
+T1,Terminal 1,DEL,DOMESTIC,,
+T2,Terminal 2,DEL,INTERNATIONAL,,
+T3,Terminal 3,DEL,INTERNATIONAL,2008-07-14,

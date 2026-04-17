@@ -1,0 +1,3 @@
+code,name,email,phone,website,country,region,tier,validFrom,validTo
+AIRL001,Airline Solutions Pvt Ltd,admin@airlinesolutions.com,+911234567890,https://airlinesolutions.com,India,APAC,PREMIUM,,
+GRND002,Ground Operations Ltd,ops@groundops.com,+441234567890,https://groundops.com,United Kingdom,EMEA,STANDARD,2024-01-01,

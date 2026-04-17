@@ -1,0 +1,3 @@
+username,email,first_name,last_name,phone_number,role_ids
+jsmith,john.smith@example.com,John,Smith,+911234567890,2
+aadmin,alice.admin@example.com,Alice,Admin,+441234567891,1

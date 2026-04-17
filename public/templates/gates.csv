@@ -1,0 +1,4 @@
+code,airportIataCode,terminalCode,type,isCommonUse,quantity,hasBoardingBridge,adjacentGate1,adjacentGate2,validFrom,validTo
+A1,DEL,T3,DOMESTIC,false,1,true,A2,,
+A2,DEL,T3,INTERNATIONAL,true,1,true,A1,A3,
+B5,BOM,T2,INTERNATIONAL,false,1,false,,,2024-01-01,
