@@ -4,7 +4,9 @@ import path from 'path';
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
-  const proxyTarget = env.VITE_PROXY_TARGET || 'http://localhost:8080';
+  const proxyTarget = env.VITE_PROXY_TARGET || 'http://ec2-65-0-102-18.ap-south-1.compute.amazonaws.com:8080';
+  const port = parseInt(env.VITE_PORT || '3020', 10);
+  const healthPath = env.VITE_HEALTH_PATH || '/api/v1/actuator/health';
 
   return {
     plugins: [
@@ -14,7 +16,7 @@ export default defineConfig(({ mode }) => {
         configureServer(server) {
           server.middlewares.use('/api/ping', async (req, res) => {
             const target = proxyTarget.replace(/\/+$/, '');
-            const healthUrl = `${target}/api/v1/actuator/health`;
+            const healthUrl = `${target}${healthPath}`;
             try {
               const start = Date.now();
               const response = await fetch(healthUrl, { signal: AbortSignal.timeout(5000) });
@@ -37,7 +39,7 @@ export default defineConfig(({ mode }) => {
       extensions: ['.mjs', '.js', '.jsx', '.json', '.ts', '.tsx'],
     },
     server: {
-      port: 3020,
+      port,
       strictPort: true,
       proxy: {
         '/api': {
