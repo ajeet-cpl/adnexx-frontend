@@ -4,8 +4,7 @@ import path from 'path';
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
-  const proxyTarget = env.VITE_PROXY_TARGET || 'http://ec2-13-60-234-74.eu-north-1.compute.amazonaws.com:8080';
-  const port = parseInt(env.VITE_PORT || '3020', 10);
+  const proxyTarget = env.VITE_PROXY_TARGET || 'http://localhost:8080';
   const healthPath = env.VITE_HEALTH_PATH || '/api/v1/actuator/health';
 
   return {
@@ -39,7 +38,7 @@ export default defineConfig(({ mode }) => {
       extensions: ['.mjs', '.js', '.jsx', '.json', '.ts', '.tsx'],
     },
     server: {
-      port,
+      port: 3020,
       strictPort: true,
       proxy: {
         '/api': {

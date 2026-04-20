@@ -3,7 +3,7 @@
 // Requires env var BACKEND_URL set in Vercel dashboard (Settings → Environment Variables)
 // NOTE: VITE_* vars are build-time only and not available in serverless functions at runtime.
 export default async function handler(req, res) {
-  const target = process.env.BACKEND_URL || 'http://ec2-65-0-102-18.ap-south-1.compute.amazonaws.com:8080';
+  const target = process.env.BACKEND_URL || 'http://localhost:8080';
   const healthPath = process.env.HEALTH_PATH || '/api/v1/actuator/health';
   const url = `${target.replace(/\/+$/, '')}${healthPath}`;
 
