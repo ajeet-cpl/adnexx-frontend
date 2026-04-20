@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Bell, HelpCircle, Palette, Check } from 'lucide-react';
+import { Bell, HelpCircle, Palette, Check, Menu } from 'lucide-react';
 
 import AdminSidebar from '@/components/layout/AdminSidebar';
 import { getSession } from '@/utils/auth';
@@ -9,11 +9,17 @@ import useTheme, { THEMES } from '@/hooks/useTheme';
 
 export default function AdminLayout({ children }) {
   const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const { pathname } = useLocation();
   const session = getSession();
   const { theme, setTheme, isDark } = useTheme();
   const [themePanelOpen, setThemePanelOpen] = useState(false);
   const themePanelRef = useRef(null);
+
+  // Close mobile sidebar on route change
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
 
   // Close theme panel on outside click
   useEffect(() => {
@@ -36,11 +42,28 @@ export default function AdminLayout({ children }) {
   return (
     <ToastProvider>
       <div className="admin-shell">
-        <AdminSidebar collapsed={collapsed} onToggle={() => setCollapsed((c) => !c)} />
+        {/* Mobile backdrop */}
+        {mobileOpen && (
+          <div className="mobile-sidebar-backdrop" onClick={() => setMobileOpen(false)} />
+        )}
+        <AdminSidebar
+          collapsed={collapsed}
+          onToggle={() => setCollapsed((c) => !c)}
+          mobileOpen={mobileOpen}
+          onMobileClose={() => setMobileOpen(false)}
+        />
         <div className={`admin-content ${collapsed ? 'collapsed' : ''}`}>
           {/* Topbar */}
           <div className="admin-topbar">
-            <nav style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 6 }}>
+            {/* Hamburger — mobile only */}
+            <button
+              className="hamburger-btn"
+              onClick={() => setMobileOpen(true)}
+              title="Open menu"
+            >
+              <Menu size={18} />
+            </button>
+            <nav className="topbar-breadcrumb" style={{ flex: 1, alignItems: 'center', gap: 6 }}>
               {crumbs.map((crumb, i) => (
                 <span key={crumb.href} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                   {i > 0 && <span style={{ color: 'var(--text-3)', fontSize: '0.7rem' }}>/</span>}
@@ -58,6 +81,8 @@ export default function AdminLayout({ children }) {
                 </span>
               ))}
             </nav>
+            {/* Spacer — pushes icons right when breadcrumb is hidden on mobile */}
+            <div className="topbar-spacer" style={{ flex: 1 }} />
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
               <div ref={themePanelRef} style={{ position: 'relative' }}>
                 <button
@@ -179,7 +204,7 @@ export default function AdminLayout({ children }) {
                   >
                     {(session.name || session.email || 'A')[0].toUpperCase()}
                   </div>
-                  <span style={{ fontSize: '0.78rem', color: 'var(--text-2)', fontWeight: 500 }}>{session.name || session.email}</span>
+                  <span style={{ fontSize: '0.78rem', color: 'var(--text-2)', fontWeight: 500 }} className="topbar-user-name">{session.name || session.email}</span>
                 </div>
               )}
             </div>

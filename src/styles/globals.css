@@ -317,6 +317,8 @@ html, body {
   display: flex;
   flex-direction: column;
   transition: margin-left 0.2s ease;
+  overflow-x: hidden;
+  min-width: 0;
 }
 
 .admin-content.collapsed { margin-left: 60px; }
@@ -338,6 +340,7 @@ html, body {
   flex: 1;
   padding: 28px;
   overflow-x: hidden;
+  min-width: 0;
 }
 
 /* ============================================================================
@@ -1239,6 +1242,10 @@ html, body {
   border-radius: 10px;
   overflow: hidden;
 }
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
 
 /* Action buttons */
 .action-btn {
@@ -1316,3 +1323,126 @@ html, body {
 .data-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--text-2); vertical-align: middle; }
 .data-table tbody tr:last-child td { border-bottom: none; }
 .data-table tbody tr:hover td { background: var(--surface-2); }
+
+/* ============================================================================
+   Responsive — Mobile & Tablet
+   ============================================================================ */
+
+/* Hamburger button — hidden on desktop, shown on mobile */
+.hamburger-btn {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-2);
+  padding: 6px;
+  border-radius: 6px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+.hamburger-btn:hover { background: var(--surface-3); }
+
+/* Breadcrumb — flex on desktop, hidden on mobile */
+.topbar-breadcrumb {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Spacer — hidden on desktop (breadcrumb fills space), shown on mobile */
+.topbar-spacer { display: none; }
+
+/* Backdrop for mobile sidebar drawer */
+.mobile-sidebar-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 49;
+  backdrop-filter: blur(2px);
+  animation: fadeIn 0.2s ease;
+}
+
+@media (max-width: 768px) {
+  /* Show hamburger */
+  .hamburger-btn { display: flex; }
+
+  /* Hide breadcrumb, show spacer instead */
+  .topbar-breadcrumb { display: none; }
+  .topbar-spacer { display: block; }
+
+  /* Sidebar becomes a slide-in drawer */
+  .admin-sidebar {
+    transform: translateX(-100%);
+    width: var(--sidebar-w) !important;
+    transition: transform 0.25s ease;
+    box-shadow: none;
+  }
+  .admin-sidebar.mobile-open {
+    transform: translateX(0);
+    box-shadow: 4px 0 32px rgba(0,0,0,0.2);
+  }
+
+  /* Content fills the full width — no margin for sidebar */
+  .admin-content,
+  .admin-content.collapsed {
+    margin-left: 0 !important;
+  }
+
+  /* Topbar */
+  .admin-topbar { padding: 0 14px; }
+  .topbar-user-name { display: none; }
+
+  /* Main content area */
+  .admin-main { padding: 16px; }
+
+  /* Show backdrop */
+  .mobile-sidebar-backdrop { display: block; }
+
+  /* Stats grid — 2 columns on tablet */
+  .stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
+
+  /* Master page header wraps */
+  .master-page-header { flex-wrap: wrap !important; }
+
+  /* Dashboard cards — 2 columns */
+  .dashboard-cards-grid { grid-template-columns: repeat(2, 1fr) !important; }
+
+  /* Dashboard API endpoints — 1 column */
+  .dashboard-api-grid { grid-template-columns: 1fr !important; }
+
+  /* Login — hide branding panel, panel fills full width */
+  .login-branding { display: none !important; }
+  .login-panel {
+    width: 100% !important;
+    padding: 48px 32px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-main { padding: 12px; }
+
+  /* Dashboard cards — 1 column on small phones */
+  .dashboard-cards-grid { grid-template-columns: 1fr !important; }
+
+  /* Stats grid — 2 columns on phone */
+  .stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
+
+  /* Modals slide up from bottom on phone */
+  .modal-backdrop { padding: 0; align-items: flex-end; }
+  .modal-panel {
+    border-radius: 16px 16px 0 0;
+    max-height: 95vh;
+    max-width: 100% !important;
+  }
+
+  /* Login */
+  .login-panel { padding: 40px 20px !important; }
+
+  /* Toolbar wraps search to full width */
+  .master-page-toolbar { flex-wrap: wrap; }
+  .master-page-toolbar .search-wrap { flex: 1 1 100%; max-width: 100% !important; }
+}

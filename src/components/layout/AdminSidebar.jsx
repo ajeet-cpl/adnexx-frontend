@@ -62,7 +62,7 @@ const NAV = [
   },
 ];
 
-export default function AdminSidebar({ collapsed, onToggle }) {
+export default function AdminSidebar({ collapsed, onToggle, mobileOpen, onMobileClose }) {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const session = getSession();
@@ -78,7 +78,7 @@ export default function AdminSidebar({ collapsed, onToggle }) {
   }
 
   return (
-    <nav className={`admin-sidebar ${collapsed ? 'collapsed' : ''}`}>
+    <nav className={`admin-sidebar ${collapsed ? 'collapsed' : ''} ${mobileOpen ? 'mobile-open' : ''}`}>
       {/* Logo */}
       <div
         style={{
@@ -155,6 +155,7 @@ export default function AdminSidebar({ collapsed, onToggle }) {
                   title={collapsed ? label : undefined}
                   className={`nav-item ${active ? 'active' : ''}`}
                   style={{ justifyContent: collapsed ? 'center' : 'flex-start', padding: collapsed ? '9px 0' : undefined }}
+                  onClick={onMobileClose}
                 >
                   <Icon size={14} style={{ flexShrink: 0 }} />
                   {!collapsed && <span>{label}</span>}

@@ -39,9 +39,10 @@ export default function MasterPage({
   templateFile,
 }) {
   return (
-    <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+    <div style={{ maxWidth: 1200, margin: '0 auto', width: '100%', minWidth: 0 }}>
       {/* Header */}
       <div
+        className="master-page-header"
         style={{
           display: 'flex',
           alignItems: 'flex-start',
@@ -88,7 +89,7 @@ export default function MasterPage({
         </div>
 
         {!readOnly && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
             {templateFile && (
               <a
                 href={`/templates/${templateFile}`}
@@ -116,6 +117,7 @@ export default function MasterPage({
       {/* Stats Row */}
       {stats && stats.length > 0 && (
         <div
+          className="stats-grid"
           style={{
             display: 'grid',
             gridTemplateColumns: `repeat(${stats.length}, 1fr)`,
@@ -135,8 +137,8 @@ export default function MasterPage({
       )}
 
       {/* Toolbar */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
-        <div style={{ position: 'relative', flex: 1, maxWidth: 380 }}>
+      <div className="master-page-toolbar" style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+        <div className="search-wrap" style={{ position: 'relative', flex: 1, maxWidth: 380 }}>
           <Search
             size={13}
             style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-3)' }}
@@ -175,6 +177,7 @@ export default function MasterPage({
 
       {/* Table */}
       <div className="table-wrap">
+        <div className="table-scroll">
         <table className="data-table" style={{ width: '100%' }}>
           <thead>
             <tr>
@@ -235,6 +238,7 @@ export default function MasterPage({
               ))}
           </tbody>
         </table>
+        </div>
       </div>
 
       {/* Pagination */}

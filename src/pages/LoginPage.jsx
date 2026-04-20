@@ -80,7 +80,7 @@ export default function LoginPage() {
     <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--bg)' }}>
 
       {/* ── Left branding panel ── */}
-      <div style={{
+      <div className="login-branding" style={{
         flex: 1,
         display: 'flex',
         flexDirection: 'column',
@@ -133,7 +133,7 @@ export default function LoginPage() {
       </div>
 
       {/* ── Right login panel ── */}
-      <div style={{
+      <div className="login-panel" style={{
         width: '480px',
         flexShrink: 0,
         display: 'flex',

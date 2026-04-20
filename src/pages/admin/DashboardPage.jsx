@@ -78,7 +78,7 @@ export default function AdminDashboard() {
   const visibleCards = isAdmin ? MASTERS : MASTERS.filter((m) => !m.adminOnly);
 
   return (
-    <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+    <div style={{ maxWidth: 1200, margin: '0 auto', width: '100%' }}>
       {/* Header */}
       <div style={{ marginBottom: 28 }}>
         <h1 style={{ fontSize: '1.5rem', fontWeight: 700, fontFamily: 'Syne, sans-serif', color: 'var(--text-1)', margin: 0 }}>
@@ -111,7 +111,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 14 }}>
+      <div className="dashboard-cards-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 14 }}>
         {visibleCards.map((card) => (
           <MasterCardWidget key={card.href} card={card} stats={stats} isLoading={isLoading} />
         ))}
@@ -124,7 +124,7 @@ export default function AdminDashboard() {
           <span style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-1)', fontFamily: 'IBM Plex Mono, monospace' }}>API Endpoints</span>
           <span style={{ fontSize: '0.7rem', color: 'var(--text-3)', marginLeft: 4 }}>All mapped to /api/v1/*</span>
         </div>
-        <div style={{ padding: '14px 20px', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '6px 16px' }}>
+        <div className="dashboard-api-grid" style={{ padding: '14px 20px', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '6px 16px' }}>
           {[...MASTERS.map((m) => m.endpoint), '/api/v1/dashboard/stats'].map((ep) => (
             <div key={ep} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '4px 0' }}>
               <span style={{ fontSize: '0.68rem', fontFamily: 'IBM Plex Mono, monospace', color: 'var(--green)', background: 'rgba(34,197,94,0.08)', padding: '1px 5px', borderRadius: 3 }}>GET</span>
