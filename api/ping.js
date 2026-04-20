@@ -1,10 +1,13 @@
 // Vercel serverless function — checks connectivity from Vercel's network to the backend.
 // Access it at: https://<your-vercel-domain>/api/ping
-// Requires env var BACKEND_URL set in Vercel dashboard (Settings → Environment Variables)
-// NOTE: VITE_* vars are build-time only and not available in serverless functions at runtime.
+// Optionally override the backend URL via Vercel dashboard → Settings → Environment Variables:
+//   BACKEND_URL — defaults to the same EC2 host configured in vercel.json rewrites
+// NOTE: VITE_* vars are build-time only and are not available in serverless functions at runtime.
+const BACKEND_DEFAULT = 'http://ec2-13-60-234-74.eu-north-1.compute.amazonaws.com:8080';
+
 export default async function handler(req, res) {
-  const target = process.env.BACKEND_URL || 'http://localhost:8080';
-  const healthPath = process.env.HEALTH_PATH || '/api/v1/actuator/health';
+  const target = process.env.BACKEND_URL || BACKEND_DEFAULT;
+  const healthPath = '/api/v1/actuator/health';
   const url = `${target.replace(/\/+$/, '')}${healthPath}`;
 
   try {
