@@ -330,7 +330,7 @@ function DonutChart({ active, restricted, closed, total, size = 90 }) {
       {ap > 0 && <circle {...base} stroke="var(--green)" strokeDasharray={`${ap * C - g} ${C}`} strokeDashoffset={0}                 strokeLinecap="butt" />}
       {rp > 0 && <circle {...base} stroke="var(--amber)" strokeDasharray={`${rp * C - g} ${C}`} strokeDashoffset={-(ap * C)}         strokeLinecap="butt" />}
       {cp > 0 && <circle {...base} stroke="var(--red)"   strokeDasharray={`${cp * C - g} ${C}`} strokeDashoffset={-((ap + rp) * C)} strokeLinecap="butt" />}
-      <text x={50} y={46} textAnchor="middle" fill={accent} fontSize={15} fontWeight={800} fontFamily="Syne, sans-serif">{pct}%</text>
+      <text x={50} y={46} textAnchor="middle" fill={accent} fontSize={15} fontWeight={800} fontFamily="Plus Jakarta Sans, sans-serif">{pct}%</text>
       <text x={50} y={59} textAnchor="middle" fill="var(--text-3)" fontSize={7}>Active</text>
     </svg>
   );
@@ -553,6 +553,10 @@ function buildRecentRows(allData) {
   const fmt  = d => d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) + ' ' + d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
   const push = (obj, ts) => rows.push({ ...obj, since: fmt(ts), sinceTs: ts.getTime() });
 
+  // Build airport map once for terminal status derivation
+  const airportMap = {};
+  (allData.airports?.rows || []).forEach(a => { airportMap[a.airportId] = a; });
+
   (allData.airports?.rows || []).filter(r => r.operationalStatus !== 'ACTIVE').forEach((r, i) =>
     push({ type: 'Airport', icon: Globe2, color: 'var(--cyan)', name: r.name, code: r.iataCode || '—', status: r.operationalStatus, reason: REASONS[i % REASONS.length], updatedBy: UPDATERS[i % UPDATERS.length] }, new Date(now - (i + 1) * 35 * 60000))
   );
@@ -568,9 +572,13 @@ function buildRecentRows(allData) {
   (allData.gates?.rows || []).filter(r => r.active).slice(0, 2).forEach((r, i) =>
     push({ type: 'Gate', icon: DoorOpen, color: 'var(--green)', name: `Gate ${r.code}`, code: r.airportCode || r.airportIataCode || '—', status: 'ACTIVE', reason: '—', updatedBy: UPDATERS[i % UPDATERS.length] }, new Date(now - (i + 1) * 15 * 60000))
   );
-  (allData.terminals?.rows || []).filter(r => !r.active).slice(0, 2).forEach((r, i) =>
-    push({ type: 'Terminal', icon: Building2, color: 'var(--amber)', name: r.name || `Terminal ${r.code || i + 1}`, code: r.airportCode || r.airportIataCode || '—', status: 'CLOSED', reason: REASONS[(i + 4) % REASONS.length], updatedBy: UPDATERS[(i + 2) % UPDATERS.length] }, new Date(now - (i + 1) * 45 * 60000))
-  );
+  (allData.terminals?.rows || []).filter(r => {
+    const s = airportMap[r.airportId]?.operationalStatus;
+    return s && s !== 'ACTIVE';
+  }).slice(0, 2).forEach((r, i) => {
+    const s = airportMap[r.airportId]?.operationalStatus || 'CLOSED';
+    push({ type: 'Terminal', icon: Building2, color: 'var(--amber)', name: r.name || `Terminal ${r.code || i + 1}`, code: r.airportCode || r.airportIataCode || '—', status: s }, new Date(now - (i + 1) * 45 * 60000));
+  });
   (allData.groundHandlers?.rows || []).filter(r => !r.active).slice(0, 2).forEach((r, i) =>
     push({ type: 'Ground Handler', icon: Truck, color: 'var(--green)', name: r.name || r.code || `Handler ${i + 1}`, code: r.airportCode || r.airportIataCode || '—', status: 'CLOSED', reason: REASONS[(i + 5) % REASONS.length], updatedBy: UPDATERS[(i + 3) % UPDATERS.length] }, new Date(now - (i + 1) * 30 * 60000))
   );
@@ -691,7 +699,19 @@ export default function OperationalStatusPage() {
   const groundHandlers = useResourceData(RESOURCES[7], interval);
   const countries      = useResourceData(RESOURCES[8], interval);
   const aircrafts      = useResourceData(RESOURCES[9], interval);
-  const allData = { airports, gates, stands, runways, belts, checkin, terminals, groundHandlers, countries, aircrafts };
+
+  // Terminals have no own `active` field — derive status from parent airport's operationalStatus
+  const terminalCounts = useMemo(() => {
+    const airportMap = {};
+    airports.rows.forEach(a => { airportMap[a.airportId] = a; });
+    const rows = terminals.rows;
+    const total = rows.length;
+    const active     = rows.filter(r => airportMap[r.airportId]?.operationalStatus === 'ACTIVE').length;
+    const restricted = rows.filter(r => airportMap[r.airportId]?.operationalStatus === 'RESTRICTED').length;
+    return { total, active, restricted, closed: total - active - restricted };
+  }, [terminals.rows, airports.rows]);
+
+  const allData = { airports, gates, stands, runways, belts, checkin, terminals: { ...terminals, counts: terminalCounts }, groundHandlers, countries, aircrafts };
 
   const handleRefresh = useCallback(() => {
     [airports, gates, stands, runways, belts, checkin, terminals, groundHandlers, countries, aircrafts].forEach(({ mutate }) => mutate());

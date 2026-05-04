@@ -11,10 +11,11 @@ import { PAGE_SIZE } from '@/config/env';
 
 const ATTRIBUTE_TYPES = ['DOMESTIC', 'INTERNATIONAL', 'MIXED'];
 
-const EMPTY = { tenantId: '', airportId: '', code: '', name: '', attributes: { type: '' }, validFrom: null, validTo: null };
+const EMPTY = { tenantId: '', airportId: '', code: '', name: '', attributes: { type: '' }, validFrom: null, validTo: null, active: true };
 
 export default function TerminalsPage() {
   const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(EMPTY);
@@ -23,7 +24,8 @@ export default function TerminalsPage() {
   const fileInputRef = useRef(null);
 
   const { data: rawData, isLoading, error, mutate } = useSWR(`/api/v1/terminals?page=${page}&size=${PAGE_SIZE}`, adminFetcher);
-  const data = Array.isArray(rawData) ? rawData : (rawData?.content || []);
+  // Normalize: if backend doesn't return `active`, default it to true
+  const data = (Array.isArray(rawData) ? rawData : (rawData?.content || [])).map(t => ({ ...t, active: t.active !== false }));
   const totalPages = rawData?.totalPages ?? 1;
   const { data: airportsData } = useSWR('/api/v1/airports?page=0&size=1000', adminFetcher);
   const airports = Array.isArray(airportsData) ? airportsData : (airportsData?.content || []);
@@ -38,14 +40,18 @@ export default function TerminalsPage() {
   const getStatus = (t) => airportMap[t.airportId]?.operationalStatus || 'UNKNOWN';
 
   const filtered = useMemo(() => {
-    if (!search) return data;
+    let rows = data;
+    if (statusFilter === 'active') rows = rows.filter((t) => t.active);
+    else if (statusFilter === 'closed') rows = rows.filter((t) => !t.active);
+    if (!search) return rows;
     const q = search.toLowerCase();
-    return data.filter((t) => (t.code || '').toLowerCase().includes(q) || (t.name || '').toLowerCase().includes(q) || (t.airportName || '').toLowerCase().includes(q));
-  }, [data, search]);
+    return rows.filter((t) => (t.code || '').toLowerCase().includes(q) || (t.name || '').toLowerCase().includes(q) || (t.airportName || '').toLowerCase().includes(q));
+  }, [data, search, statusFilter]);
 
   const stats = [
     { label: 'Total', value: data.length },
-    { label: 'Active', value: data.filter((t) => getStatus(t) === 'ACTIVE').length, color: 'var(--green)' },
+    { label: 'Active', value: data.filter((t) => t.active).length, color: 'var(--green)' },
+    { label: 'Inactive', value: data.filter((t) => !t.active).length, color: 'var(--red)' },
     { label: 'Airports', value: new Set(data.map((t) => t.airportId).filter(Boolean)).size, color: 'var(--blue)' },
   ];
 
@@ -55,7 +61,7 @@ export default function TerminalsPage() {
     { key: 'airportName', label: 'Airport', width: '180px', render: (r) => r.airportName || '—' },
     { key: 'type', label: 'Type', width: '180px', render: (r) => r.attributes?.type || '—' },
     { key: 'airportIataCode', label: 'IATA', width: '80px', render: (r) => r.airportIataCode || '—' },
-    { key: 'operationalStatus', label: 'Status', width: '90px', render: (r) => { const s = getStatus(r); return <span className={`badge ${s === 'ACTIVE' ? 'badge-green' : 'badge-slate'}`}>{s === 'ACTIVE' ? 'Active' : 'Inactive'}</span>; } },
+    { key: 'active', label: 'Status', width: '90px', render: (r) => <span className={`badge ${r.active ? 'badge-green' : 'badge-slate'}`}>{r.active ? 'Active' : 'Inactive'}</span> },
   ];
 
   function openAdd() {
@@ -74,8 +80,19 @@ export default function TerminalsPage() {
       attributes: row.attributes || { type: '' },
       validFrom: row.validFrom || null,
       validTo: row.validTo || null,
+      active: row.active ?? true,
     });
     setModalOpen(true);
+  }
+
+  async function handleToggle(row) {
+    try {
+      await TerminalAPI.update(row.terminalId, { ...row, active: !row.active });
+      toast.success('Status Updated', `${row.name || row.code} is now ${!row.active ? 'active' : 'inactive'}`);
+      mutate();
+    } catch (e) {
+      toast.error('Toggle Failed', e instanceof Error ? e.message : 'Failed to update status');
+    }
   }
 
   async function handleSubmit() {
@@ -88,6 +105,7 @@ export default function TerminalsPage() {
         validFrom: form.validFrom || null,
         validTo: form.validTo || null,
         tenantId: form.tenantId || getTenantId(),
+        active: form.active ?? true,
       };
       if (editing) {
         await TerminalAPI.update(editing.terminalId, payload);
@@ -133,6 +151,11 @@ export default function TerminalsPage() {
         loading={isLoading}
         error={error?.message}
         idKey="terminalId"
+        hasToggle
+        activeKey="active"
+        onToggle={handleToggle}
+        onStatusFilterChange={setStatusFilter}
+        statusFilter={statusFilter}
         searchValue={search}
         onSearchChange={setSearch}
         onRefresh={() => mutate()}

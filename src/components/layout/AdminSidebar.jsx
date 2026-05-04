@@ -23,7 +23,6 @@ import {
   PlaneTakeoff,
   ShieldCheckIcon,
   User2,
-  Activity,
 } from 'lucide-react';
 
 const NAV = [
@@ -61,7 +60,6 @@ const NAV = [
   {
     section: 'OPERATIONS',
     items: [
-      { href: '/admin/operational-status', label: 'Operational Status', icon: Activity },
       { href: '/admin/ground-handlers', label: 'Ground Handlers', icon: Truck },
       { href: '/admin/delay-codes', label: 'Delay Codes', icon: AlertOctagon },
     ],
