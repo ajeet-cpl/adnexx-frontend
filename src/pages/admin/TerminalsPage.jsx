@@ -53,6 +53,7 @@ export default function TerminalsPage() {
     { key: 'code', label: 'Code', width: '80px', render: (r) => <span className="badge badge-blue">{r.code}</span> },
     { key: 'name', label: 'Terminal Name', render: (r) => r.name || '—' },
     { key: 'airportName', label: 'Airport', width: '180px', render: (r) => r.airportName || '—' },
+    { key: 'type', label: 'Type', width: '180px', render: (r) => r.attributes?.type || '—' },
     { key: 'airportIataCode', label: 'IATA', width: '80px', render: (r) => r.airportIataCode || '—' },
     { key: 'operationalStatus', label: 'Status', width: '90px', render: (r) => { const s = getStatus(r); return <span className={`badge ${s === 'ACTIVE' ? 'badge-green' : 'badge-slate'}`}>{s === 'ACTIVE' ? 'Active' : 'Inactive'}</span>; } },
   ];

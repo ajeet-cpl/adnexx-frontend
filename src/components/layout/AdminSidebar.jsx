@@ -19,6 +19,10 @@ import {
   ShieldCheck,
   Database,
   Cpu,
+  LandPlot,
+  PlaneTakeoff,
+  ShieldCheckIcon,
+  User2
 } from 'lucide-react';
 
 const NAV = [
@@ -29,8 +33,14 @@ const NAV = [
   {
     section: 'REFERENCE DATA',
     items: [
-      { href: '/admin/airlines', label: 'Airlines', icon: Plane },
       { href: '/admin/airports', label: 'Airports', icon: Globe2 },
+
+      { href: '/admin/areas', label: 'Areas', icon: LandPlot },
+      { href: '/admin/dsc', label: 'Dsc', icon: PlaneTakeoff },
+      { href: '/admin/dgca', label: 'Dgca', icon: ShieldCheckIcon },
+      { href: '/admin/passenger-data', label: 'Passenger Data', icon: User2 },
+
+      { href: '/admin/airlines', label: 'Airlines', icon: Plane },
       { href: '/admin/aircraft-types', label: 'Aircraft Types', icon: Cpu },
       { href: '/admin/countries', label: 'Countries', icon: Globe2 },
     ],

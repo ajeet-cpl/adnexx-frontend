@@ -55,8 +55,10 @@ export default function AppRoutes() {
 
         <Route path="/admin" element={<ProtectedRoute><AdminRouteLayout /></ProtectedRoute>}>
           <Route index element={<DashboardPage />} />
-          <Route path="airlines" element={<AirlinesPage />} />
           <Route path="airports" element={<AirportsPage />} />
+          <Route path="area" element={<AirportsPage />} />
+          <Route path="airlines" element={<AirlinesPage />} />
+          
           <Route path="aircraft-types" element={<AircraftTypesPage />} />
           <Route path="belts" element={<BeltsPage />} />
           <Route path="checkin-desks" element={<CheckinDesksPage />} />
