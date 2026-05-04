@@ -498,8 +498,7 @@ function ResourceSummaryTable({ allData }) {
       <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--border)' }}>
         <span style={{ fontSize: '0.84rem', fontWeight: 700, fontFamily: 'Syne, sans-serif', color: 'var(--text-1)' }}>Resource Summary</span>
       </div>
-      <div className="table-wrap" style={{ flex: 1 }}>
-        <div className="table-scroll">
+      <div style={{ flex: 1, overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
           <table className="data-table" style={{ width: '100%' }}>
             <thead>
               <tr>
@@ -539,7 +538,6 @@ function ResourceSummaryTable({ allData }) {
               })}
             </tbody>
           </table>
-        </div>
       </div>
       <div style={{ padding: '8px 16px', borderTop: '1px solid var(--border)' }}>
         <span style={{ fontSize: '0.68rem', color: 'var(--text-3)' }}>Utilization % is based on average resource occupancy</span>
@@ -553,35 +551,39 @@ function buildRecentRows(allData) {
   const rows = [];
   const now  = new Date();
   const fmt  = d => d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) + ' ' + d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+  const push = (obj, ts) => rows.push({ ...obj, since: fmt(ts), sinceTs: ts.getTime() });
 
   (allData.airports?.rows || []).filter(r => r.operationalStatus !== 'ACTIVE').forEach((r, i) =>
-    rows.push({ type: 'Airport', icon: Globe2, color: 'var(--cyan)', name: r.name, code: r.iataCode || '—', status: r.operationalStatus, reason: REASONS[i % REASONS.length], since: fmt(new Date(now - (i + 1) * 35 * 60000)), updatedBy: UPDATERS[i % UPDATERS.length] })
+    push({ type: 'Airport', icon: Globe2, color: 'var(--cyan)', name: r.name, code: r.iataCode || '—', status: r.operationalStatus, reason: REASONS[i % REASONS.length], updatedBy: UPDATERS[i % UPDATERS.length] }, new Date(now - (i + 1) * 35 * 60000))
   );
   (allData.gates?.rows || []).filter(r => !r.active).slice(0, 4).forEach((r, i) =>
-    rows.push({ type: 'Gate', icon: DoorOpen, color: 'var(--green)', name: `Gate ${r.code}`, code: r.airportCode || r.airportIataCode || '—', status: 'CLOSED', reason: REASONS[(i + 1) % REASONS.length], since: fmt(new Date(now - (i + 1) * 25 * 60000)), updatedBy: UPDATERS[(i + 2) % UPDATERS.length] })
+    push({ type: 'Gate', icon: DoorOpen, color: 'var(--green)', name: `Gate ${r.code}`, code: r.airportCode || r.airportIataCode || '—', status: 'CLOSED', reason: REASONS[(i + 1) % REASONS.length], updatedBy: UPDATERS[(i + 2) % UPDATERS.length] }, new Date(now - (i + 1) * 25 * 60000))
   );
   (allData.runways?.rows || []).filter(r => !r.active).slice(0, 2).forEach((r, i) =>
-    rows.push({ type: 'Runway', icon: Waypoints, color: 'var(--cyan)', name: `Runway ${r.code}`, code: r.airportCode || r.airportIataCode || '—', status: 'CLOSED', reason: REASONS[(i + 2) % REASONS.length], since: fmt(new Date(now - (i + 2) * 20 * 60000)), updatedBy: UPDATERS[(i + 3) % UPDATERS.length] })
+    push({ type: 'Runway', icon: Waypoints, color: 'var(--cyan)', name: `Runway ${r.code}`, code: r.airportCode || r.airportIataCode || '—', status: 'CLOSED', reason: REASONS[(i + 2) % REASONS.length], updatedBy: UPDATERS[(i + 3) % UPDATERS.length] }, new Date(now - (i + 2) * 20 * 60000))
   );
   (allData.belts?.rows || []).filter(r => !r.active).slice(0, 2).forEach((r, i) =>
-    rows.push({ type: 'Baggage Belt', icon: Luggage, color: 'var(--violet)', name: `Belt ${r.code}`, code: r.airportCode || r.airportIataCode || '—', status: 'CLOSED', reason: REASONS[(i + 3) % REASONS.length], since: fmt(new Date(now - (i + 1) * 50 * 60000)), updatedBy: UPDATERS[(i + 1) % UPDATERS.length] })
+    push({ type: 'Baggage Belt', icon: Luggage, color: 'var(--violet)', name: `Belt ${r.code}`, code: r.airportCode || r.airportIataCode || '—', status: 'CLOSED', reason: REASONS[(i + 3) % REASONS.length], updatedBy: UPDATERS[(i + 1) % UPDATERS.length] }, new Date(now - (i + 1) * 50 * 60000))
   );
   (allData.gates?.rows || []).filter(r => r.active).slice(0, 2).forEach((r, i) =>
-    rows.push({ type: 'Gate', icon: DoorOpen, color: 'var(--green)', name: `Gate ${r.code}`, code: r.airportCode || r.airportIataCode || '—', status: 'ACTIVE', reason: '—', since: fmt(new Date(now - (i + 1) * 15 * 60000)), updatedBy: UPDATERS[i % UPDATERS.length] })
+    push({ type: 'Gate', icon: DoorOpen, color: 'var(--green)', name: `Gate ${r.code}`, code: r.airportCode || r.airportIataCode || '—', status: 'ACTIVE', reason: '—', updatedBy: UPDATERS[i % UPDATERS.length] }, new Date(now - (i + 1) * 15 * 60000))
   );
   (allData.terminals?.rows || []).filter(r => !r.active).slice(0, 2).forEach((r, i) =>
-    rows.push({ type: 'Terminal', icon: Building2, color: 'var(--amber)', name: r.name || `Terminal ${r.code || i + 1}`, code: r.airportCode || r.airportIataCode || '—', status: 'CLOSED', reason: REASONS[(i + 4) % REASONS.length], since: fmt(new Date(now - (i + 1) * 45 * 60000)), updatedBy: UPDATERS[(i + 2) % UPDATERS.length] })
+    push({ type: 'Terminal', icon: Building2, color: 'var(--amber)', name: r.name || `Terminal ${r.code || i + 1}`, code: r.airportCode || r.airportIataCode || '—', status: 'CLOSED', reason: REASONS[(i + 4) % REASONS.length], updatedBy: UPDATERS[(i + 2) % UPDATERS.length] }, new Date(now - (i + 1) * 45 * 60000))
   );
   (allData.groundHandlers?.rows || []).filter(r => !r.active).slice(0, 2).forEach((r, i) =>
-    rows.push({ type: 'Ground Handler', icon: Truck, color: 'var(--green)', name: r.name || r.code || `Handler ${i + 1}`, code: r.airportCode || r.airportIataCode || '—', status: 'CLOSED', reason: REASONS[(i + 5) % REASONS.length], since: fmt(new Date(now - (i + 1) * 30 * 60000)), updatedBy: UPDATERS[(i + 3) % UPDATERS.length] })
+    push({ type: 'Ground Handler', icon: Truck, color: 'var(--green)', name: r.name || r.code || `Handler ${i + 1}`, code: r.airportCode || r.airportIataCode || '—', status: 'CLOSED', reason: REASONS[(i + 5) % REASONS.length], updatedBy: UPDATERS[(i + 3) % UPDATERS.length] }, new Date(now - (i + 1) * 30 * 60000))
   );
   (allData.aircrafts?.rows || []).filter(r => r.status && r.status !== 'ACTIVE').slice(0, 2).forEach((r, i) =>
-    rows.push({ type: 'Aircraft', icon: PlaneTakeoff, color: 'var(--blue)', name: r.tailNumber || r.registration || `Aircraft ${i + 1}`, code: r.airportCode || r.airportIataCode || '—', status: r.status === 'MAINTENANCE' ? 'RESTRICTED' : 'CLOSED', reason: REASONS[(i + 1) % REASONS.length], since: fmt(new Date(now - (i + 1) * 40 * 60000)), updatedBy: UPDATERS[(i + 4) % UPDATERS.length] })
+    push({ type: 'Aircraft', icon: PlaneTakeoff, color: 'var(--blue)', name: r.tailNumber || r.registration || `Aircraft ${i + 1}`, code: r.airportCode || r.airportIataCode || '—', status: r.status === 'MAINTENANCE' ? 'RESTRICTED' : 'CLOSED', reason: REASONS[(i + 1) % REASONS.length], updatedBy: UPDATERS[(i + 4) % UPDATERS.length] }, new Date(now - (i + 1) * 40 * 60000))
   );
+
+  // Sort newest first
+  rows.sort((a, b) => b.sinceTs - a.sinceTs);
   return rows;
 }
 
-const PAGE_ROWS = 5;
+const PAGE_ROWS = 10;
 
 function RecentlyChangedTable({ allData, selectedAirport }) {
   const [page, setPage]    = useState(0);
@@ -609,8 +611,7 @@ function RecentlyChangedTable({ allData, selectedAirport }) {
           All resources are operational
         </div>
       ) : (
-        <div className="table-wrap" style={{ flex: 1 }}>
-          <div className="table-scroll">
+        <div style={{ flex: 1, overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
             <table className="data-table" style={{ width: '100%' }}>
               <thead>
                 <tr>
@@ -618,9 +619,7 @@ function RecentlyChangedTable({ allData, selectedAirport }) {
                   <th>Resource Name</th>
                   <th style={{ width: 55 }}>Airport</th>
                   <th style={{ width: 100 }}>Status</th>
-                  <th>Reason</th>
                   <th>Since</th>
-                  <th>Updated By</th>
                 </tr>
               </thead>
               <tbody>
@@ -642,15 +641,12 @@ function RecentlyChangedTable({ allData, selectedAirport }) {
                           {row.status}
                         </span>
                       </td>
-                      <td style={{ fontSize: '0.75rem', color: 'var(--text-3)' }}>{row.reason}</td>
                       <td style={{ fontSize: '0.72rem', color: 'var(--text-3)', whiteSpace: 'nowrap' }}>{row.since}</td>
-                      <td style={{ fontSize: '0.75rem', color: 'var(--text-2)' }}>{row.updatedBy}</td>
                     </tr>
                   );
                 })}
               </tbody>
             </table>
-          </div>
         </div>
       )}
 
