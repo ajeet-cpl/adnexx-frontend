@@ -71,7 +71,7 @@ export default function DelayCodesPage() {
       label: 'Code',
       width: '70px',
       render: (r) => (
-        <span style={{ fontFamily: 'IBM Plex Mono, monospace', fontWeight: 700, color: 'var(--amber)' }}>
+        <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, color: 'var(--amber)' }}>
           {r.numericCode || '—'}
         </span>
       ),

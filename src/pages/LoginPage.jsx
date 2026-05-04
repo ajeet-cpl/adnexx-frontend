@@ -108,9 +108,9 @@ export default function LoginPage() {
 
         {/* Hero text */}
         <div style={{ marginBottom: '48px' }}>
-          <h1 style={{ fontSize: '52px', fontWeight: 800, lineHeight: 1.1, color: 'var(--text-1)', margin: '0 0 4px', fontFamily: 'Syne, sans-serif' }}>Airport</h1>
-          <h1 style={{ fontSize: '52px', fontWeight: 800, lineHeight: 1.1, color: 'var(--blue)', margin: '0 0 4px', fontFamily: 'Syne, sans-serif' }}>Operations</h1>
-          <h1 style={{ fontSize: '52px', fontWeight: 800, lineHeight: 1.1, color: 'var(--text-1)', margin: '0 0 24px', fontFamily: 'Syne, sans-serif' }}>Control Platform</h1>
+          <h1 style={{ fontSize: '52px', fontWeight: 800, lineHeight: 1.1, color: 'var(--text-1)', margin: '0 0 4px', fontFamily: 'var(--font-display)' }}>Airport</h1>
+          <h1 style={{ fontSize: '52px', fontWeight: 800, lineHeight: 1.1, color: 'var(--blue)', margin: '0 0 4px', fontFamily: 'var(--font-display)' }}>Operations</h1>
+          <h1 style={{ fontSize: '52px', fontWeight: 800, lineHeight: 1.1, color: 'var(--text-1)', margin: '0 0 24px', fontFamily: 'var(--font-display)' }}>Control Platform</h1>
           <p style={{ fontSize: '15px', color: 'var(--text-2)', maxWidth: '380px', lineHeight: 1.7, margin: 0 }}>
             Real-time management of gates, stands, terminals, and runways with intelligent automation and conflict resolution.
           </p>
@@ -143,7 +143,7 @@ export default function LoginPage() {
         background: 'var(--surface-1)',
       }}>
         <div style={{ marginBottom: '40px' }}>
-          <h2 style={{ fontSize: '32px', fontWeight: 700, color: 'var(--text-1)', margin: '0 0 8px', fontFamily: 'Syne, sans-serif' }}>Sign in</h2>
+          <h2 style={{ fontSize: '32px', fontWeight: 700, color: 'var(--text-1)', margin: '0 0 8px', fontFamily: 'var(--font-display)' }}>Sign in</h2>
         </div>
 
         {/* Error message */}

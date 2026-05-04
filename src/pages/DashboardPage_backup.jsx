@@ -80,7 +80,7 @@
 //             <Icon size={14} color={entity.color} />
 //             <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-2)' }}>{entity.label}</span>
 //           </div>
-//           <span style={{ fontSize: '0.78rem', fontWeight: 700, color: accentColor, fontFamily: 'IBM Plex Mono, monospace' }}>
+//           <span style={{ fontSize: '0.78rem', fontWeight: 700, color: accentColor, fontFamily: 'var(--font-mono)' }}>
 //             {isLoading ? '—' : `${pct}%`}
 //           </span>
 //         </div>
@@ -152,7 +152,7 @@
 //             <Globe2 size={14} color="var(--cyan)" />
 //             <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-2)' }}>Airports</span>
 //           </div>
-//           <span style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-3)', fontFamily: 'IBM Plex Mono, monospace' }}>
+//           <span style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-3)', fontFamily: 'var(--font-mono)' }}>
 //             {isLoading ? '—' : `${total} total`}
 //           </span>
 //         </div>
@@ -209,7 +209,7 @@
 //           </div>
 //           <ArrowRight size={14} color="var(--text-3)" />
 //         </div>
-//         <div style={{ fontSize: '1.6rem', fontWeight: 700, fontFamily: 'Syne, sans-serif', color: card.color, lineHeight: 1, marginBottom: 4 }}>
+//         <div style={{ fontSize: '1.6rem', fontWeight: 700, fontFamily: 'var(--font-display)', color: card.color, lineHeight: 1, marginBottom: 4 }}>
 //           {isLoading ? '—' : count.toLocaleString()}
 //         </div>
 //         <div style={{ fontSize: '0.84rem', fontWeight: 600, color: 'var(--text-1)', marginBottom: 3 }}>{card.label}</div>
@@ -228,7 +228,7 @@
 //     <div style={{ maxWidth: 1200, margin: '0 auto', width: '100%' }}>
 //       {/* Header */}
 //       <div style={{ marginBottom: 28 }}>
-//         <h1 style={{ fontSize: '1.5rem', fontWeight: 700, fontFamily: 'Syne, sans-serif', color: 'var(--text-1)', margin: 0 }}>
+//         <h1 style={{ fontSize: '1.5rem', fontWeight: 700, fontFamily: 'var(--font-display)', color: 'var(--text-1)', margin: 0 }}>
 //           Master Data Administration
 //         </h1>
 //         <p style={{ fontSize: '0.82rem', color: 'var(--text-2)', marginTop: 4 }}>Manage all reference and configuration data for the AODB platform</p>
@@ -268,7 +268,7 @@
 //       <div style={{ marginTop: 32 }}>
 //         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
 //           <Activity size={15} color="var(--blue)" />
-//           <span style={{ fontSize: '0.88rem', fontWeight: 700, fontFamily: 'Syne, sans-serif', color: 'var(--text-1)' }}>
+//           <span style={{ fontSize: '0.88rem', fontWeight: 700, fontFamily: 'var(--font-display)', color: 'var(--text-1)' }}>
 //             Operational Status KPIs
 //           </span>
 //           <span style={{ fontSize: '0.72rem', color: 'var(--text-3)', marginLeft: 2 }}>Active vs Closed resource ratios</span>
@@ -285,14 +285,14 @@
 //       <div style={{ marginTop: 36, background: 'var(--surface-1)', border: '1px solid var(--border)', borderRadius: 10, overflow: 'hidden' }}>
 //         <div style={{ padding: '14px 20px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: 8 }}>
 //           <div style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--green)' }} />
-//           <span style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-1)', fontFamily: 'IBM Plex Mono, monospace' }}>API Endpoints</span>
+//           <span style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-1)', fontFamily: 'var(--font-mono)' }}>API Endpoints</span>
 //           <span style={{ fontSize: '0.7rem', color: 'var(--text-3)', marginLeft: 4 }}>All mapped to /api/v1/*</span>
 //         </div>
 //         <div className="dashboard-api-grid" style={{ padding: '14px 20px', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '6px 16px' }}>
 //           {[...MASTERS.map((m) => m.endpoint), '/api/v1/dashboard/stats'].map((ep) => (
 //             <div key={ep} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '4px 0' }}>
-//               <span style={{ fontSize: '0.68rem', fontFamily: 'IBM Plex Mono, monospace', color: 'var(--green)', background: 'rgba(34,197,94,0.08)', padding: '1px 5px', borderRadius: 3 }}>GET</span>
-//               <span style={{ fontSize: '0.72rem', fontFamily: 'IBM Plex Mono, monospace', color: 'var(--text-3)' }}>{ep}</span>
+//               <span style={{ fontSize: '0.68rem', fontFamily: 'var(--font-mono)', color: 'var(--green)', background: 'rgba(34,197,94,0.08)', padding: '1px 5px', borderRadius: 3 }}>GET</span>
+//               <span style={{ fontSize: '0.72rem', fontFamily: 'var(--font-mono)', color: 'var(--text-3)' }}>{ep}</span>
 //             </div>
 //           ))}
 //         </div>

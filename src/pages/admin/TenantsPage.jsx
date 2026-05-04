@@ -53,7 +53,7 @@ export default function TenantsPage() {
   ];
 
   const columns = [
-    { key: 'code', label: 'Code', width: '100px', render: (r) => <span style={{ fontFamily: 'IBM Plex Mono, monospace', fontWeight: 700, color: 'var(--blue)' }}>{r.code}</span> },
+    { key: 'code', label: 'Code', width: '100px', render: (r) => <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, color: 'var(--blue)' }}>{r.code}</span> },
     { key: 'name', label: 'Tenant Name' },
     { key: 'country', label: 'Country', width: '120px', render: (r) => r.country || '—' },
     { key: 'email', label: 'Email', width: '180px', render: (r) => r.email || '—' },
@@ -63,7 +63,7 @@ export default function TenantsPage() {
       width: '130px',
       render: (r) =>
         r.createdAt ? (
-          <span style={{ fontSize: '0.75rem', color: 'var(--text-3)', fontFamily: 'IBM Plex Mono, monospace' }}>
+          <span style={{ fontSize: '0.75rem', color: 'var(--text-3)', fontFamily: 'var(--font-mono)' }}>
             {new Date(r.createdAt).toLocaleDateString()}
           </span>
         ) : '—',

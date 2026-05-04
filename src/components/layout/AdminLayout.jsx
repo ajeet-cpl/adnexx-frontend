@@ -72,7 +72,7 @@ export default function AdminLayout({ children }) {
                       fontSize: '0.78rem',
                       color: i === crumbs.length - 1 ? 'var(--text-1)' : 'var(--text-3)',
                       fontWeight: i === crumbs.length - 1 ? 600 : 400,
-                      fontFamily: 'IBM Plex Mono, monospace',
+                      fontFamily: 'var(--font-mono)',
                       letterSpacing: '0.02em',
                     }}
                   >

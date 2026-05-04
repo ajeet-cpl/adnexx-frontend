@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -49,6 +49,11 @@
   /* Sidebar */
   --sidebar-w: 240px;
   --topbar-h: 56px;
+
+  /* Typography */
+  --font-body:    'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono', 'Fira Code', monospace;
 }
 
 /* ============================================================================
@@ -252,10 +257,39 @@
 html, body {
   background: var(--bg);
   color: var(--text-1);
-  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  font-family: var(--font-body);
   font-size: 14px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  text-rendering: optimizeLegibility;
+}
+
+/* Ensure all form elements inherit body font */
+input, button, select, textarea {
+  font-family: var(--font-body);
+  font-size: inherit;
+}
+
+/* Recharts global font overrides */
+.recharts-cartesian-axis-tick text,
+.recharts-legend-item-text,
+.recharts-tooltip-label,
+.recharts-tooltip-item,
+.recharts-label {
+  font-family: var(--font-body) !important;
+  font-size: 12px !important;
+  fill: var(--text-2);
+}
+
+.recharts-default-tooltip {
+  font-family: var(--font-body) !important;
+  font-size: 12px !important;
+  background: var(--surface-1) !important;
+  border: 1px solid var(--border-mid) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15) !important;
 }
 
 /* ============================================================================
@@ -269,8 +303,8 @@ html, body {
 /* ============================================================================
    Typography
    ============================================================================ */
-.font-display { font-family: 'Syne', sans-serif; }
-.font-mono    { font-family: 'IBM Plex Mono', monospace; }
+.font-display { font-family: var(--font-display); }
+.font-mono    { font-family: var(--font-mono); }
 
 .text-1 { color: var(--text-1); }
 .text-2 { color: var(--text-2); }
@@ -353,7 +387,7 @@ html, body {
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--text-3);
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
 }
 
 .nav-item {
@@ -460,7 +494,7 @@ html, body {
   padding: 8px 16px; cursor: pointer; border: none;
   transition: all 0.2s cubic-bezier(0.4,0,0.2,1);
   white-space: nowrap; outline: none;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: var(--font-body);
   position: relative;
 }
 .btn:focus-visible {
@@ -579,7 +613,7 @@ html, body {
   margin-bottom: 6px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
 }
 
 .field-input,
@@ -596,7 +630,7 @@ html, body {
   transition: border-color 0.2s cubic-bezier(0.4,0,0.2,1),
               box-shadow 0.2s cubic-bezier(0.4,0,0.2,1),
               background-color 0.2s;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: var(--font-body);
 }
 
 .field-input::placeholder,
@@ -670,7 +704,7 @@ html, body {
   transition: border-color 0.2s cubic-bezier(0.4,0,0.2,1),
               box-shadow 0.2s cubic-bezier(0.4,0,0.2,1),
               background-color 0.2s;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: var(--font-body);
   text-align: left;
 }
 .custom-select-trigger:hover:not(.disabled):not(.open) {
@@ -749,7 +783,7 @@ html, body {
   font-size: 0.78rem;
   color: var(--text-1);
   outline: none;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: var(--font-body);
   transition: border-color 0.15s, box-shadow 0.15s;
 }
 .custom-select-search-input::placeholder {
@@ -781,7 +815,7 @@ html, body {
   background: transparent;
   color: var(--text-2);
   font-size: 0.82rem;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: var(--font-body);
   cursor: pointer;
   text-align: left;
   transition: background 0.12s, color 0.12s;
@@ -821,7 +855,7 @@ html, body {
 .field-textarea {
   resize: vertical;
   min-height: 80px;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 0.78rem;
   line-height: 1.6;
 }
@@ -894,7 +928,7 @@ html, body {
   background: var(--surface-2);
   border-bottom: 1px solid var(--border);
   white-space: nowrap;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   position: sticky;
   top: 0;
   z-index: 5;
@@ -906,6 +940,7 @@ html, body {
   color: var(--text-1);
   border-bottom: 1px solid var(--border);
   vertical-align: middle;
+  font-family: var(--font-body);
 }
 
 .data-table tr:last-child td { border-bottom: none; }
@@ -918,8 +953,8 @@ html, body {
 .badge {
   display: inline-flex; align-items: center; gap: 4px;
   padding: 2px 8px; border-radius: 4px;
-  font-size: 11px; font-weight: 500;
-  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; font-weight: 600;
+  font-family: var(--font-mono);
   letter-spacing: 0.03em;
 }
 

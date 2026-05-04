@@ -121,8 +121,8 @@ export default function AdminSidebar({ collapsed, onToggle, mobileOpen, onMobile
               <Database size={14} color="#fff" />
             </div>
             <div>
-              <div className="sidebar-title" style={{ fontSize: '0.82rem', fontWeight: 700, fontFamily: 'Syne, sans-serif', letterSpacing: '0.04em' }}>Aerosis</div>
-              <div className="sidebar-subtitle" style={{ fontSize: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase', fontFamily: 'IBM Plex Mono, monospace' }}>Master Data</div>
+              <div className="sidebar-title" style={{ fontSize: '0.82rem', fontWeight: 700, fontFamily: 'var(--font-display)', letterSpacing: '0.04em' }}>Aerosis</div>
+              <div className="sidebar-subtitle" style={{ fontSize: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }}>Master Data</div>
             </div>
           </div>
         )}
@@ -186,7 +186,7 @@ export default function AdminSidebar({ collapsed, onToggle, mobileOpen, onMobile
             <div className="sidebar-username" style={{ fontSize: '0.78rem', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
               {session.name || session.email}
             </div>
-            <div className="sidebar-role" style={{ fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.06em', fontFamily: 'IBM Plex Mono, monospace' }}>
+            <div className="sidebar-role" style={{ fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.06em', fontFamily: 'var(--font-mono)' }}>
               {session.role || 'admin'}
             </div>
           </div>

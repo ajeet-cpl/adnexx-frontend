@@ -51,8 +51,8 @@ export default function CountriesPage() {
   ];
 
   const columns = [
-    { key: 'iso2', label: 'ISO2', width: '60px', render: (r) => <span style={{ fontFamily: 'IBM Plex Mono, monospace', fontWeight: 700 }}>{r.iso2}</span> },
-    { key: 'iso3', label: 'ISO3', width: '60px', render: (r) => <span style={{ fontFamily: 'IBM Plex Mono, monospace', color: 'var(--text-3)' }}>{r.iso3}</span> },
+    { key: 'iso2', label: 'ISO2', width: '60px', render: (r) => <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700 }}>{r.iso2}</span> },
+    { key: 'iso3', label: 'ISO3', width: '60px', render: (r) => <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-3)' }}>{r.iso3}</span> },
     { key: 'name', label: 'Country Name' },
     { key: 'capital', label: 'Capital', width: '140px', render: (r) => r.capital || '—' },
     { key: 'continentCode', label: 'Continent', width: '90px', render: (r) => (r.continentCode ? <span className="badge badge-slate">{r.continentCode}</span> : '—') },

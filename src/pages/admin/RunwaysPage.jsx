@@ -68,7 +68,7 @@ export default function RunwaysPage() {
       label: 'Designator',
       width: '110px',
       render: (r) => (
-        <span style={{ fontFamily: 'IBM Plex Mono, monospace', fontWeight: 600 }}>{r.code}</span>
+        <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 600 }}>{r.code}</span>
       ),
     },
     { key: 'lengthM', label: 'Length', width: '100px', render: (r) => (r.lengthM != null ? `${r.lengthM.toLocaleString()}m` : '—') },

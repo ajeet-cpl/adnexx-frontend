@@ -210,7 +210,7 @@ function AlertBanner({ allData }) {
         <div style={iconRing('var(--red)')}><XCircle size={20} color="var(--red)" /></div>
         <div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
-            <span style={{ fontSize: '1.6rem', fontWeight: 800, fontFamily: 'Syne, sans-serif', color: 'var(--red)', lineHeight: 1 }}>{closedAirports.length}</span>
+            <span style={{ fontSize: '1.6rem', fontWeight: 800, fontFamily: 'var(--font-display)', color: 'var(--red)', lineHeight: 1 }}>{closedAirports.length}</span>
             <span style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--red)' }}>{closedAirports.length === 1 ? 'Airport Closed' : 'Airports Closed'}</span>
           </div>
           <div style={{ fontSize: '0.72rem', color: 'var(--text-3)', marginTop: 3 }}>
@@ -224,7 +224,7 @@ function AlertBanner({ allData }) {
         <div style={iconRing('var(--amber)')}><AlertTriangle size={20} color="var(--amber)" /></div>
         <div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
-            <span style={{ fontSize: '1.6rem', fontWeight: 800, fontFamily: 'Syne, sans-serif', color: 'var(--amber)', lineHeight: 1 }}>{restrictedItems.length}</span>
+            <span style={{ fontSize: '1.6rem', fontWeight: 800, fontFamily: 'var(--font-display)', color: 'var(--amber)', lineHeight: 1 }}>{restrictedItems.length}</span>
             <span style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--amber)' }}>Resources Restricted</span>
           </div>
           <div style={{ fontSize: '0.72rem', color: 'var(--text-3)', marginTop: 3 }}>
@@ -272,7 +272,7 @@ function KpiCard({ resource, counts, isLoading }) {
 
         {/* Big % + trend */}
         <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 2 }}>
-          <div style={{ fontSize: '2rem', fontWeight: 800, fontFamily: 'Syne, sans-serif', color: accent, lineHeight: 1 }}>
+          <div style={{ fontSize: '2rem', fontWeight: 800, fontFamily: 'var(--font-display)', color: accent, lineHeight: 1 }}>
             {isLoading ? '—' : `${pct}%`}
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 3, paddingBottom: 4 }}>
@@ -341,7 +341,7 @@ function DistributionPanel({ allData }) {
   return (
     <div style={{ background: 'var(--surface-1)', border: '1px solid var(--border)', borderRadius: 10, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
       <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
-        <span style={{ fontSize: '0.84rem', fontWeight: 700, fontFamily: 'Syne, sans-serif', color: 'var(--text-1)' }}>Operational Status Distribution</span>
+        <span style={{ fontSize: '0.84rem', fontWeight: 700, fontFamily: 'var(--font-display)', color: 'var(--text-1)' }}>Operational Status Distribution</span>
         <DropdownBtn label="All Resources" />
       </div>
       <div style={{ overflowX: 'auto', overflowY: 'hidden', WebkitOverflowScrolling: 'touch', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
@@ -400,7 +400,7 @@ function AirportStatusMap({ airportRows, isLoading, selectedAirport }) {
     <div style={{ background: 'var(--surface-1)', border: '1px solid var(--border)', borderRadius: 10, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
       <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: 7 }}>
         <MapPin size={14} color="var(--blue)" />
-        <span style={{ fontSize: '0.84rem', fontWeight: 700, fontFamily: 'Syne, sans-serif', color: 'var(--text-1)' }}>Airport Status Map</span>
+        <span style={{ fontSize: '0.84rem', fontWeight: 700, fontFamily: 'var(--font-display)', color: 'var(--text-1)' }}>Airport Status Map</span>
       </div>
       <div style={{ flex: 1, background: 'var(--surface-2)', padding: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 220 }}>
         <svg width="100%" height="100%" viewBox="30 20 320 330" style={{ display: 'block', maxHeight: 270 }}>
@@ -460,7 +460,7 @@ function TrendChart({ allData, hours, onHoursChange }) {
       <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
           <BarChart2 size={14} color="var(--blue)" />
-          <span style={{ fontSize: '0.84rem', fontWeight: 700, fontFamily: 'Syne, sans-serif', color: 'var(--text-1)' }}>Operational Trend (All Resources)</span>
+          <span style={{ fontSize: '0.84rem', fontWeight: 700, fontFamily: 'var(--font-display)', color: 'var(--text-1)' }}>Operational Trend (All Resources)</span>
         </div>
         <div style={{ display: 'flex', gap: 4 }}>
           {[3, 6, 12].map(h => (
@@ -496,7 +496,7 @@ function ResourceSummaryTable({ allData }) {
   return (
     <div style={{ background: 'var(--surface-1)', border: '1px solid var(--border)', borderRadius: 10, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
       <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--border)' }}>
-        <span style={{ fontSize: '0.84rem', fontWeight: 700, fontFamily: 'Syne, sans-serif', color: 'var(--text-1)' }}>Resource Summary</span>
+        <span style={{ fontSize: '0.84rem', fontWeight: 700, fontFamily: 'var(--font-display)', color: 'var(--text-1)' }}>Resource Summary</span>
       </div>
       <div className="table-wrap" style={{ flex: 1 }}>
         <div className="table-scroll">
@@ -598,7 +598,7 @@ function RecentlyChangedTable({ allData, selectedAirport }) {
       <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
           <Clock size={14} color="var(--blue)" />
-          <span style={{ fontSize: '0.84rem', fontWeight: 700, fontFamily: 'Syne, sans-serif', color: 'var(--text-1)' }}>Recently Changed Status</span>
+          <span style={{ fontSize: '0.84rem', fontWeight: 700, fontFamily: 'var(--font-display)', color: 'var(--text-1)' }}>Recently Changed Status</span>
         </div>
         <button style={{ background: 'none', border: 'none', color: 'var(--blue)', fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer' }}>View All</button>
       </div>
@@ -636,7 +636,7 @@ function RecentlyChangedTable({ allData, selectedAirport }) {
                         </div>
                       </td>
                       <td style={{ fontWeight: 500, fontSize: '0.8rem' }}>{row.name}</td>
-                      <td><span style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-2)' }}>{row.code}</span></td>
+                      <td><span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-2)' }}>{row.code}</span></td>
                       <td>
                         <span style={{ display: 'inline-block', padding: '2px 9px', borderRadius: 99, fontSize: '0.68rem', fontWeight: 700, background: st.bg, color: st.color, border: `1px solid ${st.border}` }}>
                           {row.status}
@@ -719,7 +719,7 @@ export default function OperationalStatusPage() {
             <Activity size={17} color="#fff" />
           </div>
           <div>
-            <h1 style={{ fontSize: '1.3rem', fontWeight: 700, fontFamily: 'Syne, sans-serif', color: 'var(--text-1)', margin: 0, lineHeight: 1.2 }}>Operational Status KPIs</h1>
+            <h1 style={{ fontSize: '1.3rem', fontWeight: 700, fontFamily: 'var(--font-display)', color: 'var(--text-1)', margin: 0, lineHeight: 1.2 }}>Operational Status KPIs</h1>
             <p style={{ fontSize: '0.75rem', color: 'var(--text-3)', margin: '2px 0 0' }}>Real-time overview of airport operational resources</p>
           </div>
         </div>

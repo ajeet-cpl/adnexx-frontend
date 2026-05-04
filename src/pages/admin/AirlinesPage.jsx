@@ -80,7 +80,7 @@ export default function AirlinesPage() {
       label: 'IATA/ICAO',
       width: '100px',
       render: (r) => (
-        <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: '0.78rem' }}>
+        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem' }}>
           <span style={{ color: 'var(--text-1)', fontWeight: 600 }}>{(r.iataCode || '—').trim()}</span>
           {r.icaoCode && <span style={{ color: 'var(--text-3)', marginLeft: 6 }}>{r.icaoCode.trim()}</span>}
         </div>

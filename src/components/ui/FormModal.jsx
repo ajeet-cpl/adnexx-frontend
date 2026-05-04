@@ -48,7 +48,7 @@ export default function FormModal({
           }}
         >
           <div>
-            <h2 style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-1)', margin: 0, fontFamily: 'Syne, sans-serif' }}>
+            <h2 style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-1)', margin: 0, fontFamily: 'var(--font-display)' }}>
               {title}
             </h2>
             {subtitle && (
@@ -252,7 +252,7 @@ export function FormCheckbox({ label, checked, onChange }) {
 export function FormSection({ title, children }) {
   return (
     <div style={{ marginBottom: 20 }}>
-      <div style={{ fontSize: '0.7rem', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--text-3)', fontFamily: 'IBM Plex Mono, monospace', marginBottom: 10, paddingBottom: 6, borderBottom: '1px solid var(--border)' }}>
+      <div style={{ fontSize: '0.7rem', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--text-3)', fontFamily: 'var(--font-mono)', marginBottom: 10, paddingBottom: 6, borderBottom: '1px solid var(--border)' }}>
         {title}
       </div>
       {children}

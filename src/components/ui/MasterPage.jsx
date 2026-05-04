@@ -75,7 +75,7 @@ export default function MasterPage({
               style={{
                 fontSize: '1.4rem',
                 fontWeight: 700,
-                fontFamily: 'Syne, sans-serif',
+                fontFamily: 'var(--font-display)',
                 color: 'var(--text-1)',
                 margin: 0,
               }}

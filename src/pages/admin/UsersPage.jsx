@@ -72,7 +72,7 @@ export default function UsersPage() {
       render: (r) => (
         <div>
           <div style={{ fontWeight: 600, color: 'var(--text-1)', fontSize: '0.84rem' }}>{getFullName(r)}</div>
-          <div style={{ fontSize: '0.72rem', color: 'var(--text-3)', fontFamily: 'IBM Plex Mono, monospace' }}>{r.username}</div>
+          <div style={{ fontSize: '0.72rem', color: 'var(--text-3)', fontFamily: 'var(--font-mono)' }}>{r.username}</div>
         </div>
       ),
     },
@@ -99,7 +99,7 @@ export default function UsersPage() {
       render: (r) => {
         const lastLogin = r.last_login_at || r.lastLoginAt;
         return lastLogin ? (
-          <span style={{ fontSize: '0.75rem', color: 'var(--text-3)', fontFamily: 'IBM Plex Mono, monospace' }}>
+          <span style={{ fontSize: '0.75rem', color: 'var(--text-3)', fontFamily: 'var(--font-mono)' }}>
             {new Date(lastLogin).toLocaleDateString()}
           </span>
         ) : (

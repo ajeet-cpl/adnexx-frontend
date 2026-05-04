@@ -69,7 +69,7 @@ export default function GroundHandlersPage() {
       width: '80px',
       render: (r) =>
         r.shortCode ? (
-          <span style={{ fontFamily: 'IBM Plex Mono, monospace', fontWeight: 600 }}>{r.shortCode}</span>
+          <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 600 }}>{r.shortCode}</span>
         ) : (
           '—'
         ),

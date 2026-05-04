@@ -103,7 +103,7 @@ export default function AircraftsPage() {
       key: 'tailNumber',
       label: 'Tail / Reg',
       render: (r) => (
-        <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: '0.78rem' }}>
+        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem' }}>
           <span style={{ color: 'var(--text-1)', fontWeight: 600 }}>{r.tailNumber || '—'}</span>
           {r.registration && r.registration !== r.tailNumber && (
             <span style={{ color: 'var(--text-3)', marginLeft: 6 }}>{r.registration}</span>
