@@ -1,6 +1,6 @@
 import { useState, useMemo, useRef } from 'react';
 import useSWR from 'swr';
-import { Globe2, Upload } from 'lucide-react';
+import { Globe2, Upload, Activity } from 'lucide-react';
 
 import MasterPage from '@/components/ui/MasterPage';
 import FormModal, {
@@ -64,6 +64,7 @@ function jsonStr(obj) {
 
 export default function AirportsPage() {
   const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(EMPTY);
@@ -76,20 +77,28 @@ export default function AirportsPage() {
   const totalPages = pageData?.totalPages ?? 1;
 
   const filtered = useMemo(() => {
-    if (!search) return data;
+    let rows = data;
+    if (statusFilter !== 'all') rows = rows.filter((a) => a.operationalStatus === statusFilter);
+    if (!search) return rows;
     const q = search.toLowerCase();
-    return data.filter(
+    return rows.filter(
       (a) =>
         (a.name || '').toLowerCase().includes(q) ||
         (a.iataCode || '').toLowerCase().includes(q) ||
         (a.icaoCode || '').toLowerCase().includes(q) ||
         (a.cityName || '').toLowerCase().includes(q)
     );
-  }, [data, search]);
+  }, [data, search, statusFilter]);
+
+  const activeCount = data.filter((a) => a.operationalStatus === 'ACTIVE').length;
+  const restrictedCount = data.filter((a) => a.operationalStatus === 'RESTRICTED').length;
+  const closedCount = data.filter((a) => a.operationalStatus === 'CLOSED').length;
 
   const stats = [
     { label: 'Total', value: data.length },
-    { label: 'Active', value: data.filter((a) => a.operationalStatus === 'ACTIVE').length, color: 'var(--green)' },
+    { label: 'Active', value: activeCount, color: 'var(--green)' },
+    { label: 'Restricted', value: restrictedCount, color: 'var(--amber)' },
+    { label: 'Closed', value: closedCount, color: 'var(--red)' },
     { label: 'International', value: data.filter((a) => a.airportCategory === 'INTERNATIONAL').length, color: 'var(--blue)' },
     { label: 'Slot Coordinated', value: data.filter((a) => a.isSlotCoordinated).length, color: 'var(--cyan)' },
   ];
@@ -110,7 +119,11 @@ export default function AirportsPage() {
     { key: 'cityName', label: 'City', width: '120px', render: (r) => r.cityName || '—' },
     { key: 'type', label: 'Type', width: '120px', render: (r) => (r.type ? <span className="badge badge-blue">{r.type}</span> : '—') },
     { key: 'airportCategory', label: 'Category', width: '130px', render: (r) => (r.airportCategory ? <span className="badge badge-cyan">{r.airportCategory}</span> : '—') },
-    { key: 'operationalStatus', label: 'Status', width: '100px', render: (r) => <span className={`badge ${r.operationalStatus === 'ACTIVE' ? 'badge-green' : 'badge-slate'}`}>{r.operationalStatus || '—'}</span> },
+    { key: 'operationalStatus', label: 'Status', width: '110px', render: (r) => {
+      const s = r.operationalStatus;
+      const cls = s === 'ACTIVE' ? 'badge-green' : s === 'RESTRICTED' ? 'badge-amber' : 'badge-slate';
+      return <span className={`badge ${cls}`}>{s || '—'}</span>;
+    } },
   ];
 
   function openAdd() {
@@ -242,6 +255,40 @@ export default function AirportsPage() {
         onEdit={openEdit}
         addLabel="Add Airport"
         templateFile="airports.csv"
+        extraToolbar={
+          <div style={{ display: 'flex', alignItems: 'center', gap: 2, background: 'var(--surface-2)', borderRadius: 7, padding: '2px 3px', border: '1px solid var(--border)' }}>
+            {[
+              { value: 'all', label: 'All', color: 'var(--text-1)' },
+              { value: 'ACTIVE', label: 'Active', color: 'var(--green)' },
+              { value: 'RESTRICTED', label: 'Restricted', color: 'var(--amber)' },
+              { value: 'CLOSED', label: 'Closed', color: 'var(--red)' },
+            ].map((opt) => (
+              <button
+                key={opt.value}
+                onClick={() => setStatusFilter(opt.value)}
+                style={{
+                  padding: '3px 10px',
+                  fontSize: '0.74rem',
+                  fontWeight: 600,
+                  borderRadius: 5,
+                  border: 'none',
+                  cursor: 'pointer',
+                  background: statusFilter === opt.value ? 'var(--surface-1)' : 'transparent',
+                  color: statusFilter === opt.value ? opt.color : 'var(--text-3)',
+                  boxShadow: statusFilter === opt.value ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
+                  transition: 'all 0.12s',
+                }}
+              >
+                {opt.label}
+                {opt.value !== 'all' && (
+                  <span style={{ marginLeft: 4, fontSize: '0.68rem', opacity: 0.75 }}>
+                    ({opt.value === 'ACTIVE' ? activeCount : opt.value === 'RESTRICTED' ? restrictedCount : closedCount})
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+        }
         extraHeaderButtons={
           hasRole('ADMIN') && (
             <>

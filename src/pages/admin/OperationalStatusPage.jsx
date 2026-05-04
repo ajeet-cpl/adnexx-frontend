@@ -719,7 +719,7 @@ export default function OperationalStatusPage() {
             <Activity size={17} color="#fff" />
           </div>
           <div>
-            <h1 style={{ fontSize: '1.3rem', fontWeight: 700, fontFamily: 'Syne, sans-serif', color: 'var(--text-1)', margin: 0, lineHeight: 1.2 }}>Operations Monitoring Dashboard</h1>
+            <h1 style={{ fontSize: '1.3rem', fontWeight: 700, fontFamily: 'Syne, sans-serif', color: 'var(--text-1)', margin: 0, lineHeight: 1.2 }}>Operational Status KPIs</h1>
             <p style={{ fontSize: '0.75rem', color: 'var(--text-3)', margin: '2px 0 0' }}>Real-time overview of airport operational resources</p>
           </div>
         </div>

@@ -22,7 +22,8 @@ import {
   LandPlot,
   PlaneTakeoff,
   ShieldCheckIcon,
-  User2
+  User2,
+  Activity,
 } from 'lucide-react';
 
 const NAV = [
@@ -35,12 +36,13 @@ const NAV = [
     items: [
       { href: '/admin/airports', label: 'Airports', icon: Globe2 },
 
-      { href: '/admin/areas', label: 'Areas', icon: LandPlot },
-      { href: '/admin/dsc', label: 'Dsc', icon: PlaneTakeoff },
-      { href: '/admin/dgca', label: 'Dgca', icon: ShieldCheckIcon },
-      { href: '/admin/passenger-data', label: 'Passenger Data', icon: User2 },
+      // { href: '/admin/areas', label: 'Areas', icon: LandPlot },
+      // { href: '/admin/dsc', label: 'DSC', icon: PlaneTakeoff },
+      // { href: '/admin/dgca', label: 'DGCA', icon: ShieldCheckIcon },
+      // { href: '/admin/passenger-data', label: 'Passenger Data', icon: User2 },
 
       { href: '/admin/airlines', label: 'Airlines', icon: Plane },
+      { href: '/admin/aircrafts', label: 'Aircrafts', icon: PlaneTakeoff },
       { href: '/admin/aircraft-types', label: 'Aircraft Types', icon: Cpu },
       { href: '/admin/countries', label: 'Countries', icon: Globe2 },
     ],
@@ -59,6 +61,7 @@ const NAV = [
   {
     section: 'OPERATIONS',
     items: [
+      { href: '/admin/operational-status', label: 'Operational Status', icon: Activity },
       { href: '/admin/ground-handlers', label: 'Ground Handlers', icon: Truck },
       { href: '/admin/delay-codes', label: 'Delay Codes', icon: AlertOctagon },
     ],
@@ -118,7 +121,7 @@ export default function AdminSidebar({ collapsed, onToggle, mobileOpen, onMobile
               <Database size={14} color="#fff" />
             </div>
             <div>
-              <div className="sidebar-title" style={{ fontSize: '0.82rem', fontWeight: 700, fontFamily: 'Syne, sans-serif', letterSpacing: '0.04em' }}>ADNexx</div>
+              <div className="sidebar-title" style={{ fontSize: '0.82rem', fontWeight: 700, fontFamily: 'Syne, sans-serif', letterSpacing: '0.04em' }}>Aerosis</div>
               <div className="sidebar-subtitle" style={{ fontSize: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase', fontFamily: 'IBM Plex Mono, monospace' }}>Master Data</div>
             </div>
           </div>

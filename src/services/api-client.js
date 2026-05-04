@@ -1,4 +1,4 @@
-// ADNexx API Client — Master Data CRUD All endpoints: /api/v1/*
+// Aerosis API Client — Master Data CRUD All endpoints: /api/v1/*
 import env from '@/config/env';
 import { getToken, getTenantId, clearSession } from '@/utils/auth';
 
@@ -416,6 +416,8 @@ export const DelayCodeAPI = {
     });
   },
 };
+
+export const AircraftAPI = makeCrud('/api/v1/aircrafts');
 
 export const UserAPI = {
   ...makeCrud('/api/v1/users'),

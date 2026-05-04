@@ -35,6 +35,7 @@ const EMPTY = {
 
 export default function GatesPage() {
   const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(EMPTY);
@@ -55,14 +56,17 @@ export default function GatesPage() {
   const terminalMap = useMemo(() => Object.fromEntries(terminals.map((t) => [t.terminalId, t])), [terminals]);
 
   const filtered = useMemo(() => {
-    if (!search) return data;
+    let rows = data;
+    if (statusFilter === 'active') rows = rows.filter((g) => g.active);
+    else if (statusFilter === 'closed') rows = rows.filter((g) => !g.active);
+    if (!search) return rows;
     const q = search.toLowerCase();
-    return data.filter(
+    return rows.filter(
       (g) =>
         g.code?.toLowerCase().includes(q) ||
         (terminalMap[g.terminalId]?.code || '').toLowerCase().includes(q),
     );
-  }, [data, search, terminalMap]);
+  }, [data, search, statusFilter, terminalMap]);
 
   const filteredTerminals = useMemo(() => terminals.filter((t) => !form.airportId || t.airportId === form.airportId), [terminals, form.airportId]);
 
@@ -208,6 +212,8 @@ export default function GatesPage() {
         onToggle={handleToggle}
         hasToggle
         activeKey="active"
+        statusFilter={statusFilter}
+        onStatusFilterChange={setStatusFilter}
         addLabel="Add Gate"
         templateFile="gates.csv"
         extraHeaderButtons={

@@ -12,6 +12,7 @@ const DashboardPage = lazy(() => import('@/pages/admin/DashboardPage'));
 const AirlinesPage = lazy(() => import('@/pages/admin/AirlinesPage'));
 const AirportsPage = lazy(() => import('@/pages/admin/AirportsPage'));
 const AircraftTypesPage = lazy(() => import('@/pages/admin/AircraftTypesPage'));
+const AircraftsPage      = lazy(() => import('@/pages/admin/AircraftsPage'));
 const BeltsPage = lazy(() => import('@/pages/admin/BeltsPage'));
 const CheckinDesksPage = lazy(() => import('@/pages/admin/CheckinDesksPage'));
 const CountriesPage = lazy(() => import('@/pages/admin/CountriesPage'));
@@ -23,6 +24,7 @@ const StandsPage = lazy(() => import('@/pages/admin/StandsPage'));
 const TerminalsPage = lazy(() => import('@/pages/admin/TerminalsPage'));
 const TenantsPage = lazy(() => import('@/pages/admin/TenantsPage'));
 const UsersPage = lazy(() => import('@/pages/admin/UsersPage'));
+const OperationalStatusPage = lazy(() => import('@/pages/admin/OperationalStatusPage'));
 
 // ---------------------------------------------------------------------------
 // Suspense fallback shown while a lazy chunk is loading
@@ -60,6 +62,7 @@ export default function AppRoutes() {
           <Route path="airlines" element={<AirlinesPage />} />
           
           <Route path="aircraft-types" element={<AircraftTypesPage />} />
+          <Route path="aircrafts" element={<AircraftsPage />} />
           <Route path="belts" element={<BeltsPage />} />
           <Route path="checkin-desks" element={<CheckinDesksPage />} />
           <Route path="countries" element={<CountriesPage />} />
@@ -71,6 +74,7 @@ export default function AppRoutes() {
           <Route path="terminals" element={<TerminalsPage />} />
           <Route path="tenants" element={<TenantsPage />} />
           <Route path="users" element={<RoleGuard allowed={['ADMIN']}><UsersPage /></RoleGuard>} />
+          <Route path="operational-status" element={<OperationalStatusPage />} />
           <Route path="*" element={<Navigate to="/admin" replace />} />
         </Route>
       </Routes>

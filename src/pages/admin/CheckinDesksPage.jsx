@@ -34,6 +34,7 @@ const EMPTY = {
 
 export default function CheckinDesksPage() {
   const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(EMPTY);
@@ -58,15 +59,18 @@ export default function CheckinDesksPage() {
   const airlineMap = useMemo(() => Object.fromEntries(airlines.map((a) => [a.airlineId, a])), [airlines]);
 
   const filtered = useMemo(() => {
-    if (!search) return data;
+    let rows = data;
+    if (statusFilter === 'active') rows = rows.filter((d) => d.active);
+    else if (statusFilter === 'closed') rows = rows.filter((d) => !d.active);
+    if (!search) return rows;
     const q = search.toLowerCase();
-    return data.filter(
+    return rows.filter(
       (d) =>
         d.code?.toLowerCase().includes(q) ||
         (terminalMap[d.terminalId]?.code || '').toLowerCase().includes(q) ||
         (airlineMap[d.airlineId]?.name || '').toLowerCase().includes(q),
     );
-  }, [data, search, terminalMap, airlineMap]);
+  }, [data, search, statusFilter, terminalMap, airlineMap]);
 
   const filteredTerminals = useMemo(() => terminals.filter((t) => !form.airportId || t.airportId === form.airportId), [terminals, form.airportId]);
 
@@ -217,6 +221,8 @@ export default function CheckinDesksPage() {
         onToggle={handleToggle}
         hasToggle
         activeKey="active"
+        statusFilter={statusFilter}
+        onStatusFilterChange={setStatusFilter}
         addLabel="Add Desk"
         templateFile="checkin-desks.csv"
         extraHeaderButtons={

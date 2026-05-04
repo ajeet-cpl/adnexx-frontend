@@ -33,6 +33,7 @@ const EMPTY = {
 
 export default function RunwaysPage() {
   const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(EMPTY);
@@ -48,10 +49,13 @@ export default function RunwaysPage() {
   const airports = useMemo(() => (Array.isArray(airportPage) ? airportPage : airportPage?.content || []), [airportPage]);
 
   const filtered = useMemo(() => {
-    if (!search) return data;
+    let rows = data;
+    if (statusFilter === 'active') rows = rows.filter((r) => r.active);
+    else if (statusFilter === 'closed') rows = rows.filter((r) => !r.active);
+    if (!search) return rows;
     const q = search.toLowerCase();
-    return data.filter((r) => r.code?.toLowerCase().includes(q));
-  }, [data, search]);
+    return rows.filter((r) => r.code?.toLowerCase().includes(q));
+  }, [data, search, statusFilter]);
 
   const stats = [
     { label: 'Total', value: data.length },
@@ -178,6 +182,8 @@ export default function RunwaysPage() {
         onToggle={handleToggle}
         hasToggle
         activeKey="active"
+        statusFilter={statusFilter}
+        onStatusFilterChange={setStatusFilter}
         addLabel="Add Runway"
         templateFile="runways.csv"
         extraHeaderButtons={

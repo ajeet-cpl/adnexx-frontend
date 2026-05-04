@@ -55,6 +55,7 @@ const EMPTY = {
 
 export default function StandsPage() {
   const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(EMPTY);
@@ -75,14 +76,17 @@ export default function StandsPage() {
   const terminalMap = useMemo(() => Object.fromEntries(terminals.map((t) => [t.terminalId, t])), [terminals]);
 
   const filtered = useMemo(() => {
-    if (!search) return data;
+    let rows = data;
+    if (statusFilter === 'active') rows = rows.filter((s) => s.active);
+    else if (statusFilter === 'closed') rows = rows.filter((s) => !s.active);
+    if (!search) return rows;
     const q = search.toLowerCase();
-    return data.filter(
+    return rows.filter(
       (s) =>
         s.code?.toLowerCase().includes(q) ||
         (terminalMap[s.terminalId]?.code || '').toLowerCase().includes(q),
     );
-  }, [data, search, terminalMap]);
+  }, [data, search, statusFilter, terminalMap]);
 
   const filteredTerminals = useMemo(() => terminals.filter((t) => !form.airportId || t.airportId === form.airportId), [terminals, form.airportId]);
 
@@ -255,6 +259,8 @@ export default function StandsPage() {
         onToggle={handleToggle}
         hasToggle
         activeKey="active"
+        statusFilter={statusFilter}
+        onStatusFilterChange={setStatusFilter}
         addLabel="Add Stand"
         templateFile="stands.csv"
         extraHeaderButtons={

@@ -37,6 +37,8 @@ export default function MasterPage({
   extraToolbar,
   extraHeaderButtons,
   templateFile,
+  statusFilter,
+  onStatusFilterChange,
 }) {
   return (
     <div style={{ maxWidth: 1200, margin: '0 auto', width: '100%', minWidth: 0 }}>
@@ -155,6 +157,41 @@ export default function MasterPage({
           <RefreshCw size={13} className={loading ? 'spin' : ''} />
           <span style={{ fontSize: '0.78rem' }}>Refresh</span>
         </button>
+        {hasToggle && activeKey && onStatusFilterChange && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 2, background: 'var(--surface-2)', borderRadius: 7, padding: '2px 3px', border: '1px solid var(--border)' }}>
+            {[
+              { value: 'all', label: 'All' },
+              { value: 'active', label: 'Active' },
+              { value: 'closed', label: 'Closed' },
+            ].map((opt) => (
+              <button
+                key={opt.value}
+                onClick={() => onStatusFilterChange(opt.value)}
+                style={{
+                  padding: '3px 10px',
+                  fontSize: '0.74rem',
+                  fontWeight: 600,
+                  borderRadius: 5,
+                  border: 'none',
+                  cursor: 'pointer',
+                  background: statusFilter === opt.value ? 'var(--surface-1)' : 'transparent',
+                  color:
+                    statusFilter === opt.value
+                      ? opt.value === 'active'
+                        ? 'var(--green)'
+                        : opt.value === 'closed'
+                        ? 'var(--red)'
+                        : 'var(--text-1)'
+                      : 'var(--text-3)',
+                  boxShadow: statusFilter === opt.value ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
+                  transition: 'all 0.12s',
+                }}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        )}
         {extraToolbar}
       </div>
 
