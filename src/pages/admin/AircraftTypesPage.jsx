@@ -232,7 +232,7 @@ export default function AircraftTypesPage() {
               <FormSelect
                 value={form.standCompatibilityClass || ''}
                 onChange={(v) => f('standCompatibilityClass', v || '')}
-                options={STAND_COMPAT.map((c) => ({ value: c, label: `Class ${c}` }))}
+                options={STAND_COMPAT.map((c) => ({ value: c, label: `Code ${c}` }))}
                 placeholder="Select…"
               />
             </FormGroup>

@@ -17,7 +17,7 @@ import { toast } from '@/utils/toast';
 import { hasRole, getTenantId } from '@/utils/auth';
 import { PAGE_SIZE } from '@/config/env';
 
-const SURFACES = ['ASP', 'CON', 'GRS', 'GVL', 'DRT'];
+const Pavement_Classification = ['R', 'F', 'W', 'X', 'Y', 'Z', 'T', 'U'];
 const LIGHTING = ['HIRL', 'MIRL', 'LIRL', 'NONE'];
 
 const EMPTY = {
@@ -26,13 +26,14 @@ const EMPTY = {
   lengthM: '',
   widthM: '',
   active: true,
-  attributes: { surface: '', lighting: '' },
+  attributes: { pavementClassification: '', lighting: '' },
   validFrom: '',
   validTo: '',
 };
 
 export default function RunwaysPage() {
   const [search, setSearch] = useState('');
+  const [tenantFilter, setTenantFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
@@ -48,14 +49,18 @@ export default function RunwaysPage() {
   const { data: airportPage } = useSWR('/api/v1/airports?page=0&size=1000', adminFetcher);
   const airports = useMemo(() => (Array.isArray(airportPage) ? airportPage : airportPage?.content || []), [airportPage]);
 
+  const { data: tenantPage } = useSWR('/api/v1/tenants?page=0&size=1000', adminFetcher);
+  const tenants = useMemo(() => (Array.isArray(tenantPage) ? tenantPage : tenantPage?.content || []), [tenantPage]);
+
   const filtered = useMemo(() => {
     let rows = data;
+    if (tenantFilter) rows = rows.filter((r) => r.tenantId === tenantFilter);
     if (statusFilter === 'active') rows = rows.filter((r) => r.active);
     else if (statusFilter === 'closed') rows = rows.filter((r) => !r.active);
     if (!search) return rows;
     const q = search.toLowerCase();
     return rows.filter((r) => r.code?.toLowerCase().includes(q));
-  }, [data, search, statusFilter]);
+  }, [data, search, statusFilter, tenantFilter]);
 
   const stats = [
     { label: 'Total', value: data.length },
@@ -73,7 +78,7 @@ export default function RunwaysPage() {
     },
     { key: 'lengthM', label: 'Length', width: '100px', render: (r) => (r.lengthM != null ? `${r.lengthM.toLocaleString()}m` : '—') },
     { key: 'widthM', label: 'Width', width: '80px', render: (r) => (r.widthM != null ? `${r.widthM}m` : '—') },
-    { key: 'surface', label: 'Surface', width: '100px', render: (r) => (r.attributes?.surface ? <span className="badge badge-slate">{r.attributes.surface}</span> : '—') },
+    { key: 'pavementClassification', label: 'Pavement Classification', width: '100px', render: (r) => (r.attributes?.pavementClassification ? <span className="badge badge-slate">{r.attributes.pavementClassification}</span> : '—') },
     { key: 'lighting', label: 'Lighting', width: '100px', render: (r) => (r.attributes?.lighting ? <span className="badge badge-cyan">{r.attributes.lighting}</span> : '—') },
     {
       key: 'active',
@@ -101,7 +106,7 @@ export default function RunwaysPage() {
       lengthM: row.lengthM ?? '',
       widthM: row.widthM ?? '',
       active: row.active ?? true,
-      attributes: { surface: row.attributes?.surface || '', lighting: row.attributes?.lighting || '' },
+      attributes: { pavementClassification: row.attributes?.pavementClassification || '', lighting: row.attributes?.lighting || '' },
       validFrom: row.validFrom || '',
       validTo: row.validTo || '',
     });
@@ -167,7 +172,7 @@ export default function RunwaysPage() {
       <MasterPage
         readOnly={!hasRole('ADMIN')}
         title="Runways"
-        subtitle="Airport runways — designator, dimensions, surface and lighting"
+        subtitle="Airport runways — designator, dimensions, pavement classification and lighting"
         icon={<Waypoints size={18} color="#fff" />}
         columns={columns}
         data={filtered}
@@ -186,6 +191,9 @@ export default function RunwaysPage() {
         onStatusFilterChange={setStatusFilter}
         addLabel="Add Runway"
         templateFile="runways.csv"
+        tenants={tenants}
+        tenantFilter={tenantFilter}
+        onTenantFilterChange={setTenantFilter}
         extraHeaderButtons={
           hasRole('ADMIN') && (
             <>
@@ -251,11 +259,11 @@ export default function RunwaysPage() {
             </FormGroup>
           </FormRow>
           <FormRow>
-            <FormGroup label="Surface">
+            <FormGroup label="Pavement Classification">
               <FormSelect
-                value={form.attributes?.surface || ''}
-                onChange={(v) => fa('surface', v)}
-                options={SURFACES.map((s) => ({ value: s, label: s }))}
+                value={form.attributes?.pavementClassification || ''}
+                onChange={(v) => fa('pavementClassification', v)}
+                options={Pavement_Classification.map((s) => ({ value: s, label: s }))}
                 placeholder="Select…"
               />
             </FormGroup>

@@ -324,7 +324,7 @@ export default function AirlinesPage() {
 
         <FormSection title="References">
           <FormRow cols={2}>
-            <FormGroup label="Tenant" required>
+            <FormGroup label="Tenant">
               <FormSelect
                 value={form.tenantId || ''}
                 onChange={(v) => f('tenantId', v)}

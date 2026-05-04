@@ -22,6 +22,7 @@ const EMPTY = {
 
 export default function CountriesPage() {
   const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(EMPTY);
@@ -34,15 +35,18 @@ export default function CountriesPage() {
   const totalPages = rawData?.totalPages ?? 1;
 
   const filtered = useMemo(() => {
-    if (!search) return data;
+    let rows = data;
+    if (statusFilter === 'active') rows = rows.filter((c) => c.operationalStatus === 'ACTIVE');
+    else if (statusFilter === 'closed') rows = rows.filter((c) => c.operationalStatus !== 'ACTIVE');
+    if (!search) return rows;
     const q = search.toLowerCase();
-    return data.filter((c) =>
+    return rows.filter((c) =>
       (c.name || '').toLowerCase().includes(q) ||
       (c.iso2 || '').toLowerCase().includes(q) ||
       (c.iso3 || '').toLowerCase().includes(q) ||
       (c.capital || '').toLowerCase().includes(q)
     );
-  }, [data, search]);
+  }, [data, search, statusFilter]);
 
   const stats = [
     { label: 'Total', value: data.length },
@@ -148,6 +152,10 @@ export default function CountriesPage() {
         onEdit={openEdit}
         addLabel="Add Country"
         templateFile="countries.csv"
+        hasToggle
+        activeKey="operationalStatus"
+        statusFilter={statusFilter}
+        onStatusFilterChange={setStatusFilter}
         extraHeaderButtons={
           hasRole('ADMIN') && (
             <>

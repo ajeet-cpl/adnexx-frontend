@@ -38,6 +38,7 @@ const EMPTY = {
   noiseChapter:      '',
   loadingMethod:     '',
   ownerType:         '',
+  mtow:              '',
 };
 
 // Formats a datetime string to the value required by <input type="datetime-local">
@@ -51,7 +52,8 @@ function toDateTimeLocal(val) {
 }
 
 export default function AircraftsPage() {
-  const [search,    setSearch]    = useState('');
+  const [search,      setSearch]      = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
   const [modalOpen, setModalOpen] = useState(false);
   const [editing,   setEditing]   = useState(null);
   const [form,      setForm]      = useState(EMPTY);
@@ -82,14 +84,17 @@ export default function AircraftsPage() {
   const aircraftTypeMap = useMemo(() => Object.fromEntries(aircraftTypes.map(t => [t.aircraftTypeId, t.icaoCode  || t.iataCode || t.name])),  [aircraftTypes]);
 
   const filtered = useMemo(() => {
-    if (!search) return rows;
+    let result = rows;
+    if (statusFilter === 'active') result = result.filter(r => r.status === 'ACTIVE');
+    else if (statusFilter === 'closed') result = result.filter(r => r.status !== 'ACTIVE');
+    if (!search) return result;
     const q = search.toLowerCase();
-    return rows.filter(r =>
+    return result.filter(r =>
       (r.tailNumber    || '').toLowerCase().includes(q) ||
       (r.registration  || '').toLowerCase().includes(q) ||
       (r.status        || '').toLowerCase().includes(q)
     );
-  }, [rows, search]);
+  }, [rows, search, statusFilter]);
 
   const stats = [
     { label: 'Total',       value: rows.length },
@@ -144,6 +149,12 @@ export default function AircraftsPage() {
       render: (r) => r.ownerType ? r.ownerType.replace('_', ' ') : '—',
     },
     {
+      key: 'mtow',
+      label: 'MTOW (kg)',
+      width: '100px',
+      render: (r) => r.mtow != null ? r.mtow.toLocaleString() : '—',
+    },
+    {
       key: 'manufactureYear',
       label: 'Year',
       width: '70px',
@@ -176,6 +187,7 @@ export default function AircraftsPage() {
       noiseChapter:      row.noiseChapter      || '',
       loadingMethod:     row.loadingMethod     || '',
       ownerType:         row.ownerType         || '',
+      mtow:              row.mtow              ?? '',
     });
     setModalOpen(true);
   }
@@ -194,9 +206,10 @@ export default function AircraftsPage() {
       nextMaintenanceDue: form.nextMaintenanceDue || null,
       noiseChapter:       form.noiseChapter       || null,
       loadingMethod:      form.loadingMethod      || null,
+      mtow:               form.mtow !== '' ? Number(form.mtow) : null,
     };
     // Null out empty UUID fields
-    ['tenantId', 'airlineId', 'airportId', 'aircraftTypeId'].forEach(k => {
+    ['tenantId', 'airlineId', 'airportId', 'aircraftTypeId'].forEach((k) => {
       if (!payload[k]) payload[k] = null;
     });
 
@@ -235,6 +248,10 @@ export default function AircraftsPage() {
         onAdd={openAdd}
         onEdit={openEdit}
         addLabel="Add Aircraft"
+        hasToggle
+        activeKey="status"
+        statusFilter={statusFilter}
+        onStatusFilterChange={setStatusFilter}
         stats={stats}
         page={page + 1}
         totalPages={totalPages}
@@ -280,7 +297,7 @@ export default function AircraftsPage() {
 
         <FormSection title="References">
           <FormRow cols={2}>
-            <FormGroup label="Tenant" required>
+            <FormGroup label="Tenant">
               <FormSelect
                 value={form.tenantId}
                 onChange={v => f('tenantId', v)}
@@ -370,6 +387,16 @@ export default function AircraftsPage() {
                 onChange={v => f('ownerType', v)}
                 options={OWNER_TYPES.map(o => ({ value: o, label: o.replace('_', ' ') }))}
                 placeholder="Select…"
+              />
+            </FormGroup>
+          </FormRow>
+          <FormRow cols={3}>
+            <FormGroup label="MTOW (kg)" hint="Max Take-Off Weight">
+              <FormInput
+                type="number"
+                value={form.mtow}
+                onChange={v => f('mtow', v)}
+                placeholder="e.g. 77000"
               />
             </FormGroup>
           </FormRow>
