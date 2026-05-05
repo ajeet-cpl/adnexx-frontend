@@ -3,8 +3,8 @@
 // Optionally override the backend URL via Vercel dashboard → Settings → Environment Variables:
 //   BACKEND_URL — defaults to the same EC2 host configured in vercel.json rewrites
 // NOTE: VITE_* vars are build-time only and are not available in serverless functions at runtime.
-const BACKEND_DEFAULT = 'https://aodbapi.corepeelers.com:8080';
-// const BACKEND_DEFAULT = 'http://ec2-13-60-234-74.eu-north-1.compute.amazonaws.com:8080';
+// const BACKEND_DEFAULT = 'https://aodbapi.corepeelers.com:8080';
+const BACKEND_DEFAULT = 'http://ec2-13-60-234-74.eu-north-1.compute.amazonaws.com:8080';
 
 
 export default async function handler(req, res) {
