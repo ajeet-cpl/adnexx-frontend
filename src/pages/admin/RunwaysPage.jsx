@@ -1,4 +1,5 @@
 import { useState, useMemo, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import useSWR from 'swr';
 import { Waypoints, Upload } from 'lucide-react';
 
@@ -17,8 +18,11 @@ import { toast } from '@/utils/toast';
 import { hasRole, getTenantId } from '@/utils/auth';
 import { PAGE_SIZE } from '@/config/env';
 
-const Pavement_Classification = ['R', 'F', 'W', 'X', 'Y', 'Z', 'T', 'U'];
-const LIGHTING = ['HIRL', 'MIRL', 'LIRL', 'NONE'];
+const PAVEMENT_TYPE = ['R', 'F'];
+const PAVEMENT_PRESSURE = ['W', 'X', 'Y', 'Z'];
+const PAVEMENT_EVAL = ['T', 'U'];
+const LIGHTING = ['1', '2', '3', '4'];
+const LIGHTING_LABEL = { '1': 'Cat 1', '2': 'Cat 2', '3': 'Cat 3', '4': 'Cat 4' };
 
 const EMPTY = {
   code: '',
@@ -26,12 +30,13 @@ const EMPTY = {
   lengthM: '',
   widthM: '',
   active: true,
-  attributes: { pavementClassification: '', lighting: '' },
+  attributes: { pcnValue: '', pavementType: '', pressure: '', evaluationMethod: '', lighting: '' },
   validFrom: '',
   validTo: '',
 };
 
 export default function RunwaysPage() {
+  const [searchParams] = useSearchParams();
   const [search, setSearch] = useState('');
   const [tenantFilter, setTenantFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -52,15 +57,22 @@ export default function RunwaysPage() {
   const { data: tenantPage } = useSWR('/api/v1/tenants?page=0&size=1000', adminFetcher);
   const tenants = useMemo(() => (Array.isArray(tenantPage) ? tenantPage : tenantPage?.content || []), [tenantPage]);
 
+  const airportIdFilter = useMemo(() => {
+    const iata = searchParams.get('airport');
+    if (!iata) return '';
+    return airports.find(a => a.iataCode === iata)?.airportId || '';
+  }, [airports, searchParams]);
+
   const filtered = useMemo(() => {
     let rows = data;
+    if (airportIdFilter) rows = rows.filter(r => r.airportId === airportIdFilter);
     if (tenantFilter) rows = rows.filter((r) => r.tenantId === tenantFilter);
     if (statusFilter === 'active') rows = rows.filter((r) => r.active);
     else if (statusFilter === 'closed') rows = rows.filter((r) => !r.active);
     if (!search) return rows;
     const q = search.toLowerCase();
     return rows.filter((r) => r.code?.toLowerCase().includes(q));
-  }, [data, search, statusFilter, tenantFilter]);
+  }, [data, search, statusFilter, tenantFilter, airportIdFilter]);
 
   const stats = [
     { label: 'Total', value: data.length },
@@ -78,8 +90,8 @@ export default function RunwaysPage() {
     },
     { key: 'lengthM', label: 'Length', width: '100px', render: (r) => (r.lengthM != null ? `${r.lengthM.toLocaleString()}m` : '—') },
     { key: 'widthM', label: 'Width', width: '80px', render: (r) => (r.widthM != null ? `${r.widthM}m` : '—') },
-    { key: 'pavementClassification', label: 'Pavement Classification', width: '100px', render: (r) => (r.attributes?.pavementClassification ? <span className="badge badge-slate">{r.attributes.pavementClassification}</span> : '—') },
-    { key: 'lighting', label: 'Lighting', width: '100px', render: (r) => (r.attributes?.lighting ? <span className="badge badge-cyan">{r.attributes.lighting}</span> : '—') },
+    { key: 'pavementClassification', label: 'PCN', width: '130px', render: (r) => { const a = r.attributes || {}; const parts = [a.pcnValue, a.pavementType, a.pressure, a.evaluationMethod].filter(Boolean); return parts.length ? <span className="badge badge-slate" style={{ fontFamily: 'var(--font-mono)' }}>{parts.join('/')}</span> : '—'; } },
+    { key: 'lighting', label: 'Lighting', width: '100px', render: (r) => (r.attributes?.lighting ? <span className="badge badge-cyan">{LIGHTING_LABEL[r.attributes.lighting] ?? r.attributes.lighting}</span> : '—') },
     {
       key: 'active',
       label: 'Status',
@@ -106,7 +118,7 @@ export default function RunwaysPage() {
       lengthM: row.lengthM ?? '',
       widthM: row.widthM ?? '',
       active: row.active ?? true,
-      attributes: { pavementClassification: row.attributes?.pavementClassification || '', lighting: row.attributes?.lighting || '' },
+      attributes: { pcnValue: row.attributes?.pcnValue ?? '', pavementType: row.attributes?.pavementType || '', pressure: row.attributes?.pressure || '', evaluationMethod: row.attributes?.evaluationMethod || '', lighting: row.attributes?.lighting || '' },
       validFrom: row.validFrom || '',
       validTo: row.validTo || '',
     });
@@ -259,19 +271,50 @@ export default function RunwaysPage() {
             </FormGroup>
           </FormRow>
           <FormRow>
-            <FormGroup label="Pavement Classification">
-              <FormSelect
-                value={form.attributes?.pavementClassification || ''}
-                onChange={(v) => fa('pavementClassification', v)}
-                options={Pavement_Classification.map((s) => ({ value: s, label: s }))}
-                placeholder="Select…"
-              />
-            </FormGroup>
             <FormGroup label="Lighting">
               <FormSelect
                 value={form.attributes?.lighting || ''}
                 onChange={(v) => fa('lighting', v)}
-                options={LIGHTING.map((l) => ({ value: l, label: l }))}
+                options={LIGHTING.map((l) => ({ value: l, label: LIGHTING_LABEL[l] ?? l }))}
+                placeholder="Select…"
+              />
+            </FormGroup>
+          </FormRow>
+        </FormSection>
+
+        <FormSection title="Pavement Classification">
+          <FormRow>
+            <FormGroup label="PCN Numeric Value" hint="1 – 1000">
+              <FormInput
+                type="number"
+                value={String(form.attributes?.pcnValue ?? '')}
+                onChange={(v) => fa('pcnValue', v)}
+                placeholder="e.g. 45"
+              />
+            </FormGroup>
+            <FormGroup label="Pavement Type">
+              <FormSelect
+                value={form.attributes?.pavementType || ''}
+                onChange={(v) => fa('pavementType', v)}
+                options={PAVEMENT_TYPE.map((s) => ({ value: s, label: s === 'R' ? 'R' : 'F' }))}
+                placeholder="Select…"
+              />
+            </FormGroup>
+          </FormRow>
+          <FormRow>
+            <FormGroup label="Tire Pressure">
+              <FormSelect
+                value={form.attributes?.pressure || ''}
+                onChange={(v) => fa('pressure', v)}
+                options={PAVEMENT_PRESSURE.map((s) => ({ value: s, label: s }))}
+                placeholder="Select…"
+              />
+            </FormGroup>
+            <FormGroup label="Evaluation Method">
+              <FormSelect
+                value={form.attributes?.evaluationMethod || ''}
+                onChange={(v) => fa('evaluationMethod', v)}
+                options={PAVEMENT_EVAL.map((s) => ({ value: s, label: s === 'T' ? 'T' : 'U' }))}
                 placeholder="Select…"
               />
             </FormGroup>

@@ -1,4 +1,5 @@
 import { useState, useMemo, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import useSWR from 'swr';
 import { Truck, Upload } from 'lucide-react';
 
@@ -29,6 +30,7 @@ const EMPTY = {
 };
 
 export default function GroundHandlersPage() {
+  const [searchParams] = useSearchParams();
   const [search, setSearch] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
@@ -45,16 +47,24 @@ export default function GroundHandlersPage() {
   const airports = useMemo(() => (Array.isArray(airportPage) ? airportPage : airportPage?.content || []), [airportPage]);
   const airportMap = useMemo(() => Object.fromEntries(airports.map((a) => [a.airportId, a])), [airports]);
 
+  const airportIdFilter = useMemo(() => {
+    const iata = searchParams.get('airport');
+    if (!iata) return '';
+    return airports.find(a => a.iataCode === iata)?.airportId || '';
+  }, [airports, searchParams]);
+
   const filtered = useMemo(() => {
-    if (!search) return data;
+    let rows = data;
+    if (airportIdFilter) rows = rows.filter(h => h.airportId === airportIdFilter);
+    if (!search) return rows;
     const q = search.toLowerCase();
-    return data.filter(
+    return rows.filter(
       (h) =>
         h.name?.toLowerCase().includes(q) ||
         (h.shortCode || '').toLowerCase().includes(q) ||
         (airportMap[h.airportId]?.iataCode || '').toLowerCase().includes(q),
     );
-  }, [data, search, airportMap]);
+  }, [data, search, airportMap, airportIdFilter]);
 
   const stats = [
     { label: 'Total', value: data.length },

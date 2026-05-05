@@ -1,4 +1,5 @@
 import { useState, useMemo, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import useSWR from 'swr';
 import { ClipboardList, Upload } from 'lucide-react';
 
@@ -33,6 +34,7 @@ const EMPTY = {
 };
 
 export default function CheckinDesksPage() {
+  const [searchParams] = useSearchParams();
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [modalOpen, setModalOpen] = useState(false);
@@ -58,8 +60,15 @@ export default function CheckinDesksPage() {
   const terminalMap = useMemo(() => Object.fromEntries(terminals.map((t) => [t.terminalId, t])), [terminals]);
   const airlineMap = useMemo(() => Object.fromEntries(airlines.map((a) => [a.airlineId, a])), [airlines]);
 
+  const airportIdFilter = useMemo(() => {
+    const iata = searchParams.get('airport');
+    if (!iata) return '';
+    return airports.find(a => a.iataCode === iata)?.airportId || '';
+  }, [airports, searchParams]);
+
   const filtered = useMemo(() => {
     let rows = data;
+    if (airportIdFilter) rows = rows.filter(d => d.airportId === airportIdFilter);
     if (statusFilter === 'active') rows = rows.filter((d) => d.active);
     else if (statusFilter === 'closed') rows = rows.filter((d) => !d.active);
     if (!search) return rows;
@@ -70,7 +79,7 @@ export default function CheckinDesksPage() {
         (terminalMap[d.terminalId]?.code || '').toLowerCase().includes(q) ||
         (airlineMap[d.airlineId]?.name || '').toLowerCase().includes(q),
     );
-  }, [data, search, statusFilter, terminalMap, airlineMap]);
+  }, [data, search, statusFilter, terminalMap, airlineMap, airportIdFilter]);
 
   const filteredTerminals = useMemo(() => terminals.filter((t) => !form.airportId || t.airportId === form.airportId), [terminals, form.airportId]);
 

@@ -1,4 +1,5 @@
 import { useState, useMemo, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import useSWR from 'swr';
 import { ParkingSquare, Upload } from 'lucide-react';
 
@@ -54,6 +55,7 @@ const EMPTY = {
 };
 
 export default function StandsPage() {
+  const [searchParams] = useSearchParams();
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [modalOpen, setModalOpen] = useState(false);
@@ -75,8 +77,15 @@ export default function StandsPage() {
 
   const terminalMap = useMemo(() => Object.fromEntries(terminals.map((t) => [t.terminalId, t])), [terminals]);
 
+  const airportIdFilter = useMemo(() => {
+    const iata = searchParams.get('airport');
+    if (!iata) return '';
+    return airports.find(a => a.iataCode === iata)?.airportId || '';
+  }, [airports, searchParams]);
+
   const filtered = useMemo(() => {
     let rows = data;
+    if (airportIdFilter) rows = rows.filter(s => s.airportId === airportIdFilter);
     if (statusFilter === 'active') rows = rows.filter((s) => s.active);
     else if (statusFilter === 'closed') rows = rows.filter((s) => !s.active);
     if (!search) return rows;
@@ -86,7 +95,7 @@ export default function StandsPage() {
         s.code?.toLowerCase().includes(q) ||
         (terminalMap[s.terminalId]?.code || '').toLowerCase().includes(q),
     );
-  }, [data, search, statusFilter, terminalMap]);
+  }, [data, search, statusFilter, terminalMap, airportIdFilter]);
 
   const filteredTerminals = useMemo(() => terminals.filter((t) => !form.airportId || t.airportId === form.airportId), [terminals, form.airportId]);
 

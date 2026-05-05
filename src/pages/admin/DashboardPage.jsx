@@ -251,14 +251,15 @@ function AlertBanner({ allData }) {
 }
 
 // ─── KPI Card ─────────────────────────────────────────────────────────────────
-function KpiCard({ resource, counts, isLoading }) {
+function KpiCard({ resource, counts, isLoading, airportIata }) {
   const Icon   = resource.icon;
   const pct    = getPct(counts);
   const accent = getAccent(counts);
   const tot    = counts.total || 1;
+  const to     = airportIata ? `${resource.href}?airport=${airportIata}` : resource.href;
 
   return (
-    <Link to={resource.href} style={{ textDecoration: 'none' }}>
+    <Link to={to} style={{ textDecoration: 'none' }}>
       <div
         style={{ background: 'var(--surface-1)', border: '1px solid var(--border)', borderRadius: 10, padding: '14px 14px 12px', transition: 'border-color 0.15s, box-shadow 0.15s', height: '100%', boxSizing: 'border-box' }}
         onMouseEnter={e => { e.currentTarget.style.borderColor = accent; e.currentTarget.style.boxShadow = `0 0 0 1px ${accent}22`; }}
@@ -593,13 +594,9 @@ function buildRecentRows(allData) {
 
 const PAGE_ROWS = 10;
 
-function RecentlyChangedTable({ allData, selectedAirport }) {
+function RecentlyChangedTable({ allData }) {
   const [page, setPage]    = useState(0);
-  const allRows            = useMemo(() => {
-    const rows = buildRecentRows(allData);
-    if (!selectedAirport || selectedAirport === 'all') return rows;
-    return rows.filter(r => r.code === selectedAirport);
-  }, [allData, selectedAirport]);
+  const allRows            = useMemo(() => buildRecentRows(allData), [allData]);
   const totalPages         = Math.max(1, Math.ceil(allRows.length / PAGE_ROWS));
   const visible            = allRows.slice(page * PAGE_ROWS, (page + 1) * PAGE_ROWS);
 
@@ -685,7 +682,9 @@ function RecentlyChangedTable({ allData, selectedAirport }) {
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export default function OperationalStatusPage() {
   const [autoRefresh, setAutoRefresh]     = useState(true);
-  const [selectedAirport, setSelectedAirport] = useState('all');
+  const [selectedAirport, setSelectedAirport] = useState(
+    () => localStorage.getItem('dashboard_airport') || 'all'
+  );
   const [timeWindow, setTimeWindow]       = useState(1);
   const interval = autoRefresh ? 60000 : 0;
 
@@ -713,6 +712,41 @@ export default function OperationalStatusPage() {
 
   const allData = { airports, gates, stands, runways, belts, checkin, terminals: { ...terminals, counts: terminalCounts }, groundHandlers, countries, aircrafts };
 
+  // Resolve selected airport's UUID from its IATA code
+  const selectedAirportId = useMemo(() => {
+    if (!selectedAirport || selectedAirport === 'all') return null;
+    return airports.rows.find(a => a.iataCode === selectedAirport)?.airportId ?? null;
+  }, [selectedAirport, airports.rows]);
+
+  // Build a filtered version of allData scoped to the selected airport
+  const displayData = (() => {
+    if (!selectedAirportId) return allData;
+    const f = (rows) => rows.filter(r => r.airportId === selectedAirportId);
+    const fAirports = f(airports.rows);
+    const fTerms    = f(terminals.rows);
+    const fGH       = f(groundHandlers.rows);
+    const fAcrafts  = f(aircrafts.rows);
+    // Re-derive terminal counts for the filtered airport
+    const airMap = {};
+    fAirports.forEach(a => { airMap[a.airportId] = a; });
+    const tTotal  = fTerms.length;
+    const tActive = fTerms.filter(r => airMap[r.airportId]?.operationalStatus === 'ACTIVE').length;
+    const tRestr  = fTerms.filter(r => airMap[r.airportId]?.operationalStatus === 'RESTRICTED').length;
+    const tCounts = { total: tTotal, active: tActive, restricted: tRestr, closed: tTotal - tActive - tRestr };
+    return {
+      airports:       { ...airports,       rows: fAirports,           counts: getCounts(fAirports,           RESOURCES[0]) },
+      gates:          { ...gates,          rows: f(gates.rows),       counts: getCounts(f(gates.rows),       RESOURCES[1]) },
+      stands:         { ...stands,         rows: f(stands.rows),      counts: getCounts(f(stands.rows),      RESOURCES[2]) },
+      runways:        { ...runways,        rows: f(runways.rows),     counts: getCounts(f(runways.rows),     RESOURCES[3]) },
+      belts:          { ...belts,          rows: f(belts.rows),       counts: getCounts(f(belts.rows),       RESOURCES[4]) },
+      checkin:        { ...checkin,        rows: f(checkin.rows),     counts: getCounts(f(checkin.rows),     RESOURCES[5]) },
+      terminals:      { ...terminals,      rows: fTerms,              counts: tCounts },
+      groundHandlers: { ...groundHandlers, rows: fGH,                 counts: getCounts(fGH,                 RESOURCES[7]) },
+      countries,
+      aircrafts:      { ...aircrafts,      rows: fAcrafts,            counts: getCounts(fAcrafts,            RESOURCES[9]) },
+    };
+  })();
+
   const handleRefresh = useCallback(() => {
     [airports, gates, stands, runways, belts, checkin, terminals, groundHandlers, countries, aircrafts].forEach(({ mutate }) => mutate());
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -724,6 +758,11 @@ export default function OperationalStatusPage() {
       label: a.iataCode ? `${a.iataCode} — ${a.name}` : a.name,
     })),
   ], [airports.rows]);
+
+  function handleAirportChange(val) {
+    setSelectedAirport(val);
+    localStorage.setItem('dashboard_airport', val);
+  }
 
   return (
     <div style={{ maxWidth: 1300, margin: '0 auto', width: '100%' }}>
@@ -740,7 +779,7 @@ export default function OperationalStatusPage() {
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <DropdownSelect icon={Globe2} value={selectedAirport} onChange={setSelectedAirport} options={airportOptions} />
+          <DropdownSelect icon={Globe2} value={selectedAirport} onChange={handleAirportChange} options={airportOptions} />
           <DropdownSelect icon={Clock} value={timeWindow} onChange={setTimeWindow} options={TIME_OPTIONS} />
           <button
             onClick={() => setAutoRefresh(v => !v)}
@@ -757,7 +796,7 @@ export default function OperationalStatusPage() {
       </div>
 
       {/* ── Alert Banner ── */}
-      <AlertBanner allData={allData} />
+      <AlertBanner allData={displayData} />
 
       {/* ── 10 KPI Cards ── */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 12, marginBottom: 16 }}>
@@ -765,23 +804,24 @@ export default function OperationalStatusPage() {
           <KpiCard
             key={resource.key}
             resource={resource}
-            counts={allData[resource.key]?.counts || { total: 0, active: 0, restricted: 0, closed: 0 }}
-            isLoading={allData[resource.key]?.isLoading}
+            counts={displayData[resource.key]?.counts || { total: 0, active: 0, restricted: 0, closed: 0 }}
+            isLoading={displayData[resource.key]?.isLoading}
+            airportIata={selectedAirport !== 'all' ? selectedAirport : null}
           />
         ))}
       </div>
 
       {/* ── Mid: Distribution | Map | Trend ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: '2.1fr 1.1fr 1.5fr', gap: 14, marginBottom: 14 }}>
-        <DistributionPanel allData={allData} />
+      <div style={{ display: 'grid', gridTemplateColumns: '1.1fr 1.5fr', gap: 14, marginBottom: 14 }}>
+        {/* <DistributionPanel allData={displayData} /> */}
         <AirportStatusMap airportRows={airports.rows} isLoading={airports.isLoading} selectedAirport={selectedAirport} />
-        <TrendChart allData={allData} hours={timeWindow} onHoursChange={setTimeWindow} />
+        <TrendChart allData={displayData} hours={timeWindow} onHoursChange={setTimeWindow} />
       </div>
 
       {/* ── Bottom: Summary | Recently Changed ── */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr', gap: 14, marginBottom: 24 }}>
-        <ResourceSummaryTable allData={allData} />
-        <RecentlyChangedTable allData={allData} selectedAirport={selectedAirport} />
+        <ResourceSummaryTable allData={displayData} />
+        <RecentlyChangedTable allData={displayData} />
       </div>
 
     </div>

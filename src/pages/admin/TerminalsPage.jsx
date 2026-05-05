@@ -1,4 +1,5 @@
 import { useState, useMemo, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import useSWR from 'swr';
 import { Building2, Upload } from 'lucide-react';
 
@@ -14,6 +15,7 @@ const ATTRIBUTE_TYPES = ['DOMESTIC', 'INTERNATIONAL', 'MIXED'];
 const EMPTY = { tenantId: '', airportId: '', code: '', name: '', attributes: { type: '' }, validFrom: null, validTo: null, active: true };
 
 export default function TerminalsPage() {
+  const [searchParams] = useSearchParams();
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [modalOpen, setModalOpen] = useState(false);
@@ -30,23 +32,29 @@ export default function TerminalsPage() {
   const { data: airportsData } = useSWR('/api/v1/airports?page=0&size=1000', adminFetcher);
   const airports = Array.isArray(airportsData) ? airportsData : (airportsData?.content || []);
 
-  // Build airport lookup for status
   const airportMap = useMemo(() => {
     const map = {};
     airports.forEach((a) => { map[a.airportId] = a; });
     return map;
   }, [airports]);
 
+  const airportIdFilter = useMemo(() => {
+    const iata = searchParams.get('airport');
+    if (!iata) return '';
+    return airports.find(a => a.iataCode === iata)?.airportId || '';
+  }, [airports, searchParams]);
+
   const getStatus = (t) => airportMap[t.airportId]?.operationalStatus || 'UNKNOWN';
 
   const filtered = useMemo(() => {
     let rows = data;
+    if (airportIdFilter) rows = rows.filter(t => t.airportId === airportIdFilter);
     if (statusFilter === 'active') rows = rows.filter((t) => t.active);
     else if (statusFilter === 'closed') rows = rows.filter((t) => !t.active);
     if (!search) return rows;
     const q = search.toLowerCase();
     return rows.filter((t) => (t.code || '').toLowerCase().includes(q) || (t.name || '').toLowerCase().includes(q) || (t.airportName || '').toLowerCase().includes(q));
-  }, [data, search, statusFilter]);
+  }, [data, search, statusFilter, airportIdFilter]);
 
   const stats = [
     { label: 'Total', value: data.length },

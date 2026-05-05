@@ -76,6 +76,9 @@ export default function AirportsPage() {
   const data = pageData?.content || [];
   const totalPages = pageData?.totalPages ?? 1;
 
+  const { data: countryPage } = useSWR('/api/v1/countries?page=0&size=1000', adminFetcher);
+  const countries = useMemo(() => (Array.isArray(countryPage) ? countryPage : countryPage?.content || []), [countryPage]);
+
   const filtered = useMemo(() => {
     let rows = data;
     if (statusFilter !== 'all') rows = rows.filter((a) => a.operationalStatus === statusFilter);
@@ -376,7 +379,12 @@ export default function AirportsPage() {
         <FormSection title="Location">
           <FormRow>
             <FormGroup label="Country">
-              <FormInput value={form.country} onChange={(v) => f('country', v)} placeholder="India" />
+              <FormSelect
+                value={form.country}
+                onChange={(v) => f('country', v)}
+                options={countries.map((c) => ({ value: c.name, label: c.iso2 ? `[${c.iso2}] ${c.name}` : c.name }))}
+                placeholder="Select country…"
+              />
             </FormGroup>
             <FormGroup label="City">
               <FormInput value={form.cityName} onChange={(v) => f('cityName', v)} placeholder="Mumbai" />

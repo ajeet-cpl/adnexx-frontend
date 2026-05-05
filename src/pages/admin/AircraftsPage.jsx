@@ -1,4 +1,5 @@
 import { useState, useMemo, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import useSWR from 'swr';
 import { PlaneTakeoff, Upload } from 'lucide-react';
 
@@ -52,6 +53,7 @@ function toDateTimeLocal(val) {
 }
 
 export default function AircraftsPage() {
+  const [searchParams]  = useSearchParams();
   const [search,      setSearch]      = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [modalOpen, setModalOpen] = useState(false);
@@ -83,8 +85,15 @@ export default function AircraftsPage() {
   const airportMap      = useMemo(() => Object.fromEntries(airports.map(a      => [a.airportId,      a.iataCode || a.name])),                 [airports]);
   const aircraftTypeMap = useMemo(() => Object.fromEntries(aircraftTypes.map(t => [t.aircraftTypeId, t.icaoCode  || t.iataCode || t.name])),  [aircraftTypes]);
 
+  const airportIdFilter = useMemo(() => {
+    const iata = searchParams.get('airport');
+    if (!iata) return '';
+    return airports.find(a => a.iataCode === iata)?.airportId || '';
+  }, [airports, searchParams]);
+
   const filtered = useMemo(() => {
     let result = rows;
+    if (airportIdFilter) result = result.filter(r => r.airportId === airportIdFilter);
     if (statusFilter === 'active') result = result.filter(r => r.status === 'ACTIVE');
     else if (statusFilter === 'closed') result = result.filter(r => r.status !== 'ACTIVE');
     if (!search) return result;
@@ -94,7 +103,7 @@ export default function AircraftsPage() {
       (r.registration  || '').toLowerCase().includes(q) ||
       (r.status        || '').toLowerCase().includes(q)
     );
-  }, [rows, search, statusFilter]);
+  }, [rows, search, statusFilter, airportIdFilter]);
 
   const stats = [
     { label: 'Total',       value: rows.length },
