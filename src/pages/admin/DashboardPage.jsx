@@ -833,18 +833,6 @@ export default function OperationalStatusPage() {
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <DropdownSelect icon={Globe2} value={selectedAirport} onChange={handleAirportChange} options={airportOptions} searchable />
-          <DropdownSelect icon={Clock} value={timeWindow} onChange={setTimeWindow} options={TIME_OPTIONS} />
-          <button
-            onClick={() => setAutoRefresh(v => !v)}
-            style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 12px', background: autoRefresh ? 'rgba(34,197,94,0.1)' : 'var(--surface-2)', border: `1px solid ${autoRefresh ? 'rgba(34,197,94,0.35)' : 'var(--border)'}`, borderRadius: 8, color: autoRefresh ? 'var(--green)' : 'var(--text-2)', fontSize: '0.8rem', fontWeight: 500, cursor: 'pointer' }}
-          >
-            <RefreshCw size={13} color={autoRefresh ? 'var(--green)' : 'var(--text-3)'} />
-            {autoRefresh ? 'Auto Refresh' : 'Manual'}
-          </button>
-          <button onClick={handleRefresh} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 14px', background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 8, color: 'var(--text-1)', fontSize: '0.8rem', fontWeight: 500, cursor: 'pointer' }}>
-            <Download size={13} />
-            Export
-          </button>
         </div>
       </div>
 
