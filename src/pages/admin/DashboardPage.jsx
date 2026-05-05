@@ -5,7 +5,7 @@ import {
   Activity, Globe2, DoorOpen, ParkingSquare, Waypoints, Luggage, ClipboardList,
   XCircle, AlertTriangle, CheckCircle2, RefreshCw, TrendingDown, Minus, Clock,
   ShieldCheck, Download, ChevronDown, ChevronLeft, ChevronRight, ArrowRight,
-  MapPin, BarChart2, Building2, Truck, Flag, PlaneTakeoff,
+  MapPin, BarChart2, Building2, Truck, Flag, PlaneTakeoff, Search, Check,
 } from 'lucide-react';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
@@ -109,8 +109,10 @@ function useResourceData(resource, refreshInterval = 60000) {
 }
 
 // ─── Dropdown Select ────────────────────────────────────────────────────────────
-function DropdownSelect({ icon: Icon, value, onChange, options }) {
+function DropdownSelect({ icon: Icon, value, onChange, options, searchable = false }) {
   const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState('');
+  const searchRef = useRef(null);
   const ref = useRef(null);
 
   useEffect(() => {
@@ -120,49 +122,99 @@ function DropdownSelect({ icon: Icon, value, onChange, options }) {
     return () => document.removeEventListener('mousedown', onOut);
   }, [open]);
 
+  useEffect(() => {
+    if (open && searchable && searchRef.current) searchRef.current.focus();
+    if (!open) setQuery('');
+  }, [open, searchable]);
+
   const selected = options.find(o => o.value === value) || options[0];
+
+  const filtered = searchable && query.trim()
+    ? options.filter(o => o.label.toLowerCase().includes(query.toLowerCase()))
+    : options;
 
   return (
     <div ref={ref} style={{ position: 'relative' }}>
+      {/* Trigger button */}
       <button
         onClick={() => setOpen(v => !v)}
         style={{
           display: 'flex', alignItems: 'center', gap: 6,
           padding: '6px 12px',
           background: open ? 'var(--surface-3)' : 'var(--surface-2)',
-          border: '1px solid var(--border)', borderRadius: 8,
+          border: `1px solid ${open ? 'var(--amber, #f59e0b)' : 'var(--border)'}`,
+          borderRadius: 8,
           color: 'var(--text-1)', fontSize: '0.8rem', fontWeight: 500,
           cursor: 'pointer', whiteSpace: 'nowrap',
+          transition: 'border-color 0.15s',
         }}
       >
         {Icon && <Icon size={13} color="var(--text-2)" />}
         {selected.label}
         <ChevronDown size={12} color="var(--text-3)" style={{ transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s' }} />
       </button>
+
+      {/* Dropdown panel */}
       {open && (
         <div style={{
           position: 'absolute', top: 'calc(100% + 6px)', right: 0, zIndex: 999,
           background: 'var(--surface-2)', border: '1px solid var(--border-mid)',
-          borderRadius: 10, padding: '4px', minWidth: 190,
-          boxShadow: '0 8px 24px rgba(0,0,0,0.28)',
-          maxHeight: 300, overflowY: 'auto',
+          borderRadius: 10, minWidth: 260,
+          boxShadow: '0 12px 32px rgba(0,0,0,0.35)',
+          display: 'flex', flexDirection: 'column', overflow: 'hidden',
         }}>
-          {options.map(opt => (
-            <button
-              key={opt.value}
-              onClick={() => { onChange(opt.value); setOpen(false); }}
-              style={{
-                display: 'block', width: '100%', textAlign: 'left',
-                padding: '8px 12px', border: 'none', borderRadius: 7,
-                background: opt.value === value ? 'var(--surface-3)' : 'none',
-                color: opt.value === value ? 'var(--text-1)' : 'var(--text-2)',
-                fontSize: '0.8rem', fontWeight: opt.value === value ? 600 : 400,
-                cursor: 'pointer',
-              }}
-            >
-              {opt.label}
-            </button>
-          ))}
+
+          {/* Search input */}
+          {searchable && (
+            <div style={{ padding: '10px 10px 6px', borderBottom: '1px solid var(--border)' }}>
+              <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                <Search size={14} color="var(--text-3)" style={{ position: 'absolute', left: 10, pointerEvents: 'none' }} />
+                <input
+                  ref={searchRef}
+                  type="text"
+                  value={query}
+                  onChange={e => setQuery(e.target.value)}
+                  placeholder="Search..."
+                  style={{
+                    width: '100%', boxSizing: 'border-box',
+                    padding: '8px 10px 8px 32px',
+                    border: '1px solid var(--amber, #f59e0b)',
+                    borderRadius: 7,
+                    background: 'var(--surface-3)',
+                    color: 'var(--text-1)', fontSize: '0.82rem',
+                    outline: 'none',
+                  }}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Options list */}
+          <div style={{ maxHeight: 260, overflowY: 'auto' }}>
+            {filtered.length === 0 ? (
+              <p style={{ padding: '10px 14px', fontSize: '0.78rem', color: 'var(--text-3)', margin: 0 }}>No results</p>
+            ) : filtered.map(opt => {
+              const isSelected = opt.value === value;
+              return (
+                <button
+                  key={opt.value}
+                  onClick={() => { onChange(opt.value); setOpen(false); }}
+                  style={{
+                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                    width: '100%', textAlign: 'left',
+                    padding: '10px 14px', border: 'none',
+                    background: isSelected ? 'var(--surface-3)' : 'none',
+                    color: isSelected ? 'var(--text-1)' : 'var(--text-2)',
+                    fontSize: '0.82rem', fontWeight: isSelected ? 700 : 400,
+                    cursor: 'pointer', letterSpacing: isSelected ? '0.01em' : 'normal',
+                  }}
+                >
+                  {opt.label}
+                  {isSelected && <Check size={14} color="var(--amber, #f59e0b)" strokeWidth={2.5} />}
+                </button>
+              );
+            })}
+          </div>
         </div>
       )}
     </div>
@@ -780,7 +832,7 @@ export default function OperationalStatusPage() {
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <DropdownSelect icon={Globe2} value={selectedAirport} onChange={handleAirportChange} options={airportOptions} />
+          <DropdownSelect icon={Globe2} value={selectedAirport} onChange={handleAirportChange} options={airportOptions} searchable />
           <DropdownSelect icon={Clock} value={timeWindow} onChange={setTimeWindow} options={TIME_OPTIONS} />
           <button
             onClick={() => setAutoRefresh(v => !v)}
@@ -801,7 +853,9 @@ export default function OperationalStatusPage() {
 
       {/* ── 10 KPI Cards ── */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 12, marginBottom: 16 }}>
-        {RESOURCES.map(resource => (
+        {RESOURCES.filter(resource =>
+          selectedAirport === 'all' || (resource.key !== 'airports' && resource.key !== 'countries')
+        ).map(resource => (
           <KpiCard
             key={resource.key}
             resource={resource}

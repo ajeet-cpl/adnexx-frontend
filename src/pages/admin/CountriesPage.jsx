@@ -121,7 +121,7 @@ export default function CountriesPage() {
     setUploading(true);
     try {
       const result = await CountryAPI.bulkUpload(file);
-      toast.success('Bulk Upload Complete', result?.message || 'Countries CSV uploaded successfully');
+      toast.success('Bulk Upload Complete', result?.message || 'Countries code CSV uploaded successfully');
       mutate();
     } catch (err) {
       toast.error('Bulk Upload Failed', err instanceof Error ? err.message : 'Failed to upload CSV');
@@ -137,7 +137,7 @@ export default function CountriesPage() {
     <>
       <MasterPage
         readOnly={!hasRole('ADMIN')}
-        title="Countries"
+        title="Country Codes"
         subtitle="ISO 3166-1 country reference data — codes, geography, aviation authorities"
         icon={<Globe2 size={18} color="#fff" />}
         columns={columns}

@@ -43,7 +43,7 @@ const NAV = [
       { href: '/admin/airlines', label: 'Airlines', icon: Plane },
       { href: '/admin/aircrafts', label: 'Aircrafts', icon: PlaneTakeoff },
       { href: '/admin/aircraft-types', label: 'Aircraft Types', icon: Cpu },
-      { href: '/admin/countries', label: 'Country Code', icon: Globe2 },
+      { href: '/admin/countries', label: 'Country Codes', icon: Globe2 },
     ],
   },
   {
