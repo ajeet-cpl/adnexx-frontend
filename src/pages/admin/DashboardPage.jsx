@@ -145,6 +145,7 @@ function DropdownSelect({ icon: Icon, value, onChange, options }) {
           background: 'var(--surface-2)', border: '1px solid var(--border-mid)',
           borderRadius: 10, padding: '4px', minWidth: 190,
           boxShadow: '0 8px 24px rgba(0,0,0,0.28)',
+          maxHeight: 300, overflowY: 'auto',
         }}>
           {options.map(opt => (
             <button
