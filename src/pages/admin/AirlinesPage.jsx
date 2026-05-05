@@ -9,7 +9,7 @@ import { toast } from '@/utils/toast';
 import { hasRole } from '@/utils/auth';
 import { PAGE_SIZE } from '@/config/env';
 
-const AIRLINE_TYPES = ['FULL_SERVICE', 'LOW_COST', 'LCC', 'CHARTER', 'CARGO', 'REGIONAL', 'PRIVATE'];
+const AIRLINE_TYPES = ['FULL_SERVICE', 'LCC', 'CHARTER', 'CARGO', 'REGIONAL', 'PRIVATE'];
 const AIRLINE_CATEGORIES = ['FSC', 'LCC', 'CHARTER', 'CARGO', 'REGIONAL', 'PRIVATE',];
 const ALLIANCES = ['Star Alliance', 'Oneworld', 'SkyTeam'];
 
