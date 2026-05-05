@@ -1,4 +1,4 @@
-// Aerosis API Client — Master Data CRUD All endpoints: /api/v1/*
+// AeroIS API Client — Master Data CRUD All endpoints: /api/v1/*
 import env from '@/config/env';
 import { getToken, getTenantId, clearSession } from '@/utils/auth';
 

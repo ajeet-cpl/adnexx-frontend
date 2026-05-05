@@ -49,7 +49,7 @@
 
 ## 1. Introduction
 
-The **Aerosis Admin Portal** (also called **Aerosis**) is the central management system for all reference and configuration data used by the Airport Operational Database (AODB). It is used to maintain accurate, up-to-date information that feeds into other airport systems such as:
+The **AeroIS Admin Portal** (also called **AeroIS**) is the central management system for all reference and configuration data used by the Airport Operational Database (AODB). It is used to maintain accurate, up-to-date information that feeds into other airport systems such as:
 
 - **FIDS** — Flight Information Display System
 - **RMS** — Resource Management System

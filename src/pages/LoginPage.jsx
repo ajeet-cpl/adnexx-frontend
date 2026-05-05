@@ -101,7 +101,7 @@ export default function LoginPage() {
             </svg>
           </div>
           <div>
-            <p style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.12em', color: 'var(--blue)', textTransform: 'uppercase', margin: 0 }}>Aerosis Platform</p>
+            <p style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.12em', color: 'var(--blue)', textTransform: 'uppercase', margin: 0 }}>AeroIS Platform</p>
             <p style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-1)', margin: 0 }}>Airport Operations Database (AODB)</p>
           </div>
         </div>
@@ -217,7 +217,7 @@ export default function LoginPage() {
 
         {/* Footer */}
         <p style={{ marginTop: '48px', fontSize: '12px', color: 'var(--text-3)', textAlign: 'center' }}>
-          Aerosis Platform · Airport Operations Database
+          AeroIS Platform · Airport Operations Database
         </p>
       </div>
     </div>

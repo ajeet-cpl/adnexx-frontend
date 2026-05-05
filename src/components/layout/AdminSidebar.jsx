@@ -119,7 +119,7 @@ export default function AdminSidebar({ collapsed, onToggle, mobileOpen, onMobile
               <Database size={14} color="#fff" />
             </div>
             <div>
-              <div className="sidebar-title" style={{ fontSize: '0.82rem', fontWeight: 700, fontFamily: 'var(--font-display)', letterSpacing: '0.04em' }}>Aerosis</div>
+              <div className="sidebar-title" style={{ fontSize: '0.82rem', fontWeight: 700, fontFamily: 'var(--font-display)', letterSpacing: '0.04em' }}>AeroIS</div>
               <div className="sidebar-subtitle" style={{ fontSize: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }}>Master Data</div>
             </div>
           </div>

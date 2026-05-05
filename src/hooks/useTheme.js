@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 
-const STORAGE_KEY = 'aerosis_theme';
+const STORAGE_KEY = 'AeroIS_theme';
 export const THEMES = [
   // { id: 'light',        label: 'Aviation Blue',   color: '#F8FAFC', accent: '#1E3A8A' },
   // { id: 'dark',         label: 'Dark Premium',    color: '#0F172A', accent: '#38BDF8' },
